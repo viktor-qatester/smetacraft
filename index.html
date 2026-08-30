@@ -246,6 +246,35 @@
         color: var(--muted);
         font-size: 13px;
       }
+
+      .opening-list {
+        display: grid;
+        gap: 8px;
+        margin-top: 8px;
+      }
+
+      .opening-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr 70px 36px;
+        gap: 8px;
+        align-items: end;
+      }
+
+      .btn-text {
+        height: 36px;
+        padding: 0 10px;
+        border: 1px solid var(--line);
+        background: #fff;
+        color: var(--ink);
+        font: inherit;
+        cursor: pointer;
+      }
+
+      .opening-sum {
+        margin: 8px 0 0;
+        font-size: 13px;
+        font-weight: 650;
+      }
     </style>
   </head>
   <body>
@@ -256,7 +285,7 @@
         <nav class="tabs" aria-label="Блоки проекта">
           <button type="button" class="tab is-active" data-block="slab" aria-current="page">Плита</button>
           <button type="button" class="tab" data-block="strip">Ленточный</button>
-          <button type="button" class="tab" disabled title="Скоро">Стены</button>
+          <button type="button" class="tab" data-block="walls">Стены</button>
           <button type="button" class="tab" disabled title="Скоро">Штукатурка</button>
         </nav>
       </header>
@@ -527,6 +556,163 @@
               <p id="strip-error" class="error"></p>
             </form>
           </section>
+
+          <section class="panel" id="panel-walls" hidden>
+            <h2>Параметры стен</h2>
+            <form id="walls-form">
+              <fieldset>
+                <legend>Геометрия</legend>
+                <div class="row">
+                  <label>
+                    Периметр стен, м
+                    <input id="walls-perimeter" name="walls-perimeter" type="text" inputmode="decimal" value="40" autocomplete="off" />
+                  </label>
+                  <label>
+                    Высота стен, м
+                    <input id="walls-height" name="walls-height" type="text" inputmode="decimal" value="3.0" autocomplete="off" />
+                  </label>
+                </div>
+              </fieldset>
+
+              <fieldset>
+                <legend>Материал</legend>
+                <label>
+                  Тип кладки
+                  <select id="walls-material" name="walls-material">
+                    <option value="block" selected>Газобетонные блоки</option>
+                    <option value="brick">Кладочный кирпич</option>
+                  </select>
+                </label>
+              </fieldset>
+
+              <fieldset id="walls-block-fields">
+                <legend>Газобетон</legend>
+                <div class="row">
+                  <label>
+                    Размер блока, мм
+                    <select id="walls-block-size" name="walls-block-size">
+                      <option value="600x200x200">600×200×200</option>
+                      <option value="600x250x200">600×250×200</option>
+                      <option value="600x300x200" selected>600×300×200</option>
+                      <option value="600x400x200">600×400×200</option>
+                    </select>
+                  </label>
+                  <label>
+                    Клей
+                    <select id="walls-glue-type" name="walls-glue-type">
+                      <option value="bag" selected>Мешки 25 кг</option>
+                      <option value="foam">Баллоны пены</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="row">
+                  <label>
+                    Блок, Br/шт
+                    <input id="walls-block-price" name="walls-block-price" type="text" inputmode="decimal" value="5.50" autocomplete="off" />
+                  </label>
+                  <label>
+                    Клей, Br/ед.
+                    <input id="walls-glue-price" name="walls-glue-price" type="text" inputmode="decimal" value="18" autocomplete="off" />
+                  </label>
+                </div>
+                <p class="note">Формат Д×Толщина×Высота. Запас блоков +5% на подрезку у проёмов и углов. Клей 25 кг/м³ кладки; пена — 1 баллон на 10 м² стены.</p>
+              </fieldset>
+
+              <fieldset id="walls-brick-fields" hidden>
+                <legend>Кирпич</legend>
+                <div class="row-3">
+                  <label>
+                    Формат
+                    <select id="walls-brick-format" name="walls-brick-format">
+                      <option value="1nf" selected>Одинарный 1 НФ (250×120×65)</option>
+                      <option value="14nf">Полуторный 1.4 НФ (250×120×88)</option>
+                    </select>
+                  </label>
+                  <label>
+                    Толщина стены, мм
+                    <select id="walls-brick-thick" name="walls-brick-thick">
+                      <option value="120">120 (½ кирпича)</option>
+                      <option value="250" selected>250 (1 кирпич)</option>
+                      <option value="380">380 (1½ кирпича)</option>
+                      <option value="510">510 (2 кирпича)</option>
+                    </select>
+                  </label>
+                  <label>
+                    Кирпич, Br/шт
+                    <input id="walls-brick-price" name="walls-brick-price" type="text" inputmode="decimal" value="0.42" autocomplete="off" />
+                  </label>
+                </div>
+                <div class="row">
+                  <label>
+                    ЦПС 25 кг, Br/меш.
+                    <input id="walls-mortar-price" name="walls-mortar-price" type="text" inputmode="decimal" value="7.50" autocomplete="off" />
+                  </label>
+                  <label>
+                    Сетка, Br/м²
+                    <input id="walls-mesh-price" name="walls-mesh-price" type="text" inputmode="decimal" value="8" autocomplete="off" />
+                  </label>
+                </div>
+                <p class="note">Швы 10 мм вертикальный и 12 мм горизонтальный. Бой кирпича +5%. Сетка перевязки в каждом армопоясе.</p>
+              </fieldset>
+
+              <fieldset>
+                <legend>Окна и двери по проекту</legend>
+                <div class="row">
+                  <label>
+                    Учёт проёмов
+                    <select id="walls-opening-mode" name="walls-opening-mode">
+                      <option value="list" selected>Перечень проёмов</option>
+                      <option value="area">Суммарная площадь</option>
+                    </select>
+                  </label>
+                  <label id="walls-area-wrap" hidden>
+                    Площадь проёмов, м²
+                    <input id="walls-opening-area" name="walls-opening-area" type="text" inputmode="decimal" value="10.5" autocomplete="off" />
+                  </label>
+                </div>
+                <div id="walls-openings-box">
+                  <div id="walls-openings-list" class="opening-list">
+                    <div class="opening-row">
+                      <label>Ширина, м<input class="js-ow" type="text" inputmode="decimal" value="1.5" autocomplete="off" /></label>
+                      <label>Высота, м<input class="js-oh" type="text" inputmode="decimal" value="1.4" autocomplete="off" /></label>
+                      <label>Шт<input class="js-on" type="text" inputmode="numeric" value="4" autocomplete="off" /></label>
+                      <button type="button" class="btn-text js-opening-del" aria-label="Удалить проём">×</button>
+                    </div>
+                    <div class="opening-row">
+                      <label>Ширина, м<input class="js-ow" type="text" inputmode="decimal" value="1.0" autocomplete="off" /></label>
+                      <label>Высота, м<input class="js-oh" type="text" inputmode="decimal" value="2.1" autocomplete="off" /></label>
+                      <label>Шт<input class="js-on" type="text" inputmode="numeric" value="1" autocomplete="off" /></label>
+                      <button type="button" class="btn-text js-opening-del" aria-label="Удалить проём">×</button>
+                    </div>
+                  </div>
+                  <button type="button" class="btn-text" id="walls-add-opening" style="margin-top: 8px">Добавить проём</button>
+                </div>
+                <p id="walls-openings-sum" class="opening-sum">Вычет проёмов: 10,50 м²</p>
+                <p class="note">Перемычка = ширина проёма + 0,50 м (опирание 250 мм с каждой стороны). В режиме площади перемычки не считаются — нужен перечень.</p>
+              </fieldset>
+
+              <fieldset>
+                <legend>Армирование и крепёж</legend>
+                <div class="row-3">
+                  <label>
+                    Арматура Ø8, Br/кг
+                    <input id="walls-rebar-price" name="walls-rebar-price" type="text" inputmode="decimal" value="3.20" autocomplete="off" />
+                  </label>
+                  <label>
+                    Перемычки, Br/м
+                    <input id="walls-lintel-price" name="walls-lintel-price" type="text" inputmode="decimal" value="28" autocomplete="off" />
+                  </label>
+                  <label>
+                    Дюбели, Br/упак. 100
+                    <input id="walls-screw-price" name="walls-screw-price" type="text" inputmode="decimal" value="12" autocomplete="off" />
+                  </label>
+                </div>
+                <p class="note">Ø8 в 2 прутка каждые 4 ряда, нахлёст 40d, хлыст 11.7 м. Рамные дюбели — 8 шт. на проём.</p>
+              </fieldset>
+
+              <p id="walls-error" class="error"></p>
+            </form>
+          </section>
         </div>
 
         <aside class="panel bill" aria-live="polite">
@@ -582,20 +768,49 @@
         "Плитный фундамент: бетон, арматура, опалубка, подушка, гидроизоляция. Цены в Br — ориентир, правьте под поставщика.";
       const STRIP_LEAD =
         "Ленточный фундамент: бетон, рабочие стержни, хомуты с гибами, опалубка с двух сторон, песчаная подушка, гидроизоляция. Цены в Br — ориентир, правьте под поставщика.";
+      const WALLS_LEAD =
+        "Стены и проёмы: газобетон или кирпич, вычет окон и дверей, клей или раствор, арматура штроб Ø8, перемычки, крепёж. Цены в Br — ориентир, правьте под поставщика.";
+
+      const WALL_CUT_RESERVE = 0.05;
+      const WALL_REBAR_MM = 8;
+      const WALL_BARS_PER_BELT = 2;
+      const WALL_ROWS_PER_BELT = 4;
+      const LINTEL_BEARING = 0.25;
+      const GLUE_KG_PER_M3 = 25;
+      const GLUE_BAG_KG = 25;
+      const FOAM_M2_PER_CAN = 10;
+      const MORTAR_DRY_KG_PER_M3 = 1700;
+      const MORTAR_BAG_KG = 25;
+      const BRICK_V_JOINT = 0.01;
+      const BRICK_H_JOINT = 0.012;
+      const FRAME_SCREWS_PER_OPENING = 8;
+      const SCREW_PACK = 100;
+      const PALLET_M3 = 1.8;
 
       let activeBlock = "slab";
 
       const form = document.getElementById("calc-form");
       const stripForm = document.getElementById("strip-form");
+      const wallsForm = document.getElementById("walls-form");
       const gradeEl = document.getElementById("grade");
       const concretePriceEl = document.getElementById("concrete-price");
       const stripGradeEl = document.getElementById("strip-grade");
       const stripConcretePriceEl = document.getElementById("strip-concrete-price");
       const errorEl = document.getElementById("error");
       const stripErrorEl = document.getElementById("strip-error");
+      const wallsErrorEl = document.getElementById("walls-error");
       const leadEl = document.getElementById("lead");
       const panelSlab = document.getElementById("panel-slab");
       const panelStrip = document.getElementById("panel-strip");
+      const panelWalls = document.getElementById("panel-walls");
+      const wallsOpeningsList = document.getElementById("walls-openings-list");
+      const wallsOpeningsBox = document.getElementById("walls-openings-box");
+      const wallsAreaWrap = document.getElementById("walls-area-wrap");
+      const wallsOpeningsSum = document.getElementById("walls-openings-sum");
+      const wallsMaterialEl = document.getElementById("walls-material");
+      const wallsOpeningModeEl = document.getElementById("walls-opening-mode");
+      const wallsBlockFields = document.getElementById("walls-block-fields");
+      const wallsBrickFields = document.getElementById("walls-brick-fields");
       const billMetaEl = document.getElementById("bill-meta");
       const billEmptyEl = document.getElementById("bill-empty");
       const billWrapEl = document.getElementById("bill-wrap");
@@ -667,6 +882,7 @@
       function showBill(rows, total, meta) {
         errorEl.classList.remove("visible");
         stripErrorEl.classList.remove("visible");
+        wallsErrorEl.classList.remove("visible");
         billEmptyEl.hidden = true;
         billWrapEl.hidden = false;
         billMetaEl.textContent = meta;
@@ -1053,6 +1269,357 @@
         return "";
       }
 
+      function parseBlockSize(value) {
+        const parts = String(value).split("x");
+        return {
+          length: Number(parts[0]) / 1000,
+          thick: Number(parts[1]) / 1000,
+          height: Number(parts[2]) / 1000,
+        };
+      }
+
+      function brickFormat(code) {
+        if (code === "14nf") {
+          return { name: "1.4 НФ", length: 0.25, width: 0.12, height: 0.088 };
+        }
+        return { name: "1 НФ", length: 0.25, width: 0.12, height: 0.065 };
+      }
+
+      function brickWythes(thickM, brickWidth) {
+        const pitch = brickWidth + BRICK_V_JOINT;
+        return Math.max(1, Math.round((thickM + BRICK_V_JOINT) / pitch));
+      }
+
+      function openingRowTemplate() {
+        const row = document.createElement("div");
+        row.className = "opening-row";
+        row.innerHTML =
+          '<label>Ширина, м<input class="js-ow" type="text" inputmode="decimal" value="" autocomplete="off" /></label>' +
+          '<label>Высота, м<input class="js-oh" type="text" inputmode="decimal" value="" autocomplete="off" /></label>' +
+          '<label>Шт<input class="js-on" type="text" inputmode="numeric" value="1" autocomplete="off" /></label>' +
+          '<button type="button" class="btn-text js-opening-del" aria-label="Удалить проём">×</button>';
+        return row;
+      }
+
+      function readOpeningRows() {
+        const rows = [];
+        const nodes = wallsOpeningsList.querySelectorAll(".opening-row");
+        for (let i = 0; i < nodes.length; i++) {
+          const w = parseNumber(nodes[i].querySelector(".js-ow").value);
+          const h = parseNumber(nodes[i].querySelector(".js-oh").value);
+          const n = parseNumber(nodes[i].querySelector(".js-on").value);
+          const blank =
+            String(nodes[i].querySelector(".js-ow").value).trim() === "" &&
+            String(nodes[i].querySelector(".js-oh").value).trim() === "" &&
+            String(nodes[i].querySelector(".js-on").value).trim() === "";
+          rows.push({ w: w, h: h, n: n, blank: blank });
+        }
+        return rows;
+      }
+
+      function summarizeOpenings(mode, areaRaw, listRows) {
+        if (mode === "area") {
+          return { area: areaRaw, lintelM: 0, count: 0, fromList: false };
+        }
+        let area = 0;
+        let lintelM = 0;
+        let count = 0;
+        for (let i = 0; i < listRows.length; i++) {
+          const row = listRows[i];
+          if (row.blank) continue;
+          area += row.w * row.h * row.n;
+          lintelM += (row.w + 2 * LINTEL_BEARING) * row.n;
+          count += row.n;
+        }
+        return { area: area, lintelM: lintelM, count: count, fromList: true };
+      }
+
+      function updateWallsOpeningUi() {
+        const listMode = wallsOpeningModeEl.value === "list";
+        wallsOpeningsBox.hidden = !listMode;
+        wallsAreaWrap.hidden = listMode;
+        const areaRaw = parseNumber(document.getElementById("walls-opening-area").value);
+        const sum = summarizeOpenings(wallsOpeningModeEl.value, areaRaw, readOpeningRows());
+        if (Number.isFinite(sum.area) && sum.area >= 0) {
+          wallsOpeningsSum.textContent = "Вычет проёмов: " + formatQty(sum.area, 2) + " м²";
+        } else {
+          wallsOpeningsSum.textContent = "Вычет проёмов: —";
+        }
+      }
+
+      function syncWallsMaterialUi() {
+        const isBlock = wallsMaterialEl.value === "block";
+        wallsBlockFields.hidden = !isBlock;
+        wallsBrickFields.hidden = isBlock;
+      }
+
+      function calculateWalls(input) {
+        const sGross = input.perimeter * input.height;
+        const sOpen = input.openings.area;
+        const sNet = sGross - sOpen;
+        const thick = input.thick;
+        const volume = sNet * thick;
+        const rowHeight = input.rowHeight;
+        const nRows = Math.floor(input.height / rowHeight + 1e-9);
+        const belts = Math.floor(nRows / WALL_ROWS_PER_BELT);
+        const overlap = OVERLAP_DIAMETERS * (WALL_REBAR_MM / 1000);
+        const kgM = kgPerMeter(WALL_REBAR_MM);
+        const netMeters = belts * WALL_BARS_PER_BELT * input.perimeter;
+        const metersWithLap =
+          belts * WALL_BARS_PER_BELT * lengthWithSplices(input.perimeter, ROD_LENGTH, overlap);
+        const rods = metersWithLap > 0 ? Math.ceil(metersWithLap / ROD_LENGTH) : 0;
+        const orderKg = rods * ROD_LENGTH * kgM;
+        const netKg = netMeters * kgM;
+        const screwPcs = input.openings.count * FRAME_SCREWS_PER_OPENING;
+        const screwPacks = screwPcs > 0 ? Math.ceil(screwPcs / SCREW_PACK) : 0;
+
+        const rows = [];
+
+        if (input.material === "block") {
+          const blockFace = input.block.length * input.block.height;
+          const blockVol = input.block.length * input.block.thick * input.block.height;
+          const netPcs = sNet / blockFace;
+          const orderPcs = Math.ceil(netPcs * (1 + WALL_CUT_RESERVE));
+          const orderM3 = orderPcs * blockVol;
+          const palletSize = Math.max(1, Math.round(PALLET_M3 / blockVol));
+          const pallets = Math.ceil(orderPcs / palletSize);
+          rows.push({
+            name:
+              "Газоблок " +
+              Math.round(input.block.length * 1000) +
+              "×" +
+              Math.round(input.block.thick * 1000) +
+              "×" +
+              Math.round(input.block.height * 1000) +
+              ", " +
+              pallets +
+              " подд. (" +
+              formatQty(orderM3, 3) +
+              " м³)",
+            netLabel: formatQty(netPcs, 1) + " шт",
+            k: 1 + WALL_CUT_RESERVE,
+            orderLabel: String(orderPcs) + " шт",
+            cost: orderPcs * input.blockPrice,
+          });
+
+          if (input.glueType === "foam") {
+            const foamNet = sNet / FOAM_M2_PER_CAN;
+            const foamOrder = Math.ceil((sNet * (1 + WALL_CUT_RESERVE)) / FOAM_M2_PER_CAN);
+            rows.push({
+              name: "Клей-пена для блоков, баллон",
+              netLabel: formatQty(foamNet, 2) + " бал.",
+              k: 1 + WALL_CUT_RESERVE,
+              orderLabel: String(foamOrder) + " бал.",
+              cost: foamOrder * input.gluePrice,
+            });
+          } else {
+            const glueNetKg = volume * GLUE_KG_PER_M3;
+            const glueOrderKg = glueNetKg * (1 + WALL_CUT_RESERVE);
+            const bags = Math.ceil(glueOrderKg / GLUE_BAG_KG);
+            rows.push({
+              name: "Клей для блоков, мешок 25 кг",
+              netLabel: formatQty(glueNetKg, 1) + " кг",
+              k: 1 + WALL_CUT_RESERVE,
+              orderLabel: String(bags) + " меш.",
+              cost: bags * input.gluePrice,
+            });
+          }
+        } else {
+          const brick = input.brick;
+          const wythes = brickWythes(thick, brick.width);
+          const effL = brick.length + BRICK_V_JOINT;
+          const effH = brick.height + BRICK_H_JOINT;
+          const netPcs = (sNet * wythes) / (effL * effH);
+          const orderPcs = Math.ceil(netPcs * (1 + WALL_CUT_RESERVE));
+          const brickSolid = brick.length * brick.width * brick.height;
+          const mortarNet = Math.max(0, volume - netPcs * brickSolid);
+          const mortarOrder = mortarNet * (1 + WALL_CUT_RESERVE);
+          const mortarBags = Math.ceil((mortarOrder * MORTAR_DRY_KG_PER_M3) / MORTAR_BAG_KG);
+          const meshNet = input.perimeter * thick * belts;
+
+          rows.push({
+            name: "Кирпич " + brick.name + ", стена " + Math.round(thick * 1000) + " мм",
+            netLabel: formatQty(netPcs, 1) + " шт",
+            k: 1 + WALL_CUT_RESERVE,
+            orderLabel: String(orderPcs) + " шт",
+            cost: orderPcs * input.brickPrice,
+          });
+
+          rows.push({
+            name: "Кладочный раствор ЦПС, мешок 25 кг",
+            netLabel: formatQty(mortarNet, 3) + " м³",
+            k: 1 + WALL_CUT_RESERVE,
+            orderLabel: String(mortarBags) + " меш.",
+            cost: mortarBags * input.mortarPrice,
+          });
+
+          if (meshNet > 0) {
+            rows.push({
+              name: "Сетка кладочная перевязки",
+              netLabel: formatQty(meshNet, 2) + " м²",
+              k: 1,
+              orderLabel: formatQty(meshNet, 2) + " м²",
+              cost: meshNet * input.meshPrice,
+            });
+          }
+        }
+
+        if (belts > 0) {
+          rows.push({
+            name:
+              "Арматура штроб Ø8 мм, 2 прутка × " +
+              belts +
+              " пояса, " +
+              rods +
+              " шт. × 11.7 м",
+            netLabel: formatQty(netKg, 1) + " кг",
+            k: netKg > 0 ? orderKg / netKg : 1,
+            orderLabel: formatQty(orderKg, 1) + " кг",
+            cost: orderKg * input.rebarPrice,
+          });
+        }
+
+        if (input.openings.lintelM > 0) {
+          rows.push({
+            name:
+              "Перемычки над проёмами, " +
+              formatQty(input.openings.count, 0) +
+              " шт. (опирание 2×250 мм)",
+            netLabel: formatQty(input.openings.lintelM, 2) + " м",
+            k: 1,
+            orderLabel: formatQty(input.openings.lintelM, 2) + " м",
+            cost: input.openings.lintelM * input.lintelPrice,
+          });
+        }
+
+        if (screwPacks > 0) {
+          rows.push({
+            name: "Дюбели рамные, 8 шт./проём",
+            netLabel: String(screwPcs) + " шт",
+            k: 1,
+            orderLabel: String(screwPacks) + " упак.",
+            cost: screwPacks * input.screwPrice,
+          });
+        }
+
+        const total = rows.reduce(function (sum, item) {
+          return sum + item.cost;
+        }, 0);
+
+        return {
+          rows: rows,
+          total: total,
+          sGross: sGross,
+          sOpen: sOpen,
+          sNet: sNet,
+          volume: volume,
+        };
+      }
+
+      function readWallsForm() {
+        const material = wallsMaterialEl.value;
+        const block = parseBlockSize(document.getElementById("walls-block-size").value);
+        const brick = brickFormat(document.getElementById("walls-brick-format").value);
+        const brickThick = parseNumber(document.getElementById("walls-brick-thick").value) / 1000;
+        const openings = summarizeOpenings(
+          wallsOpeningModeEl.value,
+          parseNumber(document.getElementById("walls-opening-area").value),
+          readOpeningRows()
+        );
+        return {
+          perimeter: parseNumber(document.getElementById("walls-perimeter").value),
+          height: parseNumber(document.getElementById("walls-height").value),
+          material: material,
+          block: block,
+          brick: brick,
+          thick: material === "block" ? block.thick : brickThick,
+          rowHeight:
+            material === "block" ? block.height : brick.height + BRICK_H_JOINT,
+          glueType: document.getElementById("walls-glue-type").value,
+          blockPrice: parseNumber(document.getElementById("walls-block-price").value),
+          gluePrice: parseNumber(document.getElementById("walls-glue-price").value),
+          brickPrice: parseNumber(document.getElementById("walls-brick-price").value),
+          mortarPrice: parseNumber(document.getElementById("walls-mortar-price").value),
+          meshPrice: parseNumber(document.getElementById("walls-mesh-price").value),
+          rebarPrice: parseNumber(document.getElementById("walls-rebar-price").value),
+          lintelPrice: parseNumber(document.getElementById("walls-lintel-price").value),
+          screwPrice: parseNumber(document.getElementById("walls-screw-price").value),
+          openings: openings,
+          openingMode: wallsOpeningModeEl.value,
+          openingRows: readOpeningRows(),
+        };
+      }
+
+      function validateWalls(input) {
+        if (!(input.perimeter > 0 && input.height > 0)) {
+          return "Введите периметр и высоту стен больше нуля.";
+        }
+        if (!(input.thick > 0 && input.rowHeight > 0)) {
+          return "Проверьте размер блока или толщину кирпичной стены.";
+        }
+        if (input.openingMode === "area") {
+          if (!(input.openings.area >= 0)) {
+            return "Введите площадь проёмов ноль или больше.";
+          }
+        } else {
+          for (let i = 0; i < input.openingRows.length; i++) {
+            const row = input.openingRows[i];
+            if (row.blank) continue;
+            if (!(row.w > 0 && row.h > 0 && row.n >= 1 && Number.isInteger(row.n))) {
+              return "У каждого проёма ширина, высота > 0 и целое количество от 1.";
+            }
+            if (row.w >= input.perimeter || row.h > input.height) {
+              return "Габарит проёма не должен превышать периметр или высоту стен.";
+            }
+          }
+        }
+        if (input.openings.area > input.perimeter * input.height) {
+          return "Площадь проёмов больше площади стен.";
+        }
+        if (input.perimeter * input.height - input.openings.area <= 0) {
+          return "После вычета проёмов площадь кладки должна быть больше нуля.";
+        }
+        if (input.material === "block") {
+          if (!(input.blockPrice > 0 && input.gluePrice > 0)) {
+            return "Введите цены блока и клея больше нуля.";
+          }
+        } else if (!(input.brickPrice > 0 && input.mortarPrice > 0 && input.meshPrice > 0)) {
+          return "Введите цены кирпича, раствора и сетки больше нуля.";
+        }
+        if (!(input.rebarPrice > 0 && input.lintelPrice > 0 && input.screwPrice > 0)) {
+          return "Введите цены арматуры, перемычек и крепежа больше нуля.";
+        }
+        return "";
+      }
+
+      function renderWalls() {
+        updateWallsOpeningUi();
+        const input = readWallsForm();
+        const message = validateWalls(input);
+
+        if (message) {
+          showBillError(message, wallsErrorEl);
+          return;
+        }
+
+        const bill = calculateWalls(input);
+        showBill(
+          bill.rows,
+          bill.total,
+          "Стены " +
+            formatQty(input.perimeter, 2) +
+            " × " +
+            formatQty(input.height, 2) +
+            " м · кладка " +
+            formatQty(bill.sNet, 2) +
+            " м² · вычет проёмов " +
+            formatQty(bill.sOpen, 2) +
+            " м² · " +
+            formatQty(bill.volume, 2) +
+            " м³"
+        );
+      }
+
       function renderSlab() {
         const input = readForm();
         const message = validate(input);
@@ -1108,6 +1675,8 @@
       function render() {
         if (activeBlock === "strip") {
           renderStrip();
+        } else if (activeBlock === "walls") {
+          renderWalls();
         } else {
           renderSlab();
         }
@@ -1117,7 +1686,9 @@
         activeBlock = block;
         panelSlab.hidden = block !== "slab";
         panelStrip.hidden = block !== "strip";
-        leadEl.textContent = block === "strip" ? STRIP_LEAD : SLAB_LEAD;
+        panelWalls.hidden = block !== "walls";
+        leadEl.textContent =
+          block === "strip" ? STRIP_LEAD : block === "walls" ? WALLS_LEAD : SLAB_LEAD;
         document.querySelectorAll(".tab[data-block]").forEach(function (tab) {
           const on = tab.getAttribute("data-block") === block;
           tab.classList.toggle("is-active", on);
@@ -1162,6 +1733,43 @@
         render();
       });
 
+      wallsMaterialEl.addEventListener("change", function () {
+        syncWallsMaterialUi();
+        render();
+      });
+
+      wallsOpeningModeEl.addEventListener("change", function () {
+        updateWallsOpeningUi();
+        render();
+      });
+
+      document.getElementById("walls-add-opening").addEventListener("click", function () {
+        wallsOpeningsList.appendChild(openingRowTemplate());
+        render();
+      });
+
+      wallsForm.addEventListener("click", function (event) {
+        const del = event.target.closest(".js-opening-del");
+        if (!del) return;
+        const row = del.closest(".opening-row");
+        if (row && wallsOpeningsList.querySelectorAll(".opening-row").length > 1) {
+          row.remove();
+        } else if (row) {
+          row.querySelector(".js-ow").value = "";
+          row.querySelector(".js-oh").value = "";
+          row.querySelector(".js-on").value = "";
+        }
+        render();
+      });
+
+      wallsForm.addEventListener("input", render);
+      wallsForm.addEventListener("change", render);
+      wallsForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        render();
+      });
+
+      syncWallsMaterialUi();
       render();
     </script>
   </body>
