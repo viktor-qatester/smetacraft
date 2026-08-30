@@ -275,6 +275,113 @@
         font-size: 13px;
         font-weight: 650;
       }
+
+      label.check {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        grid-template-columns: none;
+      }
+
+      input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        padding: 0;
+        accent-color: var(--ink);
+      }
+
+      .btn-print {
+        margin-top: 12px;
+        width: 100%;
+        height: 36px;
+        border: 1px solid var(--ink);
+        background: #fff;
+        color: var(--ink);
+        font: inherit;
+        font-weight: 650;
+        letter-spacing: 0.02em;
+        cursor: pointer;
+      }
+
+      .print-letterhead {
+        display: none;
+      }
+
+      @media print {
+        body {
+          background: #fff;
+          color: #111;
+        }
+
+        .app {
+          width: 100%;
+          max-width: none;
+          margin: 0;
+          padding: 0;
+        }
+
+        header,
+        .params,
+        .btn-print,
+        .bill > .note {
+          display: none !important;
+        }
+
+        .layout {
+          display: block;
+          margin: 0;
+        }
+
+        .bill {
+          position: static;
+          border: 0;
+          padding: 0;
+        }
+
+        .bill > h2 {
+          display: none;
+        }
+
+        .print-letterhead {
+          display: block;
+          margin: 0 0 16px;
+          padding: 0 0 12px;
+          border-bottom: 2px solid #111;
+        }
+
+        .print-brand {
+          margin: 0;
+          font-size: 22px;
+          font-weight: 700;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+        }
+
+        .print-sub {
+          margin: 2px 0 8px;
+          font-size: 12px;
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
+          color: #333;
+        }
+
+        .print-date {
+          margin: 0;
+          font-size: 13px;
+        }
+
+        .bill-meta {
+          color: #333;
+        }
+
+        tfoot td {
+          background: #eee;
+        }
+
+        @page {
+          margin: 16mm;
+        }
+      }
     </style>
   </head>
   <body>
@@ -286,12 +393,12 @@
           <button type="button" class="tab is-active" data-block="slab" aria-current="page">Плита</button>
           <button type="button" class="tab" data-block="strip">Ленточный</button>
           <button type="button" class="tab" data-block="walls">Стены</button>
-          <button type="button" class="tab" disabled title="Скоро">Штукатурка</button>
+          <button type="button" class="tab" data-block="plaster">Штукатурка</button>
         </nav>
       </header>
 
       <div class="layout">
-        <div>
+        <div class="params">
           <section class="panel" id="panel-slab">
             <h2>Параметры плиты</h2>
             <form id="calc-form">
@@ -713,9 +820,99 @@
               <p id="walls-error" class="error"></p>
             </form>
           </section>
+
+          <section class="panel" id="panel-plaster" hidden>
+            <h2>Параметры штукатурки</h2>
+            <form id="plaster-form">
+              <fieldset>
+                <legend>Геометрия</legend>
+                <div class="row">
+                  <label>
+                    Площадь стен, м²
+                    <input id="plaster-area" name="plaster-area" type="text" inputmode="decimal" value="120" autocomplete="off" />
+                  </label>
+                  <label>
+                    Высота стены, м
+                    <input id="plaster-height" name="plaster-height" type="text" inputmode="decimal" value="2.7" autocomplete="off" />
+                  </label>
+                </div>
+                <p class="note">Высота 2.7–3.0 м закрывается одним профилем 3.0 м. Нужна для раскладки маяков.</p>
+              </fieldset>
+
+              <fieldset>
+                <legend>Состав</legend>
+                <div class="row">
+                  <label>
+                    Смесь
+                    <select id="plaster-mix" name="plaster-mix">
+                      <option value="gypsum" data-price="16.50" selected>Гипсовая (8.5 кг/м² на 10 мм)</option>
+                      <option value="cps" data-price="8.20">Цементно-песчаная (16.0 кг/м² на 10 мм)</option>
+                    </select>
+                  </label>
+                  <label>
+                    Толщина слоя, мм
+                    <input id="plaster-thick" name="plaster-thick" type="text" inputmode="decimal" value="15" autocomplete="off" />
+                  </label>
+                </div>
+                <div class="row">
+                  <label>
+                    Смесь, Br/меш.
+                    <input id="plaster-mix-price" name="plaster-mix-price" type="text" inputmode="decimal" value="16.50" autocomplete="off" />
+                  </label>
+                  <label>
+                    Грунтовка, слои
+                    <select id="plaster-primer-layers" name="plaster-primer-layers">
+                      <option value="1" selected>1 слой</option>
+                      <option value="2">2 слоя</option>
+                    </select>
+                  </label>
+                </div>
+                <p class="note">Масса смеси: S × (толщина / 10) × норма × 1.05. Гипс — мешки 30 кг, ЦПС — 25 кг.</p>
+              </fieldset>
+
+              <fieldset>
+                <legend>Грунтовка и маяки</legend>
+                <div class="row">
+                  <label>
+                    Грунтовка 10 л, Br/кан.
+                    <input id="plaster-primer-price" name="plaster-primer-price" type="text" inputmode="decimal" value="28" autocomplete="off" />
+                  </label>
+                  <label>
+                    Шаг маяков, м
+                    <input id="plaster-beacon-step" name="plaster-beacon-step" type="text" inputmode="decimal" value="1.2" autocomplete="off" />
+                  </label>
+                </div>
+                <label>
+                  Маяк 6 мм × 3.0 м, Br/шт
+                  <input id="plaster-beacon-price" name="plaster-beacon-price" type="text" inputmode="decimal" value="3.20" autocomplete="off" />
+                </label>
+                <p class="note">Грунтовка 0.15 л/м² на слой, запас +10%, канистра 10 л. Маяки по длине стен S / высота.</p>
+              </fieldset>
+
+              <fieldset>
+                <legend>Сетка</legend>
+                <label class="check">
+                  <input id="plaster-mesh" name="plaster-mesh" type="checkbox" />
+                  Армирующая стеклосетка
+                </label>
+                <label id="plaster-mesh-price-wrap" hidden>
+                  Рулон 50 м², Br/шт
+                  <input id="plaster-mesh-price" name="plaster-mesh-price" type="text" inputmode="decimal" value="42" autocomplete="off" />
+                </label>
+                <p class="note">Рулоны 50 м², нахлёст и запас 10%.</p>
+              </fieldset>
+
+              <p id="plaster-error" class="error"></p>
+            </form>
+          </section>
         </div>
 
         <aside class="panel bill" aria-live="polite">
+          <div class="print-letterhead">
+            <p class="print-brand">Smetacraft</p>
+            <p class="print-sub">Ведомость закупки материалов</p>
+            <p class="print-date">Дата: <span id="print-date"></span></p>
+          </div>
           <h2>Ведомость закупки</h2>
           <p id="bill-meta" class="bill-meta"></p>
           <p id="bill-empty" class="empty">Заполните размеры и цены слева.</p>
@@ -739,6 +936,7 @@
               </tfoot>
             </table>
           </div>
+          <button type="button" class="btn-print" id="bill-print" hidden>Распечатать смету / PDF</button>
           <p class="note">Цифры для закупки, не замена проекту. Остатки хлыстов 11.7 м входят в заказ целиком.</p>
         </aside>
       </div>
@@ -770,6 +968,8 @@
         "Ленточный фундамент: бетон, рабочие стержни, хомуты с гибами, опалубка с двух сторон, песчаная подушка, гидроизоляция. Цены в Br — ориентир, правьте под поставщика.";
       const WALLS_LEAD =
         "Стены и проёмы: газобетон или кирпич, вычет окон и дверей, клей или раствор, арматура штроб Ø8, перемычки, крепёж. Цены в Br — ориентир, правьте под поставщика.";
+      const PLASTER_LEAD =
+        "Штукатурка стен: гипсовая или ЦПС, грунтовка глубокого проникновения, маяки 6 мм, стеклосетка. Цены в Br — ориентир, правьте под поставщика.";
 
       const WALL_CUT_RESERVE = 0.05;
       const WALL_REBAR_MM = 8;
@@ -786,12 +986,24 @@
       const FRAME_SCREWS_PER_OPENING = 8;
       const SCREW_PACK = 100;
       const PALLET_M3 = 1.8;
+      const PLASTER_LOSS = 0.05;
+      const GYPSUM_RATE = 8.5;
+      const CPS_RATE = 16;
+      const GYPSUM_BAG_KG = 30;
+      const CPS_BAG_KG = 25;
+      const PRIMER_L_PER_M2 = 0.15;
+      const PRIMER_RESERVE = 0.1;
+      const PRIMER_CAN_L = 10;
+      const BEACON_LENGTH = 3;
+      const MESH_ROLL_M2 = 50;
+      const MESH_OVERLAP = 0.1;
 
       let activeBlock = "slab";
 
       const form = document.getElementById("calc-form");
       const stripForm = document.getElementById("strip-form");
       const wallsForm = document.getElementById("walls-form");
+      const plasterForm = document.getElementById("plaster-form");
       const gradeEl = document.getElementById("grade");
       const concretePriceEl = document.getElementById("concrete-price");
       const stripGradeEl = document.getElementById("strip-grade");
@@ -799,10 +1011,18 @@
       const errorEl = document.getElementById("error");
       const stripErrorEl = document.getElementById("strip-error");
       const wallsErrorEl = document.getElementById("walls-error");
+      const plasterErrorEl = document.getElementById("plaster-error");
       const leadEl = document.getElementById("lead");
       const panelSlab = document.getElementById("panel-slab");
       const panelStrip = document.getElementById("panel-strip");
       const panelWalls = document.getElementById("panel-walls");
+      const panelPlaster = document.getElementById("panel-plaster");
+      const plasterMixEl = document.getElementById("plaster-mix");
+      const plasterMixPriceEl = document.getElementById("plaster-mix-price");
+      const plasterMeshEl = document.getElementById("plaster-mesh");
+      const plasterMeshPriceWrap = document.getElementById("plaster-mesh-price-wrap");
+      const printDateEl = document.getElementById("print-date");
+      const billPrintEl = document.getElementById("bill-print");
       const wallsOpeningsList = document.getElementById("walls-openings-list");
       const wallsOpeningsBox = document.getElementById("walls-openings-box");
       const wallsAreaWrap = document.getElementById("walls-area-wrap");
@@ -879,21 +1099,33 @@
         );
       }
 
+      function stampPrintDate() {
+        printDateEl.textContent = new Date().toLocaleDateString("ru-BY", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        });
+      }
+
       function showBill(rows, total, meta) {
         errorEl.classList.remove("visible");
         stripErrorEl.classList.remove("visible");
         wallsErrorEl.classList.remove("visible");
+        plasterErrorEl.classList.remove("visible");
         billEmptyEl.hidden = true;
         billWrapEl.hidden = false;
+        billPrintEl.hidden = false;
         billMetaEl.textContent = meta;
         billBodyEl.innerHTML = rows.map(rowHtml).join("");
         billTotalEl.textContent = formatMoney(total);
+        stampPrintDate();
       }
 
       function showBillError(message, errorNode) {
         errorNode.textContent = message;
         errorNode.classList.add("visible");
         billWrapEl.hidden = true;
+        billPrintEl.hidden = true;
         billEmptyEl.hidden = false;
         billMetaEl.textContent = "";
       }
@@ -1592,6 +1824,158 @@
         return "";
       }
 
+      function syncPlasterMeshUi() {
+        plasterMeshPriceWrap.hidden = !plasterMeshEl.checked;
+      }
+
+      function calculatePlaster(input) {
+        const rate = input.mix === "cps" ? CPS_RATE : GYPSUM_RATE;
+        const bagKg = input.mix === "cps" ? CPS_BAG_KG : GYPSUM_BAG_KG;
+        const mixTitle =
+          input.mix === "cps" ? "Цементно-песчаная штукатурка" : "Гипсовая штукатурка";
+        const netKg = input.area * (input.thicknessMm / 10) * rate;
+        const orderKg = netKg * (1 + PLASTER_LOSS);
+        const bags = Math.ceil(orderKg / bagKg);
+
+        const primerNet = input.area * PRIMER_L_PER_M2 * input.primerLayers;
+        const primerOrder = primerNet * (1 + PRIMER_RESERVE);
+        const cans = Math.ceil(primerOrder / PRIMER_CAN_L);
+
+        const wallLength = input.area / input.wallHeight;
+        const beaconLines = barCount(wallLength, input.beaconStep);
+        const profilesPerLine = Math.ceil(input.wallHeight / BEACON_LENGTH);
+        const beacons = beaconLines * profilesPerLine;
+
+        const rows = [];
+
+        rows.push({
+          name: mixTitle + ", мешок " + bagKg + " кг",
+          netLabel: formatQty(netKg, 1) + " кг",
+          k: 1 + PLASTER_LOSS,
+          orderLabel: String(bags) + " меш.",
+          cost: bags * input.mixPrice,
+        });
+
+        rows.push({
+          name:
+            "Грунтовка глубокого проникновения, " +
+            input.primerLayers +
+            (input.primerLayers === 1 ? " слой" : " слоя") +
+            ", канистра 10 л",
+          netLabel: formatQty(primerNet, 2) + " л",
+          k: 1 + PRIMER_RESERVE,
+          orderLabel: String(cans) + " кан.",
+          cost: cans * input.primerPrice,
+        });
+
+        rows.push({
+          name: "Маячковый профиль 6 мм × 3.0 м, шаг " + formatQty(input.beaconStep, 2) + " м",
+          netLabel: String(beaconLines) + " шт",
+          k: profilesPerLine,
+          orderLabel: String(beacons) + " шт",
+          cost: beacons * input.beaconPrice,
+        });
+
+        if (input.useMesh) {
+          const meshOrder = input.area * (1 + MESH_OVERLAP);
+          const rolls = Math.ceil(meshOrder / MESH_ROLL_M2);
+          rows.push({
+            name: "Стеклосетка армирующая, рулон 50 м²",
+            netLabel: formatQty(input.area, 2) + " м²",
+            k: 1 + MESH_OVERLAP,
+            orderLabel: String(rolls) + " рул.",
+            cost: rolls * input.meshPrice,
+          });
+        }
+
+        const total = rows.reduce(function (sum, item) {
+          return sum + item.cost;
+        }, 0);
+
+        return {
+          rows: rows,
+          total: total,
+          netKg: netKg,
+          orderKg: orderKg,
+          bags: bags,
+          primerNet: primerNet,
+          primerOrder: primerOrder,
+          cans: cans,
+          wallLength: wallLength,
+          beacons: beacons,
+        };
+      }
+
+      function readPlasterForm() {
+        return {
+          area: parseNumber(document.getElementById("plaster-area").value),
+          wallHeight: parseNumber(document.getElementById("plaster-height").value),
+          mix: plasterMixEl.value,
+          thicknessMm: parseNumber(document.getElementById("plaster-thick").value),
+          mixPrice: parseNumber(plasterMixPriceEl.value),
+          primerLayers: parseNumber(document.getElementById("plaster-primer-layers").value),
+          primerPrice: parseNumber(document.getElementById("plaster-primer-price").value),
+          beaconStep: parseNumber(document.getElementById("plaster-beacon-step").value),
+          beaconPrice: parseNumber(document.getElementById("plaster-beacon-price").value),
+          useMesh: plasterMeshEl.checked,
+          meshPrice: parseNumber(document.getElementById("plaster-mesh-price").value),
+        };
+      }
+
+      function validatePlaster(input) {
+        if (!(input.area > 0)) {
+          return "Введите площадь стен больше нуля.";
+        }
+        if (!(input.wallHeight > 0)) {
+          return "Введите высоту стены больше нуля.";
+        }
+        if (!(input.thicknessMm > 0)) {
+          return "Введите толщину слоя больше нуля.";
+        }
+        if (!(input.primerLayers === 1 || input.primerLayers === 2)) {
+          return "Число слоёв грунтовки — 1 или 2.";
+        }
+        if (!(input.beaconStep > 0)) {
+          return "Введите шаг маяков больше нуля.";
+        }
+        if (!(input.mixPrice > 0 && input.primerPrice > 0 && input.beaconPrice > 0)) {
+          return "Введите цены смеси, грунтовки и маяков больше нуля.";
+        }
+        if (input.useMesh && !(input.meshPrice > 0)) {
+          return "Введите цену рулона сетки больше нуля.";
+        }
+        return "";
+      }
+
+      function renderPlaster() {
+        syncPlasterMeshUi();
+        const input = readPlasterForm();
+        const message = validatePlaster(input);
+
+        if (message) {
+          showBillError(message, plasterErrorEl);
+          return;
+        }
+
+        const bill = calculatePlaster(input);
+        const mixLabel = input.mix === "cps" ? "ЦПС" : "гипс";
+        showBill(
+          bill.rows,
+          bill.total,
+          "Штукатурка " +
+            formatQty(input.area, 2) +
+            " м² · " +
+            mixLabel +
+            " · слой " +
+            formatQty(input.thicknessMm, 0) +
+            " мм · грунтовка " +
+            input.primerLayers +
+            " сл. · длина стен " +
+            formatQty(bill.wallLength, 2) +
+            " м"
+        );
+      }
+
       function renderWalls() {
         updateWallsOpeningUi();
         const input = readWallsForm();
@@ -1677,6 +2061,8 @@
           renderStrip();
         } else if (activeBlock === "walls") {
           renderWalls();
+        } else if (activeBlock === "plaster") {
+          renderPlaster();
         } else {
           renderSlab();
         }
@@ -1687,8 +2073,15 @@
         panelSlab.hidden = block !== "slab";
         panelStrip.hidden = block !== "strip";
         panelWalls.hidden = block !== "walls";
+        panelPlaster.hidden = block !== "plaster";
         leadEl.textContent =
-          block === "strip" ? STRIP_LEAD : block === "walls" ? WALLS_LEAD : SLAB_LEAD;
+          block === "strip"
+            ? STRIP_LEAD
+            : block === "walls"
+              ? WALLS_LEAD
+              : block === "plaster"
+                ? PLASTER_LEAD
+                : SLAB_LEAD;
         document.querySelectorAll(".tab[data-block]").forEach(function (tab) {
           const on = tab.getAttribute("data-block") === block;
           tab.classList.toggle("is-active", on);
@@ -1769,7 +2162,31 @@
         render();
       });
 
+      plasterMixEl.addEventListener("change", function () {
+        const option = plasterMixEl.selectedOptions[0];
+        plasterMixPriceEl.value = option.getAttribute("data-price");
+        render();
+      });
+
+      plasterMeshEl.addEventListener("change", function () {
+        syncPlasterMeshUi();
+        render();
+      });
+
+      plasterForm.addEventListener("input", render);
+      plasterForm.addEventListener("change", render);
+      plasterForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        render();
+      });
+
+      billPrintEl.addEventListener("click", function () {
+        stampPrintDate();
+        window.print();
+      });
+
       syncWallsMaterialUi();
+      syncPlasterMeshUi();
       render();
     </script>
   </body>
