@@ -303,6 +303,44 @@
         cursor: pointer;
       }
 
+      .found-choice {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 8px;
+      }
+
+      .node-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        margin-top: 8px;
+      }
+
+      .snap {
+        margin: 8px 0 0;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .cat-row td {
+        padding-top: 10px;
+        background: var(--total-bg);
+        font-size: 11px;
+        font-weight: 650;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      input[type="radio"] {
+        width: 16px;
+        height: 16px;
+        padding: 0;
+        accent-color: var(--ink);
+      }
+
       .print-letterhead {
         display: none;
       }
@@ -370,6 +408,16 @@
           font-size: 13px;
         }
 
+        .print-nodes {
+          margin: 8px 0 0;
+          font-size: 12px;
+        }
+
+        .cat-row td {
+          background: #eee;
+          color: #111;
+        }
+
         .bill-meta {
           color: #333;
         }
@@ -394,6 +442,7 @@
           <button type="button" class="tab" data-block="strip">Ленточный</button>
           <button type="button" class="tab" data-block="walls">Стены</button>
           <button type="button" class="tab" data-block="plaster">Штукатурка</button>
+          <button type="button" class="tab" data-block="summary">Сводная смета</button>
         </nav>
       </header>
 
@@ -905,12 +954,67 @@
               <p id="plaster-error" class="error"></p>
             </form>
           </section>
+
+          <section class="panel" id="panel-summary" hidden>
+            <h2>Состав объекта</h2>
+            <form id="summary-form">
+              <fieldset>
+                <legend>Фундамент</legend>
+                <label class="check">
+                  <input id="summary-include-found" name="summary-include-found" type="checkbox" checked />
+                  Фундамент
+                </label>
+                <div class="found-choice" id="summary-found-choice">
+                  <label class="check">
+                    <input name="summary-found-type" type="radio" value="slab" checked />
+                    Плита
+                  </label>
+                  <label class="check">
+                    <input name="summary-found-type" type="radio" value="strip" />
+                    Лента
+                  </label>
+                </div>
+                <p id="summary-snap-found" class="snap"></p>
+                <div class="node-actions">
+                  <button type="button" class="btn-text" id="summary-jump-found">Править фундамент</button>
+                </div>
+                <p class="note">Параметры берутся из формы плиты или ленты. Одновременно в свод входит один тип фундамента.</p>
+              </fieldset>
+
+              <fieldset>
+                <legend>Стены и перегородки</legend>
+                <label class="check">
+                  <input id="summary-include-walls" name="summary-include-walls" type="checkbox" checked />
+                  Стены и перегородки
+                </label>
+                <p id="summary-snap-walls" class="snap"></p>
+                <div class="node-actions">
+                  <button type="button" class="btn-text" id="summary-jump-walls">Править стены</button>
+                </div>
+              </fieldset>
+
+              <fieldset>
+                <legend>Внутренняя штукатурка</legend>
+                <label class="check">
+                  <input id="summary-include-plaster" name="summary-include-plaster" type="checkbox" checked />
+                  Внутренняя штукатурка
+                </label>
+                <p id="summary-snap-plaster" class="snap"></p>
+                <div class="node-actions">
+                  <button type="button" class="btn-text" id="summary-jump-plaster">Править штукатурку</button>
+                </div>
+              </fieldset>
+
+              <p id="summary-error" class="error"></p>
+            </form>
+          </section>
         </div>
 
         <aside class="panel bill" aria-live="polite">
           <div class="print-letterhead">
             <p class="print-brand">Smetacraft</p>
-            <p class="print-sub">Ведомость закупки материалов</p>
+            <p class="print-sub" id="print-sub">Ведомость закупки материалов</p>
+            <p class="print-nodes" id="print-nodes"></p>
             <p class="print-date">Дата: <span id="print-date"></span></p>
           </div>
           <h2>Ведомость закупки</h2>
@@ -970,6 +1074,20 @@
         "Стены и проёмы: газобетон или кирпич, вычет окон и дверей, клей или раствор, арматура штроб Ø8, перемычки, крепёж. Цены в Br — ориентир, правьте под поставщика.";
       const PLASTER_LEAD =
         "Штукатурка стен: гипсовая или ЦПС, грунтовка глубокого проникновения, маяки 6 мм, стеклосетка. Цены в Br — ориентир, правьте под поставщика.";
+      const SUMMARY_LEAD =
+        "Сводная смета объекта: включите узлы, параметры читаются из их форм. Итоговая ведомость закупки по категориям, 0 токенов.";
+
+      const BILL_PRINT_SUB = "Ведомость закупки материалов";
+      const SUMMARY_PRINT_SUB = "Сводный акт / ведомость закупки";
+
+      const CAT_ORDER = [
+        { id: "concrete", title: "Бетон и растворы" },
+        { id: "metal", title: "Арматура и металл" },
+        { id: "masonry", title: "Кладочные материалы" },
+        { id: "dry", title: "Сухие смеси" },
+        { id: "timber", title: "Пиломатериалы" },
+        { id: "isol", title: "Изоляция и расходники" },
+      ];
 
       const WALL_CUT_RESERVE = 0.05;
       const WALL_REBAR_MM = 8;
@@ -1004,6 +1122,7 @@
       const stripForm = document.getElementById("strip-form");
       const wallsForm = document.getElementById("walls-form");
       const plasterForm = document.getElementById("plaster-form");
+      const summaryForm = document.getElementById("summary-form");
       const gradeEl = document.getElementById("grade");
       const concretePriceEl = document.getElementById("concrete-price");
       const stripGradeEl = document.getElementById("strip-grade");
@@ -1012,11 +1131,22 @@
       const stripErrorEl = document.getElementById("strip-error");
       const wallsErrorEl = document.getElementById("walls-error");
       const plasterErrorEl = document.getElementById("plaster-error");
+      const summaryErrorEl = document.getElementById("summary-error");
       const leadEl = document.getElementById("lead");
       const panelSlab = document.getElementById("panel-slab");
       const panelStrip = document.getElementById("panel-strip");
       const panelWalls = document.getElementById("panel-walls");
       const panelPlaster = document.getElementById("panel-plaster");
+      const panelSummary = document.getElementById("panel-summary");
+      const summaryIncludeFoundEl = document.getElementById("summary-include-found");
+      const summaryIncludeWallsEl = document.getElementById("summary-include-walls");
+      const summaryIncludePlasterEl = document.getElementById("summary-include-plaster");
+      const summaryFoundChoiceEl = document.getElementById("summary-found-choice");
+      const summarySnapFoundEl = document.getElementById("summary-snap-found");
+      const summarySnapWallsEl = document.getElementById("summary-snap-walls");
+      const summarySnapPlasterEl = document.getElementById("summary-snap-plaster");
+      const printSubEl = document.getElementById("print-sub");
+      const printNodesEl = document.getElementById("print-nodes");
       const plasterMixEl = document.getElementById("plaster-mix");
       const plasterMixPriceEl = document.getElementById("plaster-mix-price");
       const plasterMeshEl = document.getElementById("plaster-mesh");
@@ -1107,17 +1237,98 @@
         });
       }
 
-      function showBill(rows, total, meta) {
+      function classifyMaterial(name) {
+        if (name.indexOf("Бетон ") === 0 || name === "Песок" || name === "Щебень") {
+          return "concrete";
+        }
+        if (
+          name.indexOf("Арматура") === 0 ||
+          name.indexOf("Хомуты") === 0 ||
+          name.indexOf("Вязальная") === 0 ||
+          name.indexOf("Перемычки") === 0 ||
+          name.indexOf("Маячковый") === 0
+        ) {
+          return "metal";
+        }
+        if (
+          name.indexOf("Газоблок") === 0 ||
+          name.indexOf("Кирпич") === 0 ||
+          name.indexOf("Сетка кладочная") === 0
+        ) {
+          return "masonry";
+        }
+        if (
+          name.indexOf("Клей для блоков") === 0 ||
+          name.indexOf("Кладочный раствор") === 0 ||
+          name.indexOf("Гипсовая штукатурка") === 0 ||
+          name.indexOf("Цементно-песчаная штукатурка") === 0
+        ) {
+          return "dry";
+        }
+        if (name.indexOf("Доска") === 0 || name.indexOf("Брус") === 0) {
+          return "timber";
+        }
+        return "isol";
+      }
+
+      function groupedBillHtml(rows) {
+        const buckets = {};
+        CAT_ORDER.forEach(function (cat) {
+          buckets[cat.id] = [];
+        });
+        rows.forEach(function (item) {
+          const id = classifyMaterial(item.name);
+          if (!buckets[id]) {
+            buckets[id] = [];
+          }
+          buckets[id].push(item);
+        });
+        let html = "";
+        CAT_ORDER.forEach(function (cat) {
+          const list = buckets[cat.id];
+          if (!list.length) {
+            return;
+          }
+          html += '<tr class="cat-row"><td colspan="5">' + cat.title + "</td></tr>";
+          html += list.map(rowHtml).join("");
+        });
+        return html;
+      }
+
+      function setPrintHead(sub, nodes) {
+        printSubEl.textContent = sub;
+        printNodesEl.textContent = nodes || "";
+      }
+
+      function summaryFoundType() {
+        const checked = summaryForm.querySelector('input[name="summary-found-type"]:checked');
+        return checked ? checked.value : "slab";
+      }
+
+      function syncSummaryUi() {
+        const on = summaryIncludeFoundEl.checked;
+        summaryFoundChoiceEl.querySelectorAll("input").forEach(function (el) {
+          el.disabled = !on;
+        });
+      }
+
+      function showBill(rows, total, meta, options) {
         errorEl.classList.remove("visible");
         stripErrorEl.classList.remove("visible");
         wallsErrorEl.classList.remove("visible");
         plasterErrorEl.classList.remove("visible");
+        summaryErrorEl.classList.remove("visible");
         billEmptyEl.hidden = true;
         billWrapEl.hidden = false;
         billPrintEl.hidden = false;
         billMetaEl.textContent = meta;
-        billBodyEl.innerHTML = rows.map(rowHtml).join("");
+        billBodyEl.innerHTML =
+          options && options.grouped ? groupedBillHtml(rows) : rows.map(rowHtml).join("");
         billTotalEl.textContent = formatMoney(total);
+        setPrintHead(
+          options && options.printTitle ? options.printTitle : BILL_PRINT_SUB,
+          options && options.printNodes ? options.printNodes : ""
+        );
         stampPrintDate();
       }
 
@@ -1128,6 +1339,7 @@
         billPrintEl.hidden = true;
         billEmptyEl.hidden = false;
         billMetaEl.textContent = "";
+        setPrintHead(BILL_PRINT_SUB, "");
       }
 
       function calculateSlab(input) {
@@ -2056,6 +2268,143 @@
         );
       }
 
+      function renderSummary() {
+        syncSummaryUi();
+        const includeFound = summaryIncludeFoundEl.checked;
+        const includeWalls = summaryIncludeWallsEl.checked;
+        const includePlaster = summaryIncludePlasterEl.checked;
+        const foundType = summaryFoundType();
+
+        const slabInput = readForm();
+        const stripInput = readStripForm();
+        const wallsInput = readWallsForm();
+        const plasterInput = readPlasterForm();
+
+        summarySnapFoundEl.textContent =
+          foundType === "strip"
+            ? "Лента " +
+              formatQty(stripInput.length, 2) +
+              " × " +
+              formatQty(stripInput.width, 2) +
+              " × " +
+              formatQty(stripInput.height, 2) +
+              " м"
+            : "Плита " +
+              formatQty(slabInput.length, 2) +
+              " × " +
+              formatQty(slabInput.width, 2) +
+              " × " +
+              formatQty(slabInput.height, 2) +
+              " м";
+        summarySnapWallsEl.textContent =
+          "Стены " +
+          formatQty(wallsInput.perimeter, 2) +
+          " × " +
+          formatQty(wallsInput.height, 2) +
+          " м · вычет проёмов " +
+          formatQty(wallsInput.openings.area, 2) +
+          " м²";
+        summarySnapPlasterEl.textContent =
+          "Штукатурка " +
+          formatQty(plasterInput.area, 2) +
+          " м² · слой " +
+          formatQty(plasterInput.thicknessMm, 0) +
+          " мм";
+
+        if (!includeFound && !includeWalls && !includePlaster) {
+          showBillError("Включите хотя бы один узел объекта.", summaryErrorEl);
+          return;
+        }
+
+        const errors = [];
+        const rows = [];
+        const nodes = [];
+        let total = 0;
+
+        if (includeFound && foundType === "slab") {
+          const message = validate(slabInput);
+          if (message) {
+            errors.push("Плита: " + message);
+          } else {
+            const bill = calculateSlab(slabInput);
+            rows.push.apply(rows, bill.rows);
+            total += bill.total;
+            nodes.push(
+              "плита " +
+                formatQty(slabInput.length, 2) +
+                " × " +
+                formatQty(slabInput.width, 2) +
+                " × " +
+                formatQty(slabInput.height, 2) +
+                " м"
+            );
+          }
+        } else if (includeFound) {
+          const message = validateStrip(stripInput);
+          if (message) {
+            errors.push("Лента: " + message);
+          } else {
+            const bill = calculateStrip(stripInput);
+            rows.push.apply(rows, bill.rows);
+            total += bill.total;
+            nodes.push(
+              "лента " +
+                formatQty(stripInput.length, 2) +
+                " × " +
+                formatQty(stripInput.width, 2) +
+                " × " +
+                formatQty(stripInput.height, 2) +
+                " м"
+            );
+          }
+        }
+
+        if (includeWalls) {
+          updateWallsOpeningUi();
+          const message = validateWalls(wallsInput);
+          if (message) {
+            errors.push("Стены: " + message);
+          } else {
+            const bill = calculateWalls(wallsInput);
+            rows.push.apply(rows, bill.rows);
+            total += bill.total;
+            nodes.push(
+              "стены " +
+                formatQty(wallsInput.perimeter, 2) +
+                " × " +
+                formatQty(wallsInput.height, 2) +
+                " м, проёмы " +
+                formatQty(bill.sOpen, 2) +
+                " м²"
+            );
+          }
+        }
+
+        if (includePlaster) {
+          syncPlasterMeshUi();
+          const message = validatePlaster(plasterInput);
+          if (message) {
+            errors.push("Штукатурка: " + message);
+          } else {
+            const bill = calculatePlaster(plasterInput);
+            rows.push.apply(rows, bill.rows);
+            total += bill.total;
+            nodes.push("штукатурка " + formatQty(plasterInput.area, 2) + " м²");
+          }
+        }
+
+        if (errors.length) {
+          showBillError(errors.join(" "), summaryErrorEl);
+          return;
+        }
+
+        showBill(rows, total, "Объект: " + nodes.join(" · "), {
+          grouped: true,
+          printTitle: SUMMARY_PRINT_SUB,
+          printNodes: "Узлы: " + nodes.join(" · "),
+        });
+      }
+
       function render() {
         if (activeBlock === "strip") {
           renderStrip();
@@ -2063,6 +2412,8 @@
           renderWalls();
         } else if (activeBlock === "plaster") {
           renderPlaster();
+        } else if (activeBlock === "summary") {
+          renderSummary();
         } else {
           renderSlab();
         }
@@ -2074,6 +2425,7 @@
         panelStrip.hidden = block !== "strip";
         panelWalls.hidden = block !== "walls";
         panelPlaster.hidden = block !== "plaster";
+        panelSummary.hidden = block !== "summary";
         leadEl.textContent =
           block === "strip"
             ? STRIP_LEAD
@@ -2081,7 +2433,9 @@
               ? WALLS_LEAD
               : block === "plaster"
                 ? PLASTER_LEAD
-                : SLAB_LEAD;
+                : block === "summary"
+                  ? SUMMARY_LEAD
+                  : SLAB_LEAD;
         document.querySelectorAll(".tab[data-block]").forEach(function (tab) {
           const on = tab.getAttribute("data-block") === block;
           tab.classList.toggle("is-active", on);
@@ -2183,6 +2537,22 @@
       billPrintEl.addEventListener("click", function () {
         stampPrintDate();
         window.print();
+      });
+
+      summaryForm.addEventListener("change", render);
+      summaryForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        render();
+      });
+
+      document.getElementById("summary-jump-found").addEventListener("click", function () {
+        setActiveBlock(summaryFoundType() === "strip" ? "strip" : "slab");
+      });
+      document.getElementById("summary-jump-walls").addEventListener("click", function () {
+        setActiveBlock("walls");
+      });
+      document.getElementById("summary-jump-plaster").addEventListener("click", function () {
+        setActiveBlock("plaster");
       });
 
       syncWallsMaterialUi();
