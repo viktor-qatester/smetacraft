@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Конструктор смет</title>
+    <style>
+      :root {
+        --bg: #f4f4f2;
+        --card: #fff;
+        --ink: #1a1a1a;
+        --muted: #6b6b6b;
+        --line: #d8d8d4;
+        --tab-off: #8a8a8a;
+        --error: #9f2d20;
+        --total-bg: #efeee9;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--bg);
+        color: var(--ink);
+        font: 14px/1.4 system-ui, "Segoe UI", sans-serif;
+      }
+
+      .app {
+        width: min(1120px, 100%);
+        margin: 0 auto;
+        padding: 16px;
+      }
+
+      header {
+        margin-bottom: 12px;
+      }
+
+      h1 {
+        margin: 0 0 4px;
+        font-size: 20px;
+        font-weight: 650;
+      }
+
+      .lead {
+        margin: 0 0 12px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .tab {
+        margin: 0;
+        padding: 8px 14px;
+        border: 0;
+        border-bottom: 2px solid transparent;
+        background: transparent;
+        color: var(--tab-off);
+        font: inherit;
+        cursor: pointer;
+      }
+
+      .tab:disabled {
+        color: #9c9c9c;
+        cursor: not-allowed;
+      }
+
+      .tab.is-active {
+        color: var(--ink);
+        font-weight: 650;
+        border-bottom-color: var(--ink);
+      }
+
+      .layout {
+        display: grid;
+        gap: 16px;
+        align-items: start;
+        margin-top: 16px;
+      }
+
+      @media (min-width: 900px) {
+        .layout {
+          grid-template-columns: minmax(0, 1fr) minmax(340px, 460px);
+        }
+
+        .bill {
+          position: sticky;
+          top: 12px;
+        }
+      }
+
+      .panel {
+        background: var(--card);
+        border: 1px solid var(--line);
+        padding: 16px;
+      }
+
+      .panel h2 {
+        margin: 0 0 12px;
+        font-size: 13px;
+        font-weight: 650;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      form {
+        display: grid;
+        gap: 14px;
+      }
+
+      fieldset {
+        margin: 0;
+        padding: 12px 0 0;
+        border: 0;
+        border-top: 1px solid var(--line);
+      }
+
+      legend {
+        padding: 0 8px 0 0;
+        font-size: 12px;
+        font-weight: 650;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .row-3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 10px;
+      }
+
+      @media (max-width: 640px) {
+        .row,
+        .row-3 {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      label {
+        display: grid;
+        gap: 4px;
+        font-size: 12px;
+        font-weight: 500;
+        color: #333;
+      }
+
+      input,
+      select {
+        width: 100%;
+        height: 36px;
+        padding: 0 8px;
+        border: 1px solid var(--line);
+        border-radius: 0;
+        background: #fff;
+        color: var(--ink);
+        font: inherit;
+        font-size: 14px;
+        outline: none;
+      }
+
+      input:focus,
+      select:focus {
+        border-color: #888;
+      }
+
+      .note {
+        margin: 8px 0 0;
+        font-size: 11px;
+        color: var(--muted);
+      }
+
+      .error {
+        display: none;
+        margin: 0;
+        font-size: 13px;
+        color: var(--error);
+      }
+
+      .error.visible {
+        display: block;
+      }
+
+      .bill-meta {
+        margin: 0 0 10px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .bill-wrap {
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-variant-numeric: tabular-nums;
+      }
+
+      th,
+      td {
+        padding: 6px 8px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+        vertical-align: top;
+      }
+
+      th {
+        font-size: 11px;
+        font-weight: 650;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      td.num,
+      th.num {
+        text-align: right;
+        white-space: nowrap;
+      }
+
+      tfoot td {
+        border-bottom: 0;
+        background: var(--total-bg);
+        font-weight: 650;
+        font-size: 15px;
+      }
+
+      .empty {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <header>
+        <h1>Конструктор смет</h1>
+        <p id="lead" class="lead">Плитный фундамент: бетон, арматура, опалубка, подушка, гидроизоляция. Цены в Br — ориентир, правьте под поставщика.</p>
+        <nav class="tabs" aria-label="Блоки проекта">
+          <button type="button" class="tab is-active" data-block="slab" aria-current="page">Плита</button>
+          <button type="button" class="tab" data-block="strip">Ленточный</button>
+          <button type="button" class="tab" disabled title="Скоро">Стены</button>
+          <button type="button" class="tab" disabled title="Скоро">Штукатурка</button>
+        </nav>
+      </header>
+
+      <div class="layout">
+        <div>
+          <section class="panel" id="panel-slab">
+            <h2>Параметры плиты</h2>
+            <form id="calc-form">
+              <fieldset>
+                <legend>Геометрия</legend>
+                <div class="row-3">
+                  <label>
+                    Длина, м
+                    <input id="length" name="length" type="text" inputmode="decimal" value="10" autocomplete="off" />
+                  </label>
+                  <label>
+                    Ширина, м
+                    <input id="width" name="width" type="text" inputmode="decimal" value="8" autocomplete="off" />
+                  </label>
+                  <label>
+                    Толщина, м
+                    <input id="height" name="height" type="text" inputmode="decimal" value="0.3" autocomplete="off" />
+                  </label>
+                </div>
+              </fieldset>
+
+              <fieldset>
+                <legend>Бетон</legend>
+                <div class="row">
+                  <label>
+                    Марка
+                    <select id="grade" name="grade">
+                      <option value="М150" data-price="185">М150</option>
+                      <option value="М200" data-price="198">М200</option>
+                      <option value="М250" data-price="210" selected>М250</option>
+                      <option value="М300" data-price="228">М300</option>
+                      <option value="М350" data-price="248">М350</option>
+                      <option value="М400" data-price="268">М400</option>
+                      <option value="М450" data-price="290">М450</option>
+                      <option value="М500" data-price="315">М500</option>
+                    </select>
+                  </label>
+                  <label>
+                    Цена, Br/м³
+                    <input id="concrete-price" name="concrete-price" type="text" inputmode="decimal" value="210" autocomplete="off" />
+                  </label>
+                </div>
+                <p class="note">Запас бетона +5% на усадку и распирание опалубки.</p>
+              </fieldset>
+
+              <fieldset>
+                <legend>Арматура</legend>
+                <div class="row">
+                  <label>
+                    Диаметр, мм
+                    <select id="bar-diameter" name="bar-diameter">
+                      <option value="8">8</option>
+                      <option value="10">10</option>
+                      <option value="12" selected>12</option>
+                      <option value="14">14</option>
+                      <option value="16">16</option>
+                    </select>
+                  </label>
+                  <label>
+                    Шаг сетки, мм
+                    <input id="bar-step" name="bar-step" type="text" inputmode="decimal" value="200" autocomplete="off" />
+                  </label>
+                </div>
+                <div class="row">
+                  <label>
+                    Арматура, Br/кг
+                    <input id="rebar-price" name="rebar-price" type="text" inputmode="decimal" value="3.20" autocomplete="off" />
+                  </label>
+                  <label>
+                    Проволока, Br/кг
+                    <input id="wire-price" name="wire-price" type="text" inputmode="decimal" value="4.50" autocomplete="off" />
+                  </label>
+                </div>
+                <p class="note">Две сетки, нахлёст 40d, хлыст 11.7 м. Проволока — 1% от массы арматуры.</p>
+              </fieldset>
+
+              <fieldset>
+                <legend>Опалубка</legend>
+                <div class="row">
+                  <label>
+                    Доска 25×150×6000, Br/шт
+                    <input id="board-price" name="board-price" type="text" inputmode="decimal" value="14" autocomplete="off" />
+                  </label>
+                  <label>
+                    Брус 50×50×3000, Br/шт
+                    <input id="timber-price" name="timber-price" type="text" inputmode="decimal" value="8" autocomplete="off" />
+                  </label>
+                </div>
+                <p class="note">Борт по периметру на высоту плиты. Упоры брусом каждые 0.6 м, выпуск в грунт 0.4 м.</p>
+              </fieldset>
+
+              <fieldset>
+                <legend>Подушка</legend>
+                <div class="row">
+                  <label>
+                    Песок, толщина м
+                    <input id="sand-height" name="sand-height" type="text" inputmode="decimal" value="0.2" autocomplete="off" />
+                  </label>
+                  <label>
+                    Песок, Br/м³
+                    <input id="sand-price" name="sand-price" type="text" inputmode="decimal" value="32" autocomplete="off" />
+                  </label>
+                </div>
+                <div class="row">
+                  <label>
+                    Щебень, толщина м
+                    <input id="stone-height" name="stone-height" type="text" inputmode="decimal" value="0.2" autocomplete="off" />
+                  </label>
+                  <label>
+                    Щебень, Br/м³
+                    <input id="stone-price" name="stone-price" type="text" inputmode="decimal" value="55" autocomplete="off" />
+                  </label>
+                </div>
+                <p class="note">Коэффициент трамбования 1.10. Толщина 0 — строка не попадает в ведомость.</p>
+              </fieldset>
+
+              <fieldset>
+                <legend>Гидроизоляция</legend>
+                <label>
+                  Рулон 1×10 м, Br/шт
+                  <input id="hydro-price" name="hydro-price" type="text" inputmode="decimal" value="28" autocomplete="off" />
+                </label>
+                <p class="note">Нахлёст 15% к площади плиты. Площадь рулона 10 м².</p>
+              </fieldset>
+
+              <p id="error" class="error"></p>
+            </form>
+          </section>
+
+          <section class="panel" id="panel-strip" hidden>
+            <h2>Параметры ленты</h2>
+            <form id="strip-form">
+              <fieldset>
+                <legend>Геометрия</legend>
+                <div class="row-3">
+                  <label>
+                    Длина ленты, м
+                    <input id="strip-length" name="strip-length" type="text" inputmode="decimal" value="40" autocomplete="off" />
+                  </label>
+                  <label>
+                    Ширина, м
+                    <input id="strip-width" name="strip-width" type="text" inputmode="decimal" value="0.4" autocomplete="off" />
+                  </label>
+                  <label>
+                    Высота, м
+                    <input id="strip-height" name="strip-height" type="text" inputmode="decimal" value="1.0" autocomplete="off" />
+                  </label>
+                </div>
+              </fieldset>
+
+              <fieldset>
+                <legend>Бетон</legend>
+                <div class="row">
+                  <label>
+                    Марка
+                    <select id="strip-grade" name="strip-grade">
+                      <option value="М150" data-price="185">М150</option>
+                      <option value="М200" data-price="198">М200</option>
+                      <option value="М250" data-price="210" selected>М250</option>
+                      <option value="М300" data-price="228">М300</option>
+                      <option value="М350" data-price="248">М350</option>
+                      <option value="М400" data-price="268">М400</option>
+                      <option value="М450" data-price="290">М450</option>
+                      <option value="М500" data-price="315">М500</option>
+                    </select>
+                  </label>
+                  <label>
+                    Цена, Br/м³
+                    <input id="strip-concrete-price" name="strip-concrete-price" type="text" inputmode="decimal" value="210" autocomplete="off" />
+                  </label>
+                </div>
+                <p class="note">Объём = длина × ширина × высота. Запас бетона +5%.</p>
+              </fieldset>
+
+              <fieldset>
+                <legend>Рабочие стержни</legend>
+                <div class="row-3">
+                  <label>
+                    Диаметр, мм
+                    <select id="strip-bar-diameter" name="strip-bar-diameter">
+                      <option value="10">10</option>
+                      <option value="12" selected>12</option>
+                      <option value="14">14</option>
+                      <option value="16">16</option>
+                      <option value="18">18</option>
+                    </select>
+                  </label>
+                  <label>
+                    Число стержней
+                    <input id="strip-bar-count" name="strip-bar-count" type="text" inputmode="numeric" value="4" autocomplete="off" />
+                  </label>
+                  <label>
+                    Арматура, Br/кг
+                    <input id="strip-rebar-price" name="strip-rebar-price" type="text" inputmode="decimal" value="3.20" autocomplete="off" />
+                  </label>
+                </div>
+                <p class="note">Продольные стержни по длине ленты. Нахлёст 40d, хлыст 11.7 м. Типично 4 стержня (2+2) для ленты 400 мм.</p>
+              </fieldset>
+
+              <fieldset>
+                <legend>Хомуты</legend>
+                <div class="row-3">
+                  <label>
+                    Диаметр, мм
+                    <select id="strip-stirrup-diameter" name="strip-stirrup-diameter">
+                      <option value="6">6</option>
+                      <option value="8" selected>8</option>
+                      <option value="10">10</option>
+                    </select>
+                  </label>
+                  <label>
+                    Шаг, мм
+                    <input id="strip-stirrup-step" name="strip-stirrup-step" type="text" inputmode="decimal" value="300" autocomplete="off" />
+                  </label>
+                  <label>
+                    Проволока, Br/кг
+                    <input id="strip-wire-price" name="strip-wire-price" type="text" inputmode="decimal" value="4.50" autocomplete="off" />
+                  </label>
+                </div>
+                <p class="note">Прямоугольный хомут: защитный слой 40 мм, два крюка по 10d (не менее 75 мм). Нарезка из хлыстов 11.7 м.</p>
+              </fieldset>
+
+              <fieldset>
+                <legend>Опалубка</legend>
+                <div class="row">
+                  <label>
+                    Доска 25×150×6000, Br/шт
+                    <input id="strip-board-price" name="strip-board-price" type="text" inputmode="decimal" value="14" autocomplete="off" />
+                  </label>
+                  <label>
+                    Брус 50×50×3000, Br/шт
+                    <input id="strip-timber-price" name="strip-timber-price" type="text" inputmode="decimal" value="8" autocomplete="off" />
+                  </label>
+                </div>
+                <p class="note">Два борта по длине ленты. Упоры брусом каждые 0.6 м, выпуск в грунт 0.4 м.</p>
+              </fieldset>
+
+              <fieldset>
+                <legend>Подушка</legend>
+                <div class="row">
+                  <label>
+                    Песок, толщина м
+                    <input id="strip-sand-height" name="strip-sand-height" type="text" inputmode="decimal" value="0.2" autocomplete="off" />
+                  </label>
+                  <label>
+                    Песок, Br/м³
+                    <input id="strip-sand-price" name="strip-sand-price" type="text" inputmode="decimal" value="32" autocomplete="off" />
+                  </label>
+                </div>
+                <p class="note">Под подошвой ленты. Коэффициент трамбования 1.10. Толщина 0 — строка не в ведомости.</p>
+              </fieldset>
+
+              <fieldset>
+                <legend>Гидроизоляция</legend>
+                <label>
+                  Рулон 1×10 м, Br/шт
+                  <input id="strip-hydro-price" name="strip-hydro-price" type="text" inputmode="decimal" value="28" autocomplete="off" />
+                </label>
+                <p class="note">Подошва + два вертикальных борта. Нахлёст 15%. Площадь рулона 10 м².</p>
+              </fieldset>
+
+              <p id="strip-error" class="error"></p>
+            </form>
+          </section>
+        </div>
+
+        <aside class="panel bill" aria-live="polite">
+          <h2>Ведомость закупки</h2>
+          <p id="bill-meta" class="bill-meta"></p>
+          <p id="bill-empty" class="empty">Заполните размеры и цены слева.</p>
+          <div id="bill-wrap" class="bill-wrap" hidden>
+            <table>
+              <thead>
+                <tr>
+                  <th>Материал</th>
+                  <th class="num">Объём</th>
+                  <th class="num">Коэф.</th>
+                  <th class="num">К заказу</th>
+                  <th class="num">Стоимость</th>
+                </tr>
+              </thead>
+              <tbody id="bill-body"></tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="3">Итого</td>
+                  <td class="num" colspan="2" id="bill-total"></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <p class="note">Цифры для закупки, не замена проекту. Остатки хлыстов 11.7 м входят в заказ целиком.</p>
+        </aside>
+      </div>
+    </div>
+
+    <script>
+      const CONCRETE_RESERVE = 0.05;
+      const MESHES = 2;
+      const ROD_LENGTH = 11.7;
+      const OVERLAP_DIAMETERS = 40;
+      const WIRE_RATE = 0.01;
+      const BOARD_THICK = 0.025;
+      const BOARD_WIDTH = 0.15;
+      const BOARD_LENGTH = 6;
+      const TIMBER_SIZE = 0.05;
+      const TIMBER_STOCK = 3;
+      const STAKE_SPACING = 0.6;
+      const STAKE_EXTRA = 0.4;
+      const COMPACTION = 1.1;
+      const HYDRO_OVERLAP = 0.15;
+      const ROLL_AREA = 10;
+      const COVER = 0.04;
+      const HOOK_MIN = 0.075;
+      const HOOK_DIAMETERS = 10;
+
+      const SLAB_LEAD =
+        "Плитный фундамент: бетон, арматура, опалубка, подушка, гидроизоляция. Цены в Br — ориентир, правьте под поставщика.";
+      const STRIP_LEAD =
+        "Ленточный фундамент: бетон, рабочие стержни, хомуты с гибами, опалубка с двух сторон, песчаная подушка, гидроизоляция. Цены в Br — ориентир, правьте под поставщика.";
+
+      let activeBlock = "slab";
+
+      const form = document.getElementById("calc-form");
+      const stripForm = document.getElementById("strip-form");
+      const gradeEl = document.getElementById("grade");
+      const concretePriceEl = document.getElementById("concrete-price");
+      const stripGradeEl = document.getElementById("strip-grade");
+      const stripConcretePriceEl = document.getElementById("strip-concrete-price");
+      const errorEl = document.getElementById("error");
+      const stripErrorEl = document.getElementById("strip-error");
+      const leadEl = document.getElementById("lead");
+      const panelSlab = document.getElementById("panel-slab");
+      const panelStrip = document.getElementById("panel-strip");
+      const billMetaEl = document.getElementById("bill-meta");
+      const billEmptyEl = document.getElementById("bill-empty");
+      const billWrapEl = document.getElementById("bill-wrap");
+      const billBodyEl = document.getElementById("bill-body");
+      const billTotalEl = document.getElementById("bill-total");
+
+      function parseNumber(value) {
+        const n = Number(String(value).trim().replace(",", "."));
+        return Number.isFinite(n) ? n : NaN;
+      }
+
+      function formatQty(n, digits) {
+        return n.toLocaleString("ru-RU", {
+          minimumFractionDigits: digits,
+          maximumFractionDigits: digits,
+        });
+      }
+
+      function formatMoney(n) {
+        return (
+          n.toLocaleString("ru-BY", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " Br"
+        );
+      }
+
+      function kgPerMeter(diameterMm) {
+        return (diameterMm * diameterMm) / 162.3;
+      }
+
+      function barCount(span, step) {
+        return Math.floor(span / step) + 1;
+      }
+
+      function lengthWithSplices(span, rodLength, overlap) {
+        if (span <= rodLength) return span;
+        const usable = rodLength - overlap;
+        const pieces = Math.ceil((span - overlap) / usable);
+        return span + (pieces - 1) * overlap;
+      }
+
+      function stirrupBarLength(width, height, cover, stirrupMm) {
+        const innerW = width - 2 * cover;
+        const innerH = height - 2 * cover;
+        const hook = Math.max(HOOK_MIN, HOOK_DIAMETERS * (stirrupMm / 1000));
+        return 2 * (innerW + innerH) + 2 * hook;
+      }
+
+      function rowHtml(item) {
+        return (
+          "<tr>" +
+          "<td>" +
+          item.name +
+          "</td>" +
+          '<td class="num">' +
+          item.netLabel +
+          "</td>" +
+          '<td class="num">' +
+          formatQty(item.k, 2) +
+          "</td>" +
+          '<td class="num">' +
+          item.orderLabel +
+          "</td>" +
+          '<td class="num">' +
+          formatMoney(item.cost) +
+          "</td>" +
+          "</tr>"
+        );
+      }
+
+      function showBill(rows, total, meta) {
+        errorEl.classList.remove("visible");
+        stripErrorEl.classList.remove("visible");
+        billEmptyEl.hidden = true;
+        billWrapEl.hidden = false;
+        billMetaEl.textContent = meta;
+        billBodyEl.innerHTML = rows.map(rowHtml).join("");
+        billTotalEl.textContent = formatMoney(total);
+      }
+
+      function showBillError(message, errorNode) {
+        errorNode.textContent = message;
+        errorNode.classList.add("visible");
+        billWrapEl.hidden = true;
+        billEmptyEl.hidden = false;
+        billMetaEl.textContent = "";
+      }
+
+      function calculateSlab(input) {
+        const area = input.length * input.width;
+        const perimeter = 2 * (input.length + input.width);
+        const volume = area * input.height;
+        const overlap = OVERLAP_DIAMETERS * (input.diameterMm / 1000);
+        const stepM = input.stepMm / 1000;
+
+        const nAlongLength = barCount(input.width, stepM) * MESHES;
+        const nAlongWidth = barCount(input.length, stepM) * MESHES;
+        const netMeters =
+          nAlongLength * input.length + nAlongWidth * input.width;
+        const metersWithLap =
+          nAlongLength * lengthWithSplices(input.length, ROD_LENGTH, overlap) +
+          nAlongWidth * lengthWithSplices(input.width, ROD_LENGTH, overlap);
+        const rods = Math.ceil(metersWithLap / ROD_LENGTH);
+        const purchasedMeters = rods * ROD_LENGTH;
+        const kgM = kgPerMeter(input.diameterMm);
+        const netKg = netMeters * kgM;
+        const orderKg = purchasedMeters * kgM;
+        const wireKg = orderKg * WIRE_RATE;
+
+        const boardRows = Math.ceil(input.height / BOARD_WIDTH);
+        const boardsAlong = Math.ceil(perimeter / BOARD_LENGTH);
+        const boardCount = boardRows * boardsAlong;
+        const boardM3 = boardCount * BOARD_THICK * BOARD_WIDTH * BOARD_LENGTH;
+
+        const stakeCount = Math.ceil(perimeter / STAKE_SPACING);
+        const stakeLength = input.height + STAKE_EXTRA;
+        const timberCount = Math.ceil((stakeCount * stakeLength) / TIMBER_STOCK);
+        const timberM3 = timberCount * TIMBER_SIZE * TIMBER_SIZE * TIMBER_STOCK;
+
+        const rows = [];
+
+        rows.push({
+          name: "Бетон " + input.grade,
+          netLabel: formatQty(volume, 2) + " м³",
+          k: 1 + CONCRETE_RESERVE,
+          orderLabel: formatQty(volume * (1 + CONCRETE_RESERVE), 2) + " м³",
+          cost: volume * (1 + CONCRETE_RESERVE) * input.concretePrice,
+        });
+
+        rows.push({
+          name: "Арматура Ø" + input.diameterMm + " мм, " + rods + " шт. × 11.7 м",
+          netLabel: formatQty(netKg, 1) + " кг",
+          k: netKg > 0 ? orderKg / netKg : 1,
+          orderLabel: formatQty(orderKg, 1) + " кг",
+          cost: orderKg * input.rebarPrice,
+        });
+
+        rows.push({
+          name: "Вязальная проволока",
+          netLabel: formatQty(wireKg, 2) + " кг",
+          k: 1,
+          orderLabel: formatQty(wireKg, 2) + " кг",
+          cost: wireKg * input.wirePrice,
+        });
+
+        rows.push({
+          name: "Доска 25×150×6000 (" + formatQty(boardM3, 3) + " м³)",
+          netLabel: String(boardCount) + " шт",
+          k: 1,
+          orderLabel: String(boardCount) + " шт",
+          cost: boardCount * input.boardPrice,
+        });
+
+        rows.push({
+          name: "Брус упоров 50×50×3000 (" + formatQty(timberM3, 3) + " м³)",
+          netLabel: String(timberCount) + " шт",
+          k: 1,
+          orderLabel: String(timberCount) + " шт",
+          cost: timberCount * input.timberPrice,
+        });
+
+        if (input.sandHeight > 0) {
+          const sandNet = area * input.sandHeight;
+          const sandOrder = sandNet * COMPACTION;
+          rows.push({
+            name: "Песок",
+            netLabel: formatQty(sandNet, 2) + " м³",
+            k: COMPACTION,
+            orderLabel: formatQty(sandOrder, 2) + " м³",
+            cost: sandOrder * input.sandPrice,
+          });
+        }
+
+        if (input.stoneHeight > 0) {
+          const stoneNet = area * input.stoneHeight;
+          const stoneOrder = stoneNet * COMPACTION;
+          rows.push({
+            name: "Щебень",
+            netLabel: formatQty(stoneNet, 2) + " м³",
+            k: COMPACTION,
+            orderLabel: formatQty(stoneOrder, 2) + " м³",
+            cost: stoneOrder * input.stonePrice,
+          });
+        }
+
+        const hydroNet = area;
+        const hydroOrderArea = hydroNet * (1 + HYDRO_OVERLAP);
+        const rolls = Math.ceil(hydroOrderArea / ROLL_AREA);
+        rows.push({
+          name: "Гидроизоляция, рулон 1×10 м",
+          netLabel: formatQty(hydroNet, 2) + " м²",
+          k: 1 + HYDRO_OVERLAP,
+          orderLabel: String(rolls) + " рул.",
+          cost: rolls * input.hydroPrice,
+        });
+
+        const total = rows.reduce(function (sum, item) {
+          return sum + item.cost;
+        }, 0);
+
+        return { rows: rows, total: total, perimeter: perimeter, area: area };
+      }
+
+      function calculateStrip(input) {
+        const volume = input.length * input.width * input.height;
+        const overlap = OVERLAP_DIAMETERS * (input.diameterMm / 1000);
+        const kgLong = kgPerMeter(input.diameterMm);
+        const netMeters = input.barCount * input.length;
+        const metersWithLap =
+          input.barCount * lengthWithSplices(input.length, ROD_LENGTH, overlap);
+        const rods = Math.ceil(metersWithLap / ROD_LENGTH);
+        const purchasedMeters = rods * ROD_LENGTH;
+        const netKg = netMeters * kgLong;
+        const orderKg = purchasedMeters * kgLong;
+
+        const stepM = input.stirrupStepMm / 1000;
+        const stirrupLen = stirrupBarLength(
+          input.width,
+          input.height,
+          COVER,
+          input.stirrupMm
+        );
+        const stirrupN = barCount(input.length, stepM);
+        const kgStirrup = kgPerMeter(input.stirrupMm);
+        const stirrupNetM = stirrupN * stirrupLen;
+        const perRod = Math.floor(ROD_LENGTH / stirrupLen);
+        const stirrupOverlap = OVERLAP_DIAMETERS * (input.stirrupMm / 1000);
+        let stirrupRods;
+        if (perRod < 1) {
+          const oneWithLap = lengthWithSplices(stirrupLen, ROD_LENGTH, stirrupOverlap);
+          stirrupRods = Math.ceil((stirrupN * oneWithLap) / ROD_LENGTH);
+        } else {
+          stirrupRods = Math.ceil(stirrupN / perRod);
+        }
+        const stirrupPurchasedM = stirrupRods * ROD_LENGTH;
+        const stirrupNetKg = stirrupNetM * kgStirrup;
+        const stirrupOrderKg = stirrupPurchasedM * kgStirrup;
+        const hookM = Math.max(HOOK_MIN, HOOK_DIAMETERS * (input.stirrupMm / 1000));
+        const wireKg = (orderKg + stirrupOrderKg) * WIRE_RATE;
+
+        const formLength = 2 * input.length;
+        const boardRows = Math.ceil(input.height / BOARD_WIDTH);
+        const boardsAlong = Math.ceil(formLength / BOARD_LENGTH);
+        const boardCount = boardRows * boardsAlong;
+        const boardM3 = boardCount * BOARD_THICK * BOARD_WIDTH * BOARD_LENGTH;
+        const stakeCount = Math.ceil(formLength / STAKE_SPACING);
+        const stakeLength = input.height + STAKE_EXTRA;
+        const timberCount = Math.ceil((stakeCount * stakeLength) / TIMBER_STOCK);
+        const timberM3 = timberCount * TIMBER_SIZE * TIMBER_SIZE * TIMBER_STOCK;
+
+        const hydroNet = input.length * input.width + formLength * input.height;
+        const hydroOrderArea = hydroNet * (1 + HYDRO_OVERLAP);
+        const rolls = Math.ceil(hydroOrderArea / ROLL_AREA);
+
+        const rows = [];
+
+        rows.push({
+          name: "Бетон " + input.grade,
+          netLabel: formatQty(volume, 2) + " м³",
+          k: 1 + CONCRETE_RESERVE,
+          orderLabel: formatQty(volume * (1 + CONCRETE_RESERVE), 2) + " м³",
+          cost: volume * (1 + CONCRETE_RESERVE) * input.concretePrice,
+        });
+
+        rows.push({
+          name:
+            "Арматура рабочая Ø" +
+            input.diameterMm +
+            " мм, " +
+            rods +
+            " шт. × 11.7 м",
+          netLabel: formatQty(netKg, 1) + " кг",
+          k: netKg > 0 ? orderKg / netKg : 1,
+          orderLabel: formatQty(orderKg, 1) + " кг",
+          cost: orderKg * input.rebarPrice,
+        });
+
+        rows.push({
+          name:
+            "Хомуты Ø" +
+            input.stirrupMm +
+            " мм, " +
+            stirrupN +
+            " шт., гибы 2×" +
+            Math.round(hookM * 1000) +
+            " мм",
+          netLabel: formatQty(stirrupNetKg, 1) + " кг",
+          k: stirrupNetKg > 0 ? stirrupOrderKg / stirrupNetKg : 1,
+          orderLabel: formatQty(stirrupOrderKg, 1) + " кг",
+          cost: stirrupOrderKg * input.rebarPrice,
+        });
+
+        rows.push({
+          name: "Вязальная проволока",
+          netLabel: formatQty(wireKg, 2) + " кг",
+          k: 1,
+          orderLabel: formatQty(wireKg, 2) + " кг",
+          cost: wireKg * input.wirePrice,
+        });
+
+        rows.push({
+          name: "Доска 25×150×6000 (" + formatQty(boardM3, 3) + " м³)",
+          netLabel: String(boardCount) + " шт",
+          k: 1,
+          orderLabel: String(boardCount) + " шт",
+          cost: boardCount * input.boardPrice,
+        });
+
+        rows.push({
+          name: "Брус упоров 50×50×3000 (" + formatQty(timberM3, 3) + " м³)",
+          netLabel: String(timberCount) + " шт",
+          k: 1,
+          orderLabel: String(timberCount) + " шт",
+          cost: timberCount * input.timberPrice,
+        });
+
+        if (input.sandHeight > 0) {
+          const sandNet = input.length * input.width * input.sandHeight;
+          const sandOrder = sandNet * COMPACTION;
+          rows.push({
+            name: "Песок",
+            netLabel: formatQty(sandNet, 2) + " м³",
+            k: COMPACTION,
+            orderLabel: formatQty(sandOrder, 2) + " м³",
+            cost: sandOrder * input.sandPrice,
+          });
+        }
+
+        rows.push({
+          name: "Гидроизоляция, рулон 1×10 м",
+          netLabel: formatQty(hydroNet, 2) + " м²",
+          k: 1 + HYDRO_OVERLAP,
+          orderLabel: String(rolls) + " рул.",
+          cost: rolls * input.hydroPrice,
+        });
+
+        const total = rows.reduce(function (sum, item) {
+          return sum + item.cost;
+        }, 0);
+
+        return {
+          rows: rows,
+          total: total,
+          volume: volume,
+          formLength: formLength,
+          stirrupN: stirrupN,
+        };
+      }
+
+      function readForm() {
+        return {
+          length: parseNumber(document.getElementById("length").value),
+          width: parseNumber(document.getElementById("width").value),
+          height: parseNumber(document.getElementById("height").value),
+          grade: gradeEl.value,
+          concretePrice: parseNumber(concretePriceEl.value),
+          diameterMm: parseNumber(document.getElementById("bar-diameter").value),
+          stepMm: parseNumber(document.getElementById("bar-step").value),
+          rebarPrice: parseNumber(document.getElementById("rebar-price").value),
+          wirePrice: parseNumber(document.getElementById("wire-price").value),
+          boardPrice: parseNumber(document.getElementById("board-price").value),
+          timberPrice: parseNumber(document.getElementById("timber-price").value),
+          sandHeight: parseNumber(document.getElementById("sand-height").value),
+          sandPrice: parseNumber(document.getElementById("sand-price").value),
+          stoneHeight: parseNumber(document.getElementById("stone-height").value),
+          stonePrice: parseNumber(document.getElementById("stone-price").value),
+          hydroPrice: parseNumber(document.getElementById("hydro-price").value),
+        };
+      }
+
+      function readStripForm() {
+        return {
+          length: parseNumber(document.getElementById("strip-length").value),
+          width: parseNumber(document.getElementById("strip-width").value),
+          height: parseNumber(document.getElementById("strip-height").value),
+          grade: stripGradeEl.value,
+          concretePrice: parseNumber(stripConcretePriceEl.value),
+          diameterMm: parseNumber(document.getElementById("strip-bar-diameter").value),
+          barCount: parseNumber(document.getElementById("strip-bar-count").value),
+          rebarPrice: parseNumber(document.getElementById("strip-rebar-price").value),
+          stirrupMm: parseNumber(document.getElementById("strip-stirrup-diameter").value),
+          stirrupStepMm: parseNumber(document.getElementById("strip-stirrup-step").value),
+          wirePrice: parseNumber(document.getElementById("strip-wire-price").value),
+          boardPrice: parseNumber(document.getElementById("strip-board-price").value),
+          timberPrice: parseNumber(document.getElementById("strip-timber-price").value),
+          sandHeight: parseNumber(document.getElementById("strip-sand-height").value),
+          sandPrice: parseNumber(document.getElementById("strip-sand-price").value),
+          hydroPrice: parseNumber(document.getElementById("strip-hydro-price").value),
+        };
+      }
+
+      function validate(input) {
+        if (!(input.length > 0 && input.width > 0 && input.height > 0)) {
+          return "Введите длину, ширину и толщину больше нуля.";
+        }
+        if (!(input.stepMm > 0 && input.diameterMm > 0)) {
+          return "Введите шаг сетки и диаметр арматуры больше нуля.";
+        }
+        if (
+          !(
+            input.concretePrice > 0 &&
+            input.rebarPrice > 0 &&
+            input.wirePrice > 0 &&
+            input.boardPrice > 0 &&
+            input.timberPrice > 0 &&
+            input.hydroPrice > 0
+          )
+        ) {
+          return "Введите цены материалов больше нуля.";
+        }
+        if (input.sandHeight < 0 || input.stoneHeight < 0) {
+          return "Толщина подушки не может быть отрицательной.";
+        }
+        if (input.sandHeight > 0 && !(input.sandPrice > 0)) {
+          return "Введите цену песка больше нуля.";
+        }
+        if (input.stoneHeight > 0 && !(input.stonePrice > 0)) {
+          return "Введите цену щебня больше нуля.";
+        }
+        return "";
+      }
+
+      function validateStrip(input) {
+        if (!(input.length > 0 && input.width > 0 && input.height > 0)) {
+          return "Введите длину, ширину и высоту ленты больше нуля.";
+        }
+        if (!(input.width > 2 * COVER && input.height > 2 * COVER)) {
+          return "Ширина и высота должны быть больше 80 мм (два защитных слоя по 40 мм).";
+        }
+        if (!(input.barCount >= 2 && Number.isInteger(input.barCount))) {
+          return "Число рабочих стержней — целое число от 2.";
+        }
+        if (!(input.diameterMm > 0 && input.stirrupMm > 0 && input.stirrupStepMm > 0)) {
+          return "Введите диаметры арматуры и шаг хомутов больше нуля.";
+        }
+        if (stirrupBarLength(input.width, input.height, COVER, input.stirrupMm) <= 0) {
+          return "Длина хомута получилась некорректной. Проверьте сечение ленты.";
+        }
+        if (
+          !(
+            input.concretePrice > 0 &&
+            input.rebarPrice > 0 &&
+            input.wirePrice > 0 &&
+            input.boardPrice > 0 &&
+            input.timberPrice > 0 &&
+            input.hydroPrice > 0
+          )
+        ) {
+          return "Введите цены материалов больше нуля.";
+        }
+        if (input.sandHeight < 0) {
+          return "Толщина подушки не может быть отрицательной.";
+        }
+        if (input.sandHeight > 0 && !(input.sandPrice > 0)) {
+          return "Введите цену песка больше нуля.";
+        }
+        return "";
+      }
+
+      function renderSlab() {
+        const input = readForm();
+        const message = validate(input);
+
+        if (message) {
+          showBillError(message, errorEl);
+          return;
+        }
+
+        const bill = calculateSlab(input);
+        showBill(
+          bill.rows,
+          bill.total,
+          "Плита " +
+            formatQty(input.length, 2) +
+            " × " +
+            formatQty(input.width, 2) +
+            " × " +
+            formatQty(input.height, 2) +
+            " м · периметр " +
+            formatQty(bill.perimeter, 2) +
+            " м"
+        );
+      }
+
+      function renderStrip() {
+        const input = readStripForm();
+        const message = validateStrip(input);
+
+        if (message) {
+          showBillError(message, stripErrorEl);
+          return;
+        }
+
+        const bill = calculateStrip(input);
+        showBill(
+          bill.rows,
+          bill.total,
+          "Лента " +
+            formatQty(input.length, 2) +
+            " × " +
+            formatQty(input.width, 2) +
+            " × " +
+            formatQty(input.height, 2) +
+            " м · объём " +
+            formatQty(bill.volume, 2) +
+            " м³ · опалубка " +
+            formatQty(bill.formLength, 2) +
+            " м"
+        );
+      }
+
+      function render() {
+        if (activeBlock === "strip") {
+          renderStrip();
+        } else {
+          renderSlab();
+        }
+      }
+
+      function setActiveBlock(block) {
+        activeBlock = block;
+        panelSlab.hidden = block !== "slab";
+        panelStrip.hidden = block !== "strip";
+        leadEl.textContent = block === "strip" ? STRIP_LEAD : SLAB_LEAD;
+        document.querySelectorAll(".tab[data-block]").forEach(function (tab) {
+          const on = tab.getAttribute("data-block") === block;
+          tab.classList.toggle("is-active", on);
+          if (on) {
+            tab.setAttribute("aria-current", "page");
+          } else {
+            tab.removeAttribute("aria-current");
+          }
+        });
+        render();
+      }
+
+      document.querySelectorAll(".tab[data-block]").forEach(function (tab) {
+        tab.addEventListener("click", function () {
+          setActiveBlock(tab.getAttribute("data-block"));
+        });
+      });
+
+      gradeEl.addEventListener("change", function () {
+        const option = gradeEl.selectedOptions[0];
+        concretePriceEl.value = option.getAttribute("data-price");
+        render();
+      });
+
+      stripGradeEl.addEventListener("change", function () {
+        const option = stripGradeEl.selectedOptions[0];
+        stripConcretePriceEl.value = option.getAttribute("data-price");
+        render();
+      });
+
+      form.addEventListener("input", render);
+      form.addEventListener("change", render);
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        render();
+      });
+
+      stripForm.addEventListener("input", render);
+      stripForm.addEventListener("change", render);
+      stripForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        render();
+      });
+
+      render();
+    </script>
+  </body>
+</html>
