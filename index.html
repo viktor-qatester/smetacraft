@@ -1034,14 +1034,18 @@
                   <div class="piles-box-inner">
                     <div class="row">
                       <label>
-                        Сечение армопояса, мм
-                        <input id="walls-armopoyas-section" name="walls-armopoyas-section" type="text" value="250×250" readonly autocomplete="off" />
+                        Ширина армопояса, мм
+                        <input id="wall-armopoyas-width" name="wall-armopoyas-width" type="number" inputmode="numeric" step="10" min="100" value="250" autocomplete="off" />
                       </label>
                       <label>
-                        Диаметр арматуры, мм
-                        <input id="walls-armopoyas-rebar" name="walls-armopoyas-rebar" type="number" value="12" readonly autocomplete="off" />
+                        Высота армопояса, мм
+                        <input id="wall-armopoyas-height" name="wall-armopoyas-height" type="number" inputmode="numeric" step="10" min="100" value="250" autocomplete="off" />
                       </label>
                     </div>
+                    <label>
+                      Диаметр арматуры, мм
+                      <input id="walls-armopoyas-rebar" name="walls-armopoyas-rebar" type="number" value="12" readonly autocomplete="off" />
+                    </label>
                   </div>
                 </div>
                 <label class="check">
@@ -1094,15 +1098,26 @@
                 <legend>Геометрия</legend>
                 <div class="row">
                   <label>
-                    Площадь стен, м²
-                    <input id="plaster-area" name="plaster-area" type="text" inputmode="decimal" value="120" autocomplete="off" />
+                    Общая длина стен под штукатурку, м
+                    <input id="plaster-length" name="plaster-length" type="number" inputmode="decimal" step="0.1" min="0.1" value="40.0" autocomplete="off" />
                   </label>
                   <label>
-                    Высота стены, м
-                    <input id="plaster-height" name="plaster-height" type="text" inputmode="decimal" value="2.7" autocomplete="off" />
+                    Высота стен, м
+                    <input id="plaster-height" name="plaster-height" type="number" inputmode="decimal" step="0.1" min="0.1" value="3.0" autocomplete="off" />
                   </label>
                 </div>
-                <p class="note">Высота 2.7–3.0 м закрывается одним профилем 3.0 м. Нужна для раскладки маяков.</p>
+                <label>
+                  Стороны оштукатуривания
+                  <select id="plaster-sides" name="plaster-sides">
+                    <option value="1" selected>Только изнутри (1 сторона)</option>
+                    <option value="2">Изнутри и снаружи (2 стороны)</option>
+                  </select>
+                </label>
+                <label class="check">
+                  <input id="plaster-exclude-openings" name="plaster-exclude-openings" type="checkbox" checked />
+                  Автоматически вычитать проёмы из Стен
+                </label>
+                <p class="note">Площадь = длина × высота × стороны − проёмы. Длина и высота подставляются из вкладки «Стены»; ручной ввод блокирует автозаполнение.</p>
               </fieldset>
 
               <fieldset>
@@ -1862,6 +1877,8 @@
       let roofWidthManual = false;
       let roofLengthManual = false;
       let wallsPerimeterManual = false;
+      let plasterLengthManual = false;
+      let plasterHeightManual = false;
       let lastFoundationBlock = "slab";
 
       const form = document.getElementById("calc-form");
@@ -1907,6 +1924,8 @@
       const plasterMixEl = document.getElementById("plaster-mix");
       const plasterMixPriceEl = document.getElementById("plaster-mix-price");
       const plasterMeshEl = document.getElementById("plaster-mesh");
+      const plasterLengthEl = document.getElementById("plaster-length");
+      const plasterHeightEl = document.getElementById("plaster-height");
       const plasterMeshPriceWrap = document.getElementById("plaster-mesh-price-wrap");
       const roofWarmEl = document.getElementById("roof-warm");
       const roofInsulationWrap = document.getElementById("roof-insulation-wrap");
@@ -3329,7 +3348,8 @@
           reinforceMesh: document.getElementById("walls-reinforce-mesh").checked,
           openings: getOpeningsData(),
           armopoyas: document.getElementById("walls-armopoyas").checked,
-          armopoyasSection: document.getElementById("walls-armopoyas-section").value,
+          armopoyasWidthMm: parseNumber(document.getElementById("wall-armopoyas-width").value),
+          armopoyasHeightMm: parseNumber(document.getElementById("wall-armopoyas-height").value),
           armopoyasRebarMm: parseNumber(document.getElementById("walls-armopoyas-rebar").value),
           lintels: document.getElementById("walls-lintels").checked,
           partitionsEnabled: document.getElementById("walls-partitions-enabled").checked,
@@ -3363,6 +3383,11 @@
         }
         if ((input.armopoyas || input.lintels) && !(prices.workArmopoyasPrice > 0)) {
           return "Введите цену работ по армопоясу и перемычкам больше нуля.";
+        }
+        if (input.armopoyas) {
+          if (!(input.armopoyasWidthMm > 0 && input.armopoyasHeightMm > 0)) {
+            return "Введите ширину и высоту армопояса больше нуля.";
+          }
         }
         if (input.partitionsEnabled) {
           if (!(input.partitionLength > 0 && input.partitionHeight > 0)) {
@@ -3400,7 +3425,12 @@
         }
         let vBeltDisplace = 0;
         if (input.armopoyas) {
-          vBeltDisplace = input.perimeter * 0.25 * 0.25;
+          const beltW = input.armopoyasWidthMm / 1000;
+          const beltH = input.armopoyasHeightMm / 1000;
+          if (!(beltW > 0 && beltH > 0)) {
+            return "Введите ширину и высоту армопояса больше нуля.";
+          }
+          vBeltDisplace = input.perimeter * beltW * beltH;
         }
         let vLintelDisplace = 0;
         if (input.lintels) {
@@ -3443,14 +3473,17 @@
         let beltRebarA3Kg = 0;
         let beltStirrupKg = 0;
         let beltWorkM = 0;
+        const beltWm = input.armopoyasWidthMm / 1000;
+        const beltHm = input.armopoyasHeightMm / 1000;
         if (input.armopoyas) {
-          vBeltDisplace = P * 0.25 * 0.25;
+          vBeltDisplace = P * beltWm * beltHm;
           beltConcreteNet = vBeltDisplace;
           beltConcreteOrder = beltConcreteNet * reserve;
           const beltRebarLen = P * 4 * reserve;
           beltRebarA3Kg = beltRebarLen * 0.888;
           const stirrupCount = Math.ceil(P / 0.25);
-          const stirrupTotalLen = stirrupCount * 0.7 * reserve;
+          const stirrupUnitLen = 2 * (beltWm - 0.1) + 2 * (beltHm - 0.1) + 0.1;
+          const stirrupTotalLen = stirrupCount * stirrupUnitLen * reserve;
           beltStirrupKg = stirrupTotalLen * 0.222;
           beltWorkM = P;
         }
@@ -3738,6 +3771,32 @@
       // ==========================================
       // MODULE: ENGINE — PLASTER
       // ==========================================
+      function plasterSidesMultiplier(sides) {
+        return Number(sides) === 2 ? 2 : 1;
+      }
+
+      function computePlasterArea(input) {
+        let area = input.length * input.wallHeight * plasterSidesMultiplier(input.sides);
+        if (input.excludeOpenings) {
+          const openings = getOpeningsData();
+          let sOpTotal = 0;
+          for (let i = 0; i < openings.length; i++) {
+            sOpTotal += openings[i].width * openings[i].height * openings[i].count;
+          }
+          area -= sOpTotal * plasterSidesMultiplier(input.sides);
+        }
+        return area;
+      }
+
+      function syncPlasterFromWalls() {
+        if (!plasterLengthManual) {
+          plasterLengthEl.value = wallsPerimeterEl.value;
+        }
+        if (!plasterHeightManual) {
+          plasterHeightEl.value = document.getElementById("walls-height").value;
+        }
+      }
+
       function syncPlasterMeshUi() {
         plasterMeshPriceWrap.hidden = !plasterMeshEl.checked;
       }
@@ -3747,15 +3806,16 @@
         const bagKg = input.mix === "cps" ? CPS_BAG_KG : GYPSUM_BAG_KG;
         const mixTitle =
           input.mix === "cps" ? "Цементно-песчаная штукатурка" : "Гипсовая штукатурка";
-        const netKg = input.area * (input.thicknessMm / 10) * rate;
+        const area = computePlasterArea(input);
+        const netKg = area * (input.thicknessMm / 10) * rate;
         const orderKg = netKg * (1 + PLASTER_LOSS);
         const bags = Math.ceil(orderKg / bagKg);
 
-        const primerNet = input.area * PRIMER_L_PER_M2 * input.primerLayers;
+        const primerNet = area * PRIMER_L_PER_M2 * input.primerLayers;
         const primerOrder = primerNet * (1 + PRIMER_RESERVE);
         const cans = Math.ceil(primerOrder / PRIMER_CAN_L);
 
-        const wallLength = input.area / input.wallHeight;
+        const wallLength = input.length;
         const beaconLines = barCount(wallLength, input.beaconStep);
         const profilesPerLine = Math.ceil(input.wallHeight / BEACON_LENGTH);
         const beacons = beaconLines * profilesPerLine;
@@ -3791,11 +3851,11 @@
         });
 
         if (input.useMesh) {
-          const meshOrder = input.area * (1 + MESH_OVERLAP);
+          const meshOrder = area * (1 + MESH_OVERLAP);
           const rolls = Math.ceil(meshOrder / MESH_ROLL_M2);
           rows.push({
             name: "Стеклосетка армирующая, рулон 50 м²",
-            netLabel: formatQty(input.area, 2) + " м²",
+            netLabel: formatQty(area, 2) + " м²",
             k: 1 + MESH_OVERLAP,
             orderLabel: String(rolls) + " рул.",
             cost: rolls * input.meshPrice,
@@ -3809,6 +3869,7 @@
         return {
           rows: rows,
           total: total,
+          area: area,
           netKg: netKg,
           orderKg: orderKg,
           bags: bags,
@@ -3822,8 +3883,10 @@
 
       function readPlasterForm() {
         return {
-          area: parseNumber(document.getElementById("plaster-area").value),
-          wallHeight: parseNumber(document.getElementById("plaster-height").value),
+          length: parseNumber(plasterLengthEl.value),
+          wallHeight: parseNumber(plasterHeightEl.value),
+          sides: document.getElementById("plaster-sides").value,
+          excludeOpenings: document.getElementById("plaster-exclude-openings").checked,
           mix: plasterMixEl.value,
           thicknessMm: parseNumber(document.getElementById("plaster-thick").value),
           mixPrice: parseNumber(plasterMixPriceEl.value),
@@ -3837,11 +3900,12 @@
       }
 
       function validatePlaster(input) {
-        if (!(input.area > 0)) {
-          return "Введите площадь стен больше нуля.";
+        if (!(input.length > 0 && input.wallHeight > 0)) {
+          return "Введите длину и высоту стен больше нуля.";
         }
-        if (!(input.wallHeight > 0)) {
-          return "Введите высоту стены больше нуля.";
+        const area = computePlasterArea(input);
+        if (!(area > 0)) {
+          return "Площадь оштукатуривания после вычета проёмов должна быть больше нуля.";
         }
         if (!(input.thicknessMm > 0)) {
           return "Введите толщину слоя больше нуля.";
@@ -4402,7 +4466,7 @@
           bill.rows,
           bill.total,
           "Штукатурка " +
-            formatQty(input.area, 2) +
+            formatQty(bill.area, 2) +
             " м² · " +
             mixLabel +
             " · слой " +
@@ -4529,8 +4593,12 @@
           " м²";
         summarySnapPlasterEl.textContent =
           "Штукатурка " +
-          formatQty(plasterInput.area, 2) +
-          " м² · слой " +
+          formatQty(computePlasterArea(plasterInput), 2) +
+          " м² · " +
+          formatQty(plasterInput.length, 1) +
+          " × " +
+          formatQty(plasterInput.wallHeight, 1) +
+          " м · слой " +
           formatQty(plasterInput.thicknessMm, 0) +
           " мм";
         summarySnapRoofEl.textContent =
@@ -4623,7 +4691,9 @@
             const bill = calculatePlaster(plasterInput);
             rows.push.apply(rows, bill.rows);
             total += bill.total;
-            nodes.push("штукатурка " + formatQty(plasterInput.area, 2) + " м²");
+            nodes.push(
+              "штукатурка " + formatQty(calculatePlaster(plasterInput).area, 2) + " м²"
+            );
           }
         }
 
@@ -4696,6 +4766,9 @@
         }
         if (block === "walls") {
           syncWallsPerimeterFromFoundation();
+        }
+        if (block === "plaster") {
+          syncPlasterFromWalls();
         }
         leadEl.textContent = BLOCK_LEADS[block] || SLAB_LEAD;
         document.querySelectorAll(".tab[data-block]").forEach(function (tab) {
@@ -4772,9 +4845,15 @@
         setRegressionField("walls-rebar-price", "3.20");
         setRegressionField("walls-lintel-price", "28");
         setRegressionField("walls-screw-price", "12");
+        setRegressionField("wall-armopoyas-width", "250");
+        setRegressionField("wall-armopoyas-height", "250");
 
-        setRegressionField("plaster-area", "120");
+        setRegressionField("plaster-length", "44.444444");
         setRegressionField("plaster-height", "2.7");
+        document.getElementById("plaster-sides").value = "1";
+        document.getElementById("plaster-exclude-openings").checked = false;
+        plasterLengthManual = true;
+        plasterHeightManual = true;
         plasterMixEl.value = "gypsum";
         plasterMixPriceEl.value = "16.50";
         setRegressionField("plaster-thick", "15");
@@ -4898,6 +4977,8 @@
         setRegressionField("wall-work-partition-price", "18.00");
         setRegressionField("wall-work-armopoyas-price", "15.00");
         setRegressionField("strip-rebar-price", "3.20");
+        setRegressionField("wall-armopoyas-width", "250");
+        setRegressionField("wall-armopoyas-height", "250");
         syncWallsUi();
         setActiveBlock("walls");
       }
@@ -5188,6 +5269,8 @@
             roofWidthManual: roofWidthManual,
             roofLengthManual: roofLengthManual,
             wallsPerimeterManual: wallsPerimeterManual,
+            plasterLengthManual: plasterLengthManual,
+            plasterHeightManual: plasterHeightManual,
             lastFoundationBlock: lastFoundationBlock,
           },
         };
@@ -5265,6 +5348,12 @@
         }
         if (typeof flags.wallsPerimeterManual === "boolean") {
           wallsPerimeterManual = flags.wallsPerimeterManual;
+        }
+        if (typeof flags.plasterLengthManual === "boolean") {
+          plasterLengthManual = flags.plasterLengthManual;
+        }
+        if (typeof flags.plasterHeightManual === "boolean") {
+          plasterHeightManual = flags.plasterHeightManual;
         }
         if (flags.lastFoundationBlock === "slab" || flags.lastFoundationBlock === "strip") {
           lastFoundationBlock = flags.lastFoundationBlock;
@@ -5435,6 +5524,13 @@
       plasterMeshEl.addEventListener("change", function () {
         syncPlasterMeshUi();
         render();
+      });
+
+      plasterLengthEl.addEventListener("input", function () {
+        plasterLengthManual = true;
+      });
+      plasterHeightEl.addEventListener("input", function () {
+        plasterHeightManual = true;
       });
 
       plasterForm.addEventListener("input", render);
