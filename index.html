@@ -701,6 +701,7 @@
           <button type="button" class="tab is-active" data-block="slab" aria-current="page">Плита</button>
           <button type="button" class="tab" data-block="strip">Ленточный</button>
           <button type="button" class="tab" data-block="walls">Стены</button>
+          <button type="button" class="tab" data-block="floor">Перекрытия</button>
           <button type="button" class="tab" data-block="plaster">Штукатурка</button>
           <button type="button" class="tab" data-block="roof">Кровля</button>
           <button type="button" class="tab" data-block="summary">Сводная смета</button>
@@ -1101,6 +1102,92 @@
 
               <button type="submit" class="btn-action">Рассчитать смету</button>
               <p id="walls-error" class="error"></p>
+            </form>
+          </section>
+
+          <section class="panel" id="panel-floor" hidden>
+            <h2>Параметры перекрытий</h2>
+            <p class="hint">
+              <button type="button" class="link-btn js-goto-price">Цены материалов — вкладка «Прайс-лист» ↗</button>
+            </p>
+            <form id="floor-form">
+              <fieldset>
+                <legend>Геометрия</legend>
+                <div class="row">
+                  <label>
+                    Длина перекрываемой зоны, м
+                    <input id="floor-length" name="floor-length" type="text" inputmode="decimal" value="10.0" autocomplete="off" />
+                  </label>
+                  <label>
+                    Ширина пролета (длина балки/плиты), м
+                    <input id="floor-width" name="floor-width" type="text" inputmode="decimal" value="8.0" autocomplete="off" />
+                  </label>
+                </div>
+                <p class="note">Габариты подставляются из фундамента при переходе на вкладку; ручной ввод блокирует автозаполнение.</p>
+              </fieldset>
+
+              <fieldset>
+                <legend>Тип перекрытия</legend>
+                <label>
+                  Конструкция
+                  <select id="floor-type" name="floor-type">
+                    <option value="wood" selected>Деревянные балки по умолчанию</option>
+                    <option value="concrete">Железобетонные плиты ПК/ПБ</option>
+                  </select>
+                </label>
+              </fieldset>
+
+              <fieldset>
+                <legend>Деревянное перекрытие</legend>
+                <div id="floor-wood-box" class="piles-box is-open" aria-hidden="false">
+                  <div class="piles-box-inner">
+                    <div class="row">
+                      <label>
+                        Сечение балки
+                        <select id="floor-beam-section" name="floor-beam-section">
+                          <option value="50x200">50×200 мм</option>
+                          <option value="100x200" selected>100×200 мм</option>
+                          <option value="150x200">150×200 мм</option>
+                        </select>
+                      </label>
+                      <label>
+                        Шаг укладки балок, м
+                        <input id="floor-beam-step" name="floor-beam-step" type="text" inputmode="decimal" value="0.6" autocomplete="off" />
+                      </label>
+                    </div>
+                    <label>
+                      Толщина утепления, мм
+                      <input id="floor-insulation-mm" name="floor-insulation-mm" type="text" inputmode="numeric" value="150" autocomplete="off" />
+                    </label>
+                    <label class="check">
+                      <input id="floor-board-clad" name="floor-board-clad" type="checkbox" checked />
+                      Зашивать черновой доской
+                    </label>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset>
+                <legend>Железобетонное перекрытие</legend>
+                <div id="floor-concrete-box" class="piles-box" aria-hidden="true">
+                  <div class="piles-box-inner">
+                    <label>
+                      Ширина одной плиты
+                      <select id="floor-slab-width" name="floor-slab-width">
+                        <option value="1.2" selected>1.2 м</option>
+                        <option value="1.5">1.5 м</option>
+                      </select>
+                    </label>
+                    <label class="check">
+                      <input id="floor-monolith" name="floor-monolith" type="checkbox" />
+                      Устраивать монолитные участки
+                    </label>
+                  </div>
+                </div>
+              </fieldset>
+
+              <button type="submit" class="btn-action">Рассчитать смету</button>
+              <p id="floor-error" class="error"></p>
             </form>
           </section>
 
@@ -1649,6 +1736,56 @@
               </div>
 
               <div class="price-group">
+                <p class="price-cat">Перекрытия</p>
+                <table class="price-table">
+                  <thead>
+                    <tr>
+                      <th>Позиция</th>
+                      <th>Единица</th>
+                      <th class="num">Цена, Br</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Брус несущий (дерево)</td>
+                      <td class="unit">м³</td>
+                      <td class="price"><input id="floor-wood-beam-price" name="floor-wood-beam-price" type="text" inputmode="decimal" value="450.00" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Минеральный утеплитель</td>
+                      <td class="unit">м³</td>
+                      <td class="price"><input id="floor-insulation-price" name="floor-insulation-price" type="text" inputmode="decimal" value="95.00" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Пароизоляция / гидроизоляция</td>
+                      <td class="unit">м²</td>
+                      <td class="price"><input id="floor-membrane-price" name="floor-membrane-price" type="text" inputmode="decimal" value="1.80" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Черновая доска наката</td>
+                      <td class="unit">м³</td>
+                      <td class="price"><input id="floor-board-price" name="floor-board-price" type="text" inputmode="decimal" value="380.00" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Плита перекрытия ЖБ (в среднем за 1 шт)</td>
+                      <td class="unit">шт</td>
+                      <td class="price"><input id="floor-concrete-slab-price" name="floor-concrete-slab-price" type="text" inputmode="decimal" value="310.00" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Монтаж деревянного перекрытия</td>
+                      <td class="unit">м²</td>
+                      <td class="price"><input id="floor-work-wood-price" name="floor-work-wood-price" type="text" inputmode="decimal" value="25.00" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Монтаж плит перекрытия краном</td>
+                      <td class="unit">шт</td>
+                      <td class="price"><input id="floor-work-concrete-price" name="floor-work-concrete-price" type="text" inputmode="decimal" value="45.00" autocomplete="off" /></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="price-group">
                 <p class="price-cat">Кровельные материалы и работы</p>
                 <table class="price-table">
                   <thead>
@@ -1818,6 +1955,8 @@
         "Штукатурка стен: гипсовая или ЦПС, грунтовка глубокого проникновения, маяки 6 мм, стеклосетка. Цены в Br — ориентир, правьте под поставщика.";
       const ROOF_LEAD =
         "Кровля: стропила, мауэрлат, обрешётка, утепление и покрытие. Цены в Br — ориентир, правьте под поставщика.";
+      const FLOOR_LEAD =
+        "Перекрытия: деревянные балки или железобетонные плиты, утепление, пароизоляция, черновой накат. Цены в Br — ориентир, правьте под поставщика.";
       const SUMMARY_LEAD =
         "Сводная смета объекта: включите узлы, параметры читаются из их форм. Итоговая ведомость закупки по категориям, 0 токенов.";
       const PRICE_LEAD =
@@ -1830,13 +1969,14 @@
         strip: STRIP_LEAD,
         walls: WALLS_LEAD,
         plaster: PLASTER_LEAD,
+        floor: FLOOR_LEAD,
         roof: ROOF_LEAD,
         summary: SUMMARY_LEAD,
         price: PRICE_LEAD,
         project: PROJECT_LEAD,
       };
 
-      const BILL_BLOCKS = ["slab", "strip", "walls", "plaster", "roof", "summary"];
+      const BILL_BLOCKS = ["slab", "strip", "walls", "floor", "plaster", "roof", "summary"];
 
       const PROJECT_FORMAT = "smetacraft-project";
       const PROJECT_VERSION = 1;
@@ -1910,6 +2050,9 @@
       let roofNeedsCalc = true;
       let roofWidthManual = false;
       let roofLengthManual = false;
+      let floorNeedsCalc = true;
+      let floorLengthManual = false;
+      let floorWidthManual = false;
       let wallsPerimeterManual = false;
       let plasterLengthManual = false;
       let plasterHeightManual = false;
@@ -1920,6 +2063,7 @@
       const form = document.getElementById("calc-form");
       const stripForm = document.getElementById("strip-form");
       const wallsForm = document.getElementById("walls-form");
+      const floorForm = document.getElementById("floor-form");
       const plasterForm = document.getElementById("plaster-form");
       const roofForm = document.getElementById("roof-form");
       const summaryForm = document.getElementById("summary-form");
@@ -1930,6 +2074,7 @@
       const errorEl = document.getElementById("error");
       const stripErrorEl = document.getElementById("strip-error");
       const wallsErrorEl = document.getElementById("walls-error");
+      const floorErrorEl = document.getElementById("floor-error");
       const plasterErrorEl = document.getElementById("plaster-error");
       const roofErrorEl = document.getElementById("roof-error");
       const summaryErrorEl = document.getElementById("summary-error");
@@ -1937,6 +2082,7 @@
       const panelSlab = document.getElementById("panel-slab");
       const panelStrip = document.getElementById("panel-strip");
       const panelWalls = document.getElementById("panel-walls");
+      const panelFloor = document.getElementById("panel-floor");
       const panelPlaster = document.getElementById("panel-plaster");
       const panelRoof = document.getElementById("panel-roof");
       const panelSummary = document.getElementById("panel-summary");
@@ -1967,6 +2113,11 @@
       const roofInsulationWrap = document.getElementById("roof-insulation-wrap");
       const roofWidthEl = document.getElementById("roof-width");
       const roofLengthEl = document.getElementById("roof-length");
+      const floorTypeEl = document.getElementById("floor-type");
+      const floorWoodBoxEl = document.getElementById("floor-wood-box");
+      const floorConcreteBoxEl = document.getElementById("floor-concrete-box");
+      const floorLengthEl = document.getElementById("floor-length");
+      const floorWidthEl = document.getElementById("floor-width");
       const printDateEl = document.getElementById("print-date");
       const billPrintEl = document.getElementById("bill-print");
       const wallsOpeningsBody = document.getElementById("walls-openings-body");
@@ -2149,6 +2300,7 @@
         stripErrorEl.classList.remove("visible");
         wallsErrorEl.classList.remove("visible");
         plasterErrorEl.classList.remove("visible");
+        floorErrorEl.classList.remove("visible");
         roofErrorEl.classList.remove("visible");
         summaryErrorEl.classList.remove("visible");
         billEmptyEl.hidden = true;
@@ -4536,6 +4688,115 @@
         }
       }
 
+      function syncFloorFromFoundation() {
+        const footprint = readFoundationFootprint();
+        if (!floorWidthManual && footprint.width !== "") {
+          floorWidthEl.value = footprint.width;
+        }
+        if (!floorLengthManual && footprint.length !== "") {
+          floorLengthEl.value = footprint.length;
+        }
+      }
+
+      function syncFloorTypeUi() {
+        const isWood = floorTypeEl.value === "wood";
+        floorWoodBoxEl.classList.toggle("is-open", isWood);
+        floorWoodBoxEl.setAttribute("aria-hidden", isWood ? "false" : "true");
+        floorConcreteBoxEl.classList.toggle("is-open", !isWood);
+        floorConcreteBoxEl.setAttribute("aria-hidden", isWood ? "true" : "false");
+      }
+
+      function readFloorForm() {
+        return {};
+      }
+
+      function calculateFloor() {
+        return { rows: [], total: 0 };
+      }
+
+      function floorStubRows() {
+        return [
+          {
+            name: "Брус несущий",
+            netLabel: formatQty(0, 2) + " м³",
+            k: 1,
+            orderLabel: formatQty(0, 2) + " м³",
+            cost: 0,
+          },
+          {
+            name: "Минеральный утеплитель",
+            netLabel: formatQty(0, 2) + " м³",
+            k: 1,
+            orderLabel: formatQty(0, 2) + " м³",
+            cost: 0,
+          },
+          {
+            name: "Пароизоляция / гидроизоляция",
+            netLabel: formatQty(0, 2) + " м²",
+            k: 1,
+            orderLabel: formatQty(0, 2) + " м²",
+            cost: 0,
+          },
+          {
+            name: "Черновая доска наката",
+            netLabel: formatQty(0, 2) + " м³",
+            k: 1,
+            orderLabel: formatQty(0, 2) + " м³",
+            cost: 0,
+          },
+          {
+            name: "Плита перекрытия ЖБ",
+            netLabel: "0 шт",
+            k: 1,
+            orderLabel: "0 шт",
+            cost: 0,
+          },
+          {
+            name: "Монтаж деревянного перекрытия",
+            netLabel: formatQty(0, 2) + " м²",
+            k: 1,
+            orderLabel: formatQty(0, 2) + " м²",
+            cost: 0,
+          },
+          {
+            name: "Монтаж плит перекрытия краном",
+            netLabel: "0 шт",
+            k: 1,
+            orderLabel: "0 шт",
+            cost: 0,
+          },
+        ];
+      }
+
+      function showFloorStubBill() {
+        floorErrorEl.classList.remove("visible");
+        billWrapEl.hidden = false;
+        billPrintEl.hidden = true;
+        billEmptyEl.hidden = false;
+        billEmptyEl.textContent =
+          "Параметры изменены. Нажмите «Рассчитать смету» для получения результатов.";
+        const length = parseNumber(floorLengthEl.value);
+        const width = parseNumber(floorWidthEl.value);
+        billMetaEl.textContent =
+          "Перекрытия · " +
+          (floorTypeEl.value === "wood" ? "деревянные балки" : "ЖБ плиты") +
+          " · " +
+          formatQty(Number.isFinite(length) ? length : 0, 2) +
+          " × " +
+          formatQty(Number.isFinite(width) ? width : 0, 2) +
+          " м";
+        billBodyEl.innerHTML = floorStubRows().map(rowHtml).join("");
+        billTotalEl.textContent = formatMoney(0);
+        setPrintHead(BILL_PRINT_SUB, "Перекрытия");
+        stampPrintDate();
+      }
+
+      function renderFloor() {
+        syncFloorTypeUi();
+        syncFloorFromFoundation();
+        showFloorStubBill();
+      }
+
       function readRoofForm() {
         const prices = readRoofPrices();
         return {
@@ -4955,6 +5216,8 @@
           renderWalls();
         } else if (billBlock === "plaster") {
           renderPlaster();
+        } else if (billBlock === "floor") {
+          renderFloor();
         } else if (billBlock === "roof") {
           renderRoof();
         } else if (billBlock === "summary") {
@@ -4976,6 +5239,7 @@
         panelSlab.hidden = block !== "slab";
         panelStrip.hidden = block !== "strip";
         panelWalls.hidden = block !== "walls";
+        panelFloor.hidden = block !== "floor";
         panelPlaster.hidden = block !== "plaster";
         panelRoof.hidden = block !== "roof";
         panelSummary.hidden = block !== "summary";
@@ -4983,6 +5247,9 @@
         panelProject.hidden = block !== "project";
         if (block === "roof") {
           syncRoofFootprintFromFoundation();
+        }
+        if (block === "floor") {
+          syncFloorFromFoundation();
         }
         if (block === "walls") {
           syncWallsPerimeterFromFoundation();
@@ -5535,11 +5802,14 @@
           flags: {
             roofWidthManual: roofWidthManual,
             roofLengthManual: roofLengthManual,
+            floorLengthManual: floorLengthManual,
+            floorWidthManual: floorWidthManual,
             wallsPerimeterManual: wallsPerimeterManual,
             plasterLengthManual: plasterLengthManual,
             plasterHeightManual: plasterHeightManual,
             lastFoundationBlock: lastFoundationBlock,
             roofNeedsCalc: roofNeedsCalc,
+            floorNeedsCalc: floorNeedsCalc,
           },
         };
       }
@@ -5614,6 +5884,12 @@
         if (typeof flags.roofLengthManual === "boolean") {
           roofLengthManual = flags.roofLengthManual;
         }
+        if (typeof flags.floorLengthManual === "boolean") {
+          floorLengthManual = flags.floorLengthManual;
+        }
+        if (typeof flags.floorWidthManual === "boolean") {
+          floorWidthManual = flags.floorWidthManual;
+        }
         if (typeof flags.wallsPerimeterManual === "boolean") {
           wallsPerimeterManual = flags.wallsPerimeterManual;
         }
@@ -5628,6 +5904,9 @@
         }
         if (typeof flags.roofNeedsCalc === "boolean") {
           roofNeedsCalc = flags.roofNeedsCalc;
+        }
+        if (typeof flags.floorNeedsCalc === "boolean") {
+          floorNeedsCalc = flags.floorNeedsCalc;
         }
 
         const radios = state.radios && typeof state.radios === "object" ? state.radios : {};
@@ -5653,6 +5932,7 @@
         syncWallsUi();
         syncPlasterMeshUi();
         syncRoofInsulationUi();
+        syncFloorTypeUi();
         syncSummaryUi();
         syncPilesUi();
 
@@ -5714,13 +5994,17 @@
         state.flags = {
           roofWidthManual: false,
           roofLengthManual: false,
+          floorLengthManual: false,
+          floorWidthManual: false,
           wallsPerimeterManual: false,
           plasterLengthManual: false,
           plasterHeightManual: false,
           lastFoundationBlock: "slab",
           roofNeedsCalc: false,
+          floorNeedsCalc: true,
         };
         roofNeedsCalc = false;
+        floorNeedsCalc = true;
         applyProject(state);
       }
 
@@ -5746,6 +6030,8 @@
         "walls-partition-height",
         "plaster-length",
         "plaster-height",
+        "floor-length",
+        "floor-width",
         "roof-width",
         "roof-length",
         "roof-ridge-height",
@@ -5792,17 +6078,22 @@
         wallsPerimeterManual = false;
         roofWidthManual = false;
         roofLengthManual = false;
+        floorLengthManual = false;
+        floorWidthManual = false;
         plasterLengthManual = false;
         plasterHeightManual = false;
         roofNeedsCalc = false;
+        floorNeedsCalc = true;
 
         syncWallsUi();
         syncPlasterMeshUi();
         syncRoofInsulationUi();
+        syncFloorTypeUi();
         syncSummaryUi();
         syncPilesUi();
         syncWallsPerimeterFromFoundation();
         syncRoofFootprintFromFoundation();
+        syncFloorFromFoundation();
         syncPlasterFromWalls();
         render();
       }
@@ -5830,11 +6121,13 @@
 
       form.addEventListener("input", function () {
         syncRoofFootprintFromFoundation();
+        syncFloorFromFoundation();
         syncWallsPerimeterFromFoundation();
         render();
       });
       form.addEventListener("change", function () {
         syncRoofFootprintFromFoundation();
+        syncFloorFromFoundation();
         syncWallsPerimeterFromFoundation();
         render();
       });
@@ -5845,11 +6138,13 @@
 
       stripForm.addEventListener("input", function () {
         syncRoofFootprintFromFoundation();
+        syncFloorFromFoundation();
         syncWallsPerimeterFromFoundation();
         render();
       });
       stripForm.addEventListener("change", function () {
         syncRoofFootprintFromFoundation();
+        syncFloorFromFoundation();
         syncWallsPerimeterFromFoundation();
         render();
       });
@@ -5958,6 +6253,47 @@
       plasterForm.addEventListener("submit", function (event) {
         event.preventDefault();
         render();
+      });
+
+      floorTypeEl.addEventListener("change", function () {
+        syncFloorTypeUi();
+        floorNeedsCalc = true;
+        if (billBlock === "floor") {
+          renderFloor();
+        }
+      });
+      floorLengthEl.addEventListener("input", function () {
+        floorLengthManual = true;
+        floorNeedsCalc = true;
+        if (billBlock === "floor") {
+          renderFloor();
+        }
+      });
+      floorWidthEl.addEventListener("input", function () {
+        floorWidthManual = true;
+        floorNeedsCalc = true;
+        if (billBlock === "floor") {
+          renderFloor();
+        }
+      });
+      floorForm.addEventListener("input", function (event) {
+        if (event.target !== floorLengthEl && event.target !== floorWidthEl) {
+          floorNeedsCalc = true;
+        }
+        if (billBlock === "floor") {
+          renderFloor();
+        }
+      });
+      floorForm.addEventListener("change", function () {
+        floorNeedsCalc = true;
+        if (billBlock === "floor") {
+          renderFloor();
+        }
+      });
+      floorForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        floorNeedsCalc = false;
+        renderFloor();
       });
 
       roofWarmEl.addEventListener("change", function () {
@@ -6109,6 +6445,7 @@
       syncWallsUi();
       syncPlasterMeshUi();
       syncRoofInsulationUi();
+      syncFloorTypeUi();
       syncOpeningSeq();
       syncPileSeq();
       syncPilesUi();
