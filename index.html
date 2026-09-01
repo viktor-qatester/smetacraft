@@ -952,117 +952,133 @@
             </p>
             <form id="walls-form">
               <fieldset>
-                <legend>Геометрия</legend>
+                <legend>Несущие (наружные) стены</legend>
+                <label>
+                  Общая длина несущих стен (периметр), м
+                  <input id="walls-perimeter" name="walls-perimeter" type="number" inputmode="decimal" step="0.1" min="0.1" value="36.0" autocomplete="off" />
+                </label>
+                <label>
+                  Материал
+                  <select id="walls-load-bearing-material" name="walls-load-bearing-material">
+                    <option value="gas-silicate-400">Газосиликатный блок 400 мм</option>
+                    <option value="gas-silicate-300" selected>Газосиликатный блок 300 мм</option>
+                    <option value="ceramic-380">Керамический блок 380 мм</option>
+                    <option value="brick-380">Кирпичная кладка 380 мм</option>
+                  </select>
+                </label>
                 <div class="row">
                   <label>
-                    Периметр стен, м
-                    <input id="walls-perimeter" name="walls-perimeter" type="text" inputmode="decimal" value="40" autocomplete="off" />
+                    Высота стен, м
+                    <input id="walls-height" name="walls-height" type="number" inputmode="decimal" step="0.1" min="0.1" value="3.0" autocomplete="off" />
                   </label>
                   <label>
-                    Высота стен, м
-                    <input id="walls-height" name="walls-height" type="text" inputmode="decimal" value="3.0" autocomplete="off" />
+                    Толщина кладочного шва, мм
+                    <input id="walls-joint-mm" name="walls-joint-mm" type="number" inputmode="numeric" step="1" min="1" value="2" autocomplete="off" />
                   </label>
                 </div>
+                <label class="check">
+                  <input id="walls-reinforce-mesh" name="walls-reinforce-mesh" type="checkbox" checked />
+                  Армирование кладки (сетка)
+                </label>
+                <p class="note">Шаг армирования — каждые 4 ряда. Периметр подставляется из фундамента; ручной ввод блокирует автозаполнение.</p>
               </fieldset>
 
               <fieldset>
-                <legend>Материал</legend>
-                <label>
-                  Тип кладки
-                  <select id="walls-material" name="walls-material">
-                    <option value="block" selected>Газобетонные блоки</option>
-                    <option value="brick">Кладочный кирпич</option>
-                  </select>
+                <legend>Окна и двери</legend>
+                <div class="piles-table-wrap">
+                  <table class="piles-table">
+                    <thead>
+                      <tr>
+                        <th>Название/Тип</th>
+                        <th>Ширина, м</th>
+                        <th>Высота, м</th>
+                        <th>Количество, шт</th>
+                        <th>Действие</th>
+                      </tr>
+                    </thead>
+                    <tbody id="walls-openings-body">
+                      <tr class="opening-row" id="opening-row-1" data-opening-id="1" data-opening-locked="true">
+                        <td>
+                          <select id="opening-type-1" class="js-opening-type">
+                            <option value="window" selected>Окно</option>
+                            <option value="entry-door">Входная дверь</option>
+                            <option value="interior-door">Межкомнатная дверь</option>
+                          </select>
+                        </td>
+                        <td>
+                          <input id="opening-width-1" class="js-opening-width" type="number" inputmode="decimal" step="0.1" min="0.1" value="1.5" autocomplete="off" />
+                        </td>
+                        <td>
+                          <input id="opening-height-1" class="js-opening-height" type="number" inputmode="decimal" step="0.1" min="0.1" value="1.5" autocomplete="off" />
+                        </td>
+                        <td>
+                          <input id="opening-count-1" class="js-opening-count" type="number" inputmode="numeric" step="1" min="1" value="6" autocomplete="off" />
+                        </td>
+                        <td class="pile-action"><span class="pile-locked">—</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <button type="button" class="piles-add" id="walls-add-opening">[+ Добавить проём]</button>
+                <p class="note">Площадь проёмов вычитается из объёма наружных стен. Перемычки — при включённой опции в группе «Армопояс и перемычки».</p>
+              </fieldset>
+
+              <fieldset>
+                <legend>Армопояс и перемычки (железобетон)</legend>
+                <label class="check">
+                  <input id="walls-armopoyas" name="walls-armopoyas" type="checkbox" checked />
+                  Заливать железобетонный армопояс
+                </label>
+                <div id="walls-armopoyas-box" class="piles-box is-open" aria-hidden="false">
+                  <div class="piles-box-inner">
+                    <div class="row">
+                      <label>
+                        Сечение армопояса, мм
+                        <input id="walls-armopoyas-section" name="walls-armopoyas-section" type="text" value="250×250" readonly autocomplete="off" />
+                      </label>
+                      <label>
+                        Диаметр арматуры, мм
+                        <input id="walls-armopoyas-rebar" name="walls-armopoyas-rebar" type="number" value="12" readonly autocomplete="off" />
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <label class="check">
+                  <input id="walls-lintels" name="walls-lintels" type="checkbox" checked />
+                  Устраивать бетонные перемычки над проёмами
                 </label>
               </fieldset>
 
-              <fieldset id="walls-block-fields">
-                <legend>Газобетон</legend>
-                <div class="row">
-                  <label>
-                    Размер блока, мм
-                    <select id="walls-block-size" name="walls-block-size">
-                      <option value="600x200x200">600×200×200</option>
-                      <option value="600x250x200">600×250×200</option>
-                      <option value="600x300x200" selected>600×300×200</option>
-                      <option value="600x400x200">600×400×200</option>
-                    </select>
-                  </label>
-                  <label>
-                    Клей
-                    <select id="walls-glue-type" name="walls-glue-type">
-                      <option value="bag" selected>Мешки 25 кг</option>
-                      <option value="foam">Баллоны пены</option>
-                    </select>
-                  </label>
-                </div>
-                <p class="note">Формат Д×Толщина×Высота. Запас блоков +5% на подрезку у проёмов и углов. Клей 25 кг/м³ кладки; пена — 1 баллон на 10 м² стены.</p>
-              </fieldset>
-
-              <fieldset id="walls-brick-fields" hidden>
-                <legend>Кирпич</legend>
-                <div class="row">
-                  <label>
-                    Формат
-                    <select id="walls-brick-format" name="walls-brick-format">
-                      <option value="1nf" selected>Одинарный 1 НФ (250×120×65)</option>
-                      <option value="14nf">Полуторный 1.4 НФ (250×120×88)</option>
-                    </select>
-                  </label>
-                  <label>
-                    Толщина стены, мм
-                    <select id="walls-brick-thick" name="walls-brick-thick">
-                      <option value="120">120 (½ кирпича)</option>
-                      <option value="250" selected>250 (1 кирпич)</option>
-                      <option value="380">380 (1½ кирпича)</option>
-                      <option value="510">510 (2 кирпича)</option>
-                    </select>
-                  </label>
-                </div>
-                <p class="note">Швы 10 мм вертикальный и 12 мм горизонтальный. Бой кирпича +5%. Сетка перевязки в каждом армопоясе.</p>
-              </fieldset>
-
               <fieldset>
-                <legend>Окна и двери по проекту</legend>
-                <div class="row">
-                  <label>
-                    Учёт проёмов
-                    <select id="walls-opening-mode" name="walls-opening-mode">
-                      <option value="list" selected>Перечень проёмов</option>
-                      <option value="area">Суммарная площадь</option>
-                    </select>
-                  </label>
-                  <label id="walls-area-wrap" hidden>
-                    Площадь проёмов, м²
-                    <input id="walls-opening-area" name="walls-opening-area" type="text" inputmode="decimal" value="10.5" autocomplete="off" />
-                  </label>
-                </div>
-                <div id="walls-openings-box">
-                  <div id="walls-openings-list" class="opening-list">
-                    <div class="opening-row">
-                      <label>Ширина, м<input class="js-ow" type="text" inputmode="decimal" value="1.5" autocomplete="off" /></label>
-                      <label>Высота, м<input class="js-oh" type="text" inputmode="decimal" value="1.4" autocomplete="off" /></label>
-                      <label>Шт<input class="js-on" type="text" inputmode="numeric" value="4" autocomplete="off" /></label>
-                      <button type="button" class="btn-text js-opening-del" aria-label="Удалить проём">×</button>
-                    </div>
-                    <div class="opening-row">
-                      <label>Ширина, м<input class="js-ow" type="text" inputmode="decimal" value="1.0" autocomplete="off" /></label>
-                      <label>Высота, м<input class="js-oh" type="text" inputmode="decimal" value="2.1" autocomplete="off" /></label>
-                      <label>Шт<input class="js-on" type="text" inputmode="numeric" value="1" autocomplete="off" /></label>
-                      <button type="button" class="btn-text js-opening-del" aria-label="Удалить проём">×</button>
+                <legend>Внутренние перегородки</legend>
+                <label class="check">
+                  <input id="walls-partitions-enabled" name="walls-partitions-enabled" type="checkbox" />
+                  Добавить перегородки
+                </label>
+                <div id="walls-partitions-box" class="piles-box" aria-hidden="true">
+                  <div class="piles-box-inner">
+                    <label>
+                      Материал перегородок
+                      <select id="walls-partition-material" name="walls-partition-material">
+                        <option value="block-100" selected>Блок перегородочный 100 мм</option>
+                        <option value="brick-edge-120">Кирпич на ребро 120 мм</option>
+                      </select>
+                    </label>
+                    <div class="row">
+                      <label>
+                        Общая длина перегородок, м
+                        <input id="walls-partition-length" name="walls-partition-length" type="number" inputmode="decimal" step="0.1" min="0.1" value="15.0" autocomplete="off" />
+                      </label>
+                      <label>
+                        Высота перегородок, м
+                        <input id="walls-partition-height" name="walls-partition-height" type="number" inputmode="decimal" step="0.1" min="0.1" value="3.0" autocomplete="off" />
+                      </label>
                     </div>
                   </div>
-                  <button type="button" class="btn-text" id="walls-add-opening" style="margin-top: 8px">Добавить проём</button>
                 </div>
-                <p id="walls-openings-sum" class="opening-sum">Вычет проёмов: 10,50 м²</p>
-                <p class="note">Перемычка = ширина проёма + 0,50 м (опирание 250 мм с каждой стороны). В режиме площади перемычки не считаются — нужен перечень.</p>
               </fieldset>
 
-              <fieldset>
-                <legend>Армирование и крепёж</legend>
-                <p class="note">Ø8 в 2 прутка каждые 4 ряда, нахлёст 40d, хлыст 11.7 м. Рамные дюбели — 8 шт. на проём.</p>
-              </fieldset>
-
+              <button type="submit" class="btn-action">Рассчитать смету</button>
               <p id="walls-error" class="error"></p>
             </form>
           </section>
@@ -1506,6 +1522,61 @@
               </div>
 
               <div class="price-group">
+                <p class="price-cat">Стены и перегородки</p>
+                <table class="price-table">
+                  <thead>
+                    <tr>
+                      <th>Позиция</th>
+                      <th>Единица</th>
+                      <th class="num">Цена, Br</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Стеновые блоки (несущие стены)</td>
+                      <td class="unit">м³</td>
+                      <td class="price"><input id="wall-block-price" name="wall-block-price" type="text" inputmode="decimal" value="140.00" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Клей для блоков (мешок 25 кг)</td>
+                      <td class="unit">меш.</td>
+                      <td class="price"><input id="wall-adhesive-price" name="wall-adhesive-price" type="text" inputmode="decimal" value="9.50" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Армирующая сетка</td>
+                      <td class="unit">м.п.</td>
+                      <td class="price"><input id="wall-mesh-price" name="wall-mesh-price" type="text" inputmode="decimal" value="3.20" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Перегородочные блоки</td>
+                      <td class="unit">м³</td>
+                      <td class="price"><input id="partition-block-price" name="partition-block-price" type="text" inputmode="decimal" value="150.00" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Бетон для армопояса и перемычек</td>
+                      <td class="unit">м³</td>
+                      <td class="price"><input id="wall-concrete-price" name="wall-concrete-price" type="text" inputmode="decimal" value="185.00" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Кладка несущих стен</td>
+                      <td class="unit">м³</td>
+                      <td class="price"><input id="wall-work-masonry-price" name="wall-work-masonry-price" type="text" inputmode="decimal" value="45.00" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Кладка перегородок</td>
+                      <td class="unit">м²</td>
+                      <td class="price"><input id="wall-work-partition-price" name="wall-work-partition-price" type="text" inputmode="decimal" value="18.00" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Устройство армопояса и перемычек</td>
+                      <td class="unit">м.п.</td>
+                      <td class="price"><input id="wall-work-armopoyas-price" name="wall-work-armopoyas-price" type="text" inputmode="decimal" value="15.00" autocomplete="off" /></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="price-group">
                 <p class="price-cat">Штукатурка</p>
                 <table class="price-table">
                   <thead>
@@ -1693,7 +1764,7 @@
       const STRIP_LEAD =
         "Ленточный фундамент: бетон, рабочие стержни, хомуты с гибами, опалубка с двух сторон, песчаная подушка, гидроизоляция. Цены в Br — ориентир, правьте под поставщика.";
       const WALLS_LEAD =
-        "Стены и проёмы: газобетон или кирпич, вычет окон и дверей, клей или раствор, арматура штроб Ø8, перемычки, крепёж. Цены в Br — ориентир, правьте под поставщика.";
+        "Стены и перегородки: несущие стены, проёмы, армопояс, перемычки, внутренние перегородки. Цены в Br — ориентир, правьте под прайс-лист.";
       const PLASTER_LEAD =
         "Штукатурка стен: гипсовая или ЦПС, грунтовка глубокого проникновения, маяки 6 мм, стеклосетка. Цены в Br — ориентир, правьте под поставщика.";
       const ROOF_LEAD =
@@ -1789,6 +1860,7 @@
       let roofNeedsCalc = true;
       let roofWidthManual = false;
       let roofLengthManual = false;
+      let wallsPerimeterManual = false;
       let lastFoundationBlock = "slab";
 
       const form = document.getElementById("calc-form");
@@ -1841,14 +1913,13 @@
       const roofLengthEl = document.getElementById("roof-length");
       const printDateEl = document.getElementById("print-date");
       const billPrintEl = document.getElementById("bill-print");
-      const wallsOpeningsList = document.getElementById("walls-openings-list");
-      const wallsOpeningsBox = document.getElementById("walls-openings-box");
-      const wallsAreaWrap = document.getElementById("walls-area-wrap");
-      const wallsOpeningsSum = document.getElementById("walls-openings-sum");
-      const wallsMaterialEl = document.getElementById("walls-material");
-      const wallsOpeningModeEl = document.getElementById("walls-opening-mode");
-      const wallsBlockFields = document.getElementById("walls-block-fields");
-      const wallsBrickFields = document.getElementById("walls-brick-fields");
+      const wallsOpeningsBody = document.getElementById("walls-openings-body");
+      const wallsArmopoyasEl = document.getElementById("walls-armopoyas");
+      const wallsArmopoyasBoxEl = document.getElementById("walls-armopoyas-box");
+      const wallsPartitionsEl = document.getElementById("walls-partitions-enabled");
+      const wallsPartitionsBoxEl = document.getElementById("walls-partitions-box");
+      const wallsPerimeterEl = document.getElementById("walls-perimeter");
+      let openingSeq = 1;
       const pilesEnabledEl = document.getElementById("strip-piles-enabled");
       const pilesBoxEl = document.getElementById("strip-piles-box");
       const pilesBodyEl = document.getElementById("strip-piles-body");
@@ -2672,15 +2743,163 @@
         return Math.max(1, Math.round((thickM + BRICK_V_JOINT) / pitch));
       }
 
-      function openingRowTemplate() {
-        const row = document.createElement("div");
-        row.className = "opening-row";
-        row.innerHTML =
-          '<label>Ширина, м<input class="js-ow" type="text" inputmode="decimal" value="" autocomplete="off" /></label>' +
-          '<label>Высота, м<input class="js-oh" type="text" inputmode="decimal" value="" autocomplete="off" /></label>' +
-          '<label>Шт<input class="js-on" type="text" inputmode="numeric" value="1" autocomplete="off" /></label>' +
-          '<button type="button" class="btn-text js-opening-del" aria-label="Удалить проём">×</button>';
-        return row;
+      function wallsLegacyMaterialFromUi() {
+        const sel = document.getElementById("walls-load-bearing-material").value;
+        if (sel === "gas-silicate-400") {
+          return { material: "block", blockSize: "600x400x200", glueType: "bag" };
+        }
+        if (sel === "ceramic-380") {
+          return { material: "block", blockSize: "600x380x200", glueType: "bag" };
+        }
+        if (sel === "brick-380") {
+          return { material: "brick", brickFormat: "1nf", brickThick: 380, glueType: "bag" };
+        }
+        return { material: "block", blockSize: "600x300x200", glueType: "bag" };
+      }
+
+      function openingTypeOptions(selected) {
+        const items = [
+          { value: "window", label: "Окно" },
+          { value: "entry-door", label: "Входная дверь" },
+          { value: "interior-door", label: "Межкомнатная дверь" },
+        ];
+        let html = "";
+        for (let i = 0; i < items.length; i++) {
+          html +=
+            '<option value="' +
+            items[i].value +
+            '"' +
+            (items[i].value === selected ? " selected" : "") +
+            ">" +
+            items[i].label +
+            "</option>";
+        }
+        return html;
+      }
+
+      function nextOpeningId() {
+        openingSeq += 1;
+        return openingSeq;
+      }
+
+      function syncOpeningSeq() {
+        let max = 0;
+        const nodes = wallsOpeningsBody.querySelectorAll("[data-opening-id]");
+        for (let i = 0; i < nodes.length; i++) {
+          const n = Number(nodes[i].getAttribute("data-opening-id"));
+          if (n > max) {
+            max = n;
+          }
+        }
+        openingSeq = max;
+      }
+
+      function wallsOpeningRowTemplate(opts) {
+        const options = opts || {};
+        const id = options.id != null ? Number(options.id) : nextOpeningId();
+        if (id > openingSeq) {
+          openingSeq = id;
+        }
+        const locked = Boolean(options.locked);
+        const type = options.type != null ? String(options.type) : "window";
+        const width = options.width != null ? String(options.width) : "1.5";
+        const height = options.height != null ? String(options.height) : "1.5";
+        const count = options.count != null ? String(options.count) : "1";
+        const tr = document.createElement("tr");
+        tr.className = "opening-row";
+        tr.id = "opening-row-" + id;
+        tr.setAttribute("data-opening-id", String(id));
+        if (locked) {
+          tr.setAttribute("data-opening-locked", "true");
+        }
+        const action = locked
+          ? '<span class="pile-locked">—</span>'
+          : '<button type="button" class="btn-text js-opening-del" aria-label="Удалить проём">Удалить 🗑️</button>';
+        tr.innerHTML =
+          '<td><select id="opening-type-' +
+          id +
+          '" class="js-opening-type">' +
+          openingTypeOptions(type) +
+          "</select></td>" +
+          '<td><input id="opening-width-' +
+          id +
+          '" class="js-opening-width" type="number" inputmode="decimal" step="0.1" min="0.1" value="' +
+          width +
+          '" autocomplete="off" /></td>' +
+          '<td><input id="opening-height-' +
+          id +
+          '" class="js-opening-height" type="number" inputmode="decimal" step="0.1" min="0.1" value="' +
+          height +
+          '" autocomplete="off" /></td>' +
+          '<td><input id="opening-count-' +
+          id +
+          '" class="js-opening-count" type="number" inputmode="numeric" step="1" min="1" value="' +
+          count +
+          '" autocomplete="off" /></td>' +
+          '<td class="pile-action">' +
+          action +
+          "</td>";
+        return tr;
+      }
+
+      function getOpeningsData() {
+        const rows = [];
+        const nodes = wallsOpeningsBody.querySelectorAll(".opening-row");
+        for (let i = 0; i < nodes.length; i++) {
+          rows.push({
+            id: Number(nodes[i].getAttribute("data-opening-id")),
+            type: nodes[i].querySelector(".js-opening-type").value,
+            width: parseNumber(nodes[i].querySelector(".js-opening-width").value),
+            height: parseNumber(nodes[i].querySelector(".js-opening-height").value),
+            count: parseNumber(nodes[i].querySelector(".js-opening-count").value),
+          });
+        }
+        return rows;
+      }
+
+      function readWallPrices() {
+        return {
+          blockPrice: parseNumber(document.getElementById("wall-block-price").value),
+          adhesivePrice: parseNumber(document.getElementById("wall-adhesive-price").value),
+          meshPrice: parseNumber(document.getElementById("wall-mesh-price").value),
+          partitionBlockPrice: parseNumber(document.getElementById("partition-block-price").value),
+          concretePrice: parseNumber(document.getElementById("wall-concrete-price").value),
+          workMasonryPrice: parseNumber(document.getElementById("wall-work-masonry-price").value),
+          workPartitionPrice: parseNumber(document.getElementById("wall-work-partition-price").value),
+          workArmopoyasPrice: parseNumber(document.getElementById("wall-work-armopoyas-price").value),
+        };
+      }
+
+      function computeFoundationPerimeter() {
+        const source = foundationFootprintSource();
+        if (source === "strip") {
+          return parseNumber(document.getElementById("strip-length").value);
+        }
+        const width = parseNumber(document.getElementById("width").value);
+        const length = parseNumber(document.getElementById("length").value);
+        if (Number.isFinite(width) && Number.isFinite(length)) {
+          return 2 * (width + length);
+        }
+        return NaN;
+      }
+
+      function syncWallsPerimeterFromFoundation() {
+        if (wallsPerimeterManual) {
+          return;
+        }
+        const perimeter = computeFoundationPerimeter();
+        if (Number.isFinite(perimeter) && perimeter > 0) {
+          wallsPerimeterEl.value = String(perimeter);
+        }
+      }
+
+      function syncWallsUi() {
+        const armopoyasOn = wallsArmopoyasEl.checked;
+        wallsArmopoyasBoxEl.classList.toggle("is-open", armopoyasOn);
+        wallsArmopoyasBoxEl.setAttribute("aria-hidden", armopoyasOn ? "false" : "true");
+        const partitionsOn = wallsPartitionsEl.checked;
+        wallsPartitionsBoxEl.classList.toggle("is-open", partitionsOn);
+        wallsPartitionsBoxEl.setAttribute("aria-hidden", partitionsOn ? "false" : "true");
       }
 
       const PILE_DIAMETERS = [200, 250, 300, 350, 400];
@@ -2849,15 +3068,15 @@
 
       function readOpeningRows() {
         const rows = [];
-        const nodes = wallsOpeningsList.querySelectorAll(".opening-row");
+        const nodes = wallsOpeningsBody.querySelectorAll(".opening-row");
         for (let i = 0; i < nodes.length; i++) {
-          const w = parseNumber(nodes[i].querySelector(".js-ow").value);
-          const h = parseNumber(nodes[i].querySelector(".js-oh").value);
-          const n = parseNumber(nodes[i].querySelector(".js-on").value);
+          const w = parseNumber(nodes[i].querySelector(".js-opening-width").value);
+          const h = parseNumber(nodes[i].querySelector(".js-opening-height").value);
+          const n = parseNumber(nodes[i].querySelector(".js-opening-count").value);
           const blank =
-            String(nodes[i].querySelector(".js-ow").value).trim() === "" &&
-            String(nodes[i].querySelector(".js-oh").value).trim() === "" &&
-            String(nodes[i].querySelector(".js-on").value).trim() === "";
+            String(nodes[i].querySelector(".js-opening-width").value).trim() === "" &&
+            String(nodes[i].querySelector(".js-opening-height").value).trim() === "" &&
+            String(nodes[i].querySelector(".js-opening-count").value).trim() === "";
           rows.push({ w: w, h: h, n: n, blank: blank });
         }
         return rows;
@@ -2880,26 +3099,7 @@
         return { area: area, lintelM: lintelM, count: count, fromList: true };
       }
 
-      function updateWallsOpeningUi() {
-        const listMode = wallsOpeningModeEl.value === "list";
-        wallsOpeningsBox.hidden = !listMode;
-        wallsAreaWrap.hidden = listMode;
-        const areaRaw = parseNumber(document.getElementById("walls-opening-area").value);
-        const sum = summarizeOpenings(wallsOpeningModeEl.value, areaRaw, readOpeningRows());
-        if (Number.isFinite(sum.area) && sum.area >= 0) {
-          wallsOpeningsSum.textContent = "Вычет проёмов: " + formatQty(sum.area, 2) + " м²";
-        } else {
-          wallsOpeningsSum.textContent = "Вычет проёмов: —";
-        }
-      }
-
-      function syncWallsMaterialUi() {
-        const isBlock = wallsMaterialEl.value === "block";
-        wallsBlockFields.hidden = !isBlock;
-        wallsBrickFields.hidden = isBlock;
-      }
-
-      function calculateWalls(input) {
+      function _calculateWallsLegacy(input) {
         const sGross = input.perimeter * input.height;
         const sOpen = input.openings.area;
         const sNet = sGross - sOpen;
@@ -3062,26 +3262,22 @@
         };
       }
 
-      function readWallsForm() {
-        const material = wallsMaterialEl.value;
-        const block = parseBlockSize(document.getElementById("walls-block-size").value);
-        const brick = brickFormat(document.getElementById("walls-brick-format").value);
-        const brickThick = parseNumber(document.getElementById("walls-brick-thick").value) / 1000;
-        const openings = summarizeOpenings(
-          wallsOpeningModeEl.value,
-          parseNumber(document.getElementById("walls-opening-area").value),
-          readOpeningRows()
-        );
+      function _readWallsFormLegacy() {
+        const mat = wallsLegacyMaterialFromUi();
+        const block = mat.material === "block" ? parseBlockSize(mat.blockSize) : parseBlockSize("600x300x200");
+        const brick = brickFormat(mat.brickFormat || "1nf");
+        const brickThick = mat.material === "brick" ? mat.brickThick / 1000 : 0;
+        const openingRows = readOpeningRows();
+        const openings = summarizeOpenings("list", 0, openingRows);
         return {
           perimeter: parseNumber(document.getElementById("walls-perimeter").value),
           height: parseNumber(document.getElementById("walls-height").value),
-          material: material,
+          material: mat.material,
           block: block,
           brick: brick,
-          thick: material === "block" ? block.thick : brickThick,
-          rowHeight:
-            material === "block" ? block.height : brick.height + BRICK_H_JOINT,
-          glueType: document.getElementById("walls-glue-type").value,
+          thick: mat.material === "block" ? block.thick : brickThick,
+          rowHeight: mat.material === "block" ? block.height : brick.height + BRICK_H_JOINT,
+          glueType: mat.glueType,
           blockPrice: parseNumber(document.getElementById("walls-block-price").value),
           gluePrice: parseNumber(document.getElementById("walls-glue-price").value),
           brickPrice: parseNumber(document.getElementById("walls-brick-price").value),
@@ -3091,8 +3287,40 @@
           lintelPrice: parseNumber(document.getElementById("walls-lintel-price").value),
           screwPrice: parseNumber(document.getElementById("walls-screw-price").value),
           openings: openings,
-          openingMode: wallsOpeningModeEl.value,
-          openingRows: readOpeningRows(),
+          openingMode: "list",
+          openingRows: openingRows,
+        };
+      }
+
+      function readWallsForm() {
+        return {
+          perimeter: parseNumber(document.getElementById("walls-perimeter").value),
+          loadMaterial: document.getElementById("walls-load-bearing-material").value,
+          height: parseNumber(document.getElementById("walls-height").value),
+          jointMm: parseNumber(document.getElementById("walls-joint-mm").value),
+          reinforceMesh: document.getElementById("walls-reinforce-mesh").checked,
+          openings: getOpeningsData(),
+          armopoyas: document.getElementById("walls-armopoyas").checked,
+          armopoyasSection: document.getElementById("walls-armopoyas-section").value,
+          armopoyasRebarMm: parseNumber(document.getElementById("walls-armopoyas-rebar").value),
+          lintels: document.getElementById("walls-lintels").checked,
+          partitionsEnabled: document.getElementById("walls-partitions-enabled").checked,
+          partitionMaterial: document.getElementById("walls-partition-material").value,
+          partitionLength: parseNumber(document.getElementById("walls-partition-length").value),
+          partitionHeight: parseNumber(document.getElementById("walls-partition-height").value),
+          prices: readWallPrices(),
+        };
+      }
+
+      function calculateWalls(input) {
+        void input;
+        return {
+          rows: [],
+          total: 0,
+          sGross: 0,
+          sOpen: 0,
+          sNet: 0,
+          volume: 0,
         };
       }
 
@@ -3779,30 +4007,56 @@
       }
 
       function renderWalls() {
-        updateWallsOpeningUi();
-        const input = readWallsForm();
-        const message = validateWalls(input);
-
-        if (message) {
-          showBillError(message, wallsErrorEl);
-          return;
-        }
-
-        const bill = calculateWalls(input);
+        syncWallsUi();
+        wallsErrorEl.classList.remove("visible");
+        const placeholderRows = [
+          {
+            name: "Кладочный материал (несущие стены)",
+            netLabel: "0",
+            k: "—",
+            orderLabel: "0",
+            cost: 0,
+          },
+          {
+            name: "Кладочный раствор / клей",
+            netLabel: "0",
+            k: "—",
+            orderLabel: "0",
+            cost: 0,
+          },
+          {
+            name: "Армирование кладки (сетка)",
+            netLabel: "0",
+            k: "—",
+            orderLabel: "0",
+            cost: 0,
+          },
+          {
+            name: "Армопояс (железобетон)",
+            netLabel: "0",
+            k: "—",
+            orderLabel: "0",
+            cost: 0,
+          },
+          {
+            name: "Перемычки над проёмами",
+            netLabel: "0",
+            k: "—",
+            orderLabel: "0",
+            cost: 0,
+          },
+          {
+            name: "Внутренние перегородки",
+            netLabel: "0",
+            k: "—",
+            orderLabel: "0",
+            cost: 0,
+          },
+        ];
         showBill(
-          bill.rows,
-          bill.total,
-          "Стены " +
-            formatQty(input.perimeter, 2) +
-            " × " +
-            formatQty(input.height, 2) +
-            " м · кладка " +
-            formatQty(bill.sNet, 2) +
-            " м² · вычет проёмов " +
-            formatQty(bill.sOpen, 2) +
-            " м² · " +
-            formatQty(bill.volume, 2) +
-            " м³"
+          placeholderRows,
+          0,
+          "Параметры изменены. Нажмите «Рассчитать смету» для получения результатов"
         );
       }
 
@@ -3869,7 +4123,7 @@
 
         const slabInput = readForm();
         const stripInput = readStripForm();
-        const wallsInput = readWallsForm();
+        const wallsInput = _readWallsFormLegacy();
         const plasterInput = readPlasterForm();
         const roofInput = readRoofForm();
 
@@ -3965,12 +4219,11 @@
         }
 
         if (includeWalls) {
-          updateWallsOpeningUi();
           const message = validateWalls(wallsInput);
           if (message) {
             errors.push("Стены: " + message);
           } else {
-            const bill = calculateWalls(wallsInput);
+            const bill = _calculateWallsLegacy(wallsInput);
             rows.push.apply(rows, bill.rows);
             total += bill.total;
             nodes.push(
@@ -4065,6 +4318,9 @@
         if (block === "roof") {
           syncRoofFootprintFromFoundation();
         }
+        if (block === "walls") {
+          syncWallsPerimeterFromFoundation();
+        }
         leadEl.textContent = BLOCK_LEADS[block] || SLAB_LEAD;
         document.querySelectorAll(".tab[data-block]").forEach(function (tab) {
           const on = tab.getAttribute("data-block") === block;
@@ -4123,26 +4379,20 @@
         setRegressionField("hydro-price", "28");
 
         setRegressionField("walls-perimeter", "40");
+        wallsPerimeterManual = true;
         setRegressionField("walls-height", "3.0");
-        wallsMaterialEl.value = "block";
-        document.getElementById("walls-block-size").value = "600x300x200";
-        document.getElementById("walls-glue-type").value = "bag";
+        document.getElementById("walls-load-bearing-material").value = "gas-silicate-300";
+        setRegressionField("walls-joint-mm", "2");
+        document.getElementById("walls-reinforce-mesh").checked = true;
+        document.getElementById("walls-armopoyas").checked = true;
+        document.getElementById("walls-lintels").checked = true;
+        document.getElementById("walls-partitions-enabled").checked = false;
         setRegressionField("walls-block-price", "5.50");
         setRegressionField("walls-glue-price", "18");
-        wallsOpeningModeEl.value = "list";
-        while (wallsOpeningsList.querySelectorAll(".opening-row").length > 2) {
-          wallsOpeningsList.lastElementChild.remove();
-        }
-        while (wallsOpeningsList.querySelectorAll(".opening-row").length < 2) {
-          wallsOpeningsList.appendChild(openingRowTemplate());
-        }
-        const openingRows = wallsOpeningsList.querySelectorAll(".opening-row");
-        openingRows[0].querySelector(".js-ow").value = "1.5";
-        openingRows[0].querySelector(".js-oh").value = "1.4";
-        openingRows[0].querySelector(".js-on").value = "4";
-        openingRows[1].querySelector(".js-ow").value = "1.0";
-        openingRows[1].querySelector(".js-oh").value = "2.1";
-        openingRows[1].querySelector(".js-on").value = "1";
+        writeOpeningsState([
+          { type: "window", width: "1.5", height: "1.4", count: "4", locked: true },
+          { type: "entry-door", width: "1.0", height: "2.1", count: "1" },
+        ]);
         setRegressionField("walls-rebar-price", "3.20");
         setRegressionField("walls-lintel-price", "28");
         setRegressionField("walls-screw-price", "12");
@@ -4172,9 +4422,8 @@
           slabFoundRadio.checked = true;
         }
 
-        syncWallsMaterialUi();
+        syncWallsUi();
         syncPlasterMeshUi();
-        updateWallsOpeningUi();
         pilesEnabledEl.checked = false;
         writePilesState([]);
         syncPilesUi();
@@ -4276,12 +4525,12 @@
         }
 
         if (includeWalls) {
-          const input = readWallsForm();
+          const input = _readWallsFormLegacy();
           const message = validateWalls(input);
           if (message) {
             errors.push("Стены: " + message);
           } else {
-            total += calculateWalls(input).total;
+            total += _calculateWallsLegacy(input).total;
           }
         }
 
@@ -4340,12 +4589,12 @@
             name: "Стены",
             expected: REGRESSION_EXPECT.walls,
             run: function () {
-              const input = readWallsForm();
+              const input = _readWallsFormLegacy();
               const message = validateWalls(input);
               if (message) {
                 return { total: NaN, error: message };
               }
-              return { total: calculateWalls(input).total, error: "" };
+              return { total: _calculateWallsLegacy(input).total, error: "" };
             },
           },
           {
@@ -4450,29 +4699,39 @@
 
       function readOpeningsState() {
         const list = [];
-        const nodes = wallsOpeningsList.querySelectorAll(".opening-row");
+        const nodes = wallsOpeningsBody.querySelectorAll(".opening-row");
         for (let i = 0; i < nodes.length; i++) {
           list.push({
-            w: nodes[i].querySelector(".js-ow").value,
-            h: nodes[i].querySelector(".js-oh").value,
-            n: nodes[i].querySelector(".js-on").value,
+            id: Number(nodes[i].getAttribute("data-opening-id")),
+            locked: nodes[i].getAttribute("data-opening-locked") === "true",
+            type: nodes[i].querySelector(".js-opening-type").value,
+            width: nodes[i].querySelector(".js-opening-width").value,
+            height: nodes[i].querySelector(".js-opening-height").value,
+            count: nodes[i].querySelector(".js-opening-count").value,
           });
         }
         return list;
       }
 
       function writeOpeningsState(list) {
-        const rows = list.length ? list : [{ w: "", h: "", n: "" }];
-        while (wallsOpeningsList.firstElementChild) {
-          wallsOpeningsList.firstElementChild.remove();
+        const rows = list.length
+          ? list
+          : [{ type: "window", width: "1.5", height: "1.5", count: "6", locked: true, id: 1 }];
+        while (wallsOpeningsBody.firstElementChild) {
+          wallsOpeningsBody.firstElementChild.remove();
         }
-        rows.forEach(function (item) {
-          const row = openingRowTemplate();
-          row.querySelector(".js-ow").value = item && item.w != null ? String(item.w) : "";
-          row.querySelector(".js-oh").value = item && item.h != null ? String(item.h) : "";
-          row.querySelector(".js-on").value = item && item.n != null ? String(item.n) : "";
-          wallsOpeningsList.appendChild(row);
+        rows.forEach(function (item, index) {
+          const row = wallsOpeningRowTemplate({
+            id: item && item.id != null ? item.id : index + 1,
+            locked: item && item.locked != null ? item.locked : index === 0,
+            type: item && item.type != null ? item.type : "window",
+            width: item && item.width != null ? item.width : item && item.w != null ? item.w : "1.5",
+            height: item && item.height != null ? item.height : item && item.h != null ? item.h : "1.5",
+            count: item && item.count != null ? item.count : item && item.n != null ? item.n : "1",
+          });
+          wallsOpeningsBody.appendChild(row);
         });
+        syncOpeningSeq();
       }
 
       function collectProject() {
@@ -4507,6 +4766,7 @@
           flags: {
             roofWidthManual: roofWidthManual,
             roofLengthManual: roofLengthManual,
+            wallsPerimeterManual: wallsPerimeterManual,
             lastFoundationBlock: lastFoundationBlock,
           },
         };
@@ -4582,6 +4842,9 @@
         if (typeof flags.roofLengthManual === "boolean") {
           roofLengthManual = flags.roofLengthManual;
         }
+        if (typeof flags.wallsPerimeterManual === "boolean") {
+          wallsPerimeterManual = flags.wallsPerimeterManual;
+        }
         if (flags.lastFoundationBlock === "slab" || flags.lastFoundationBlock === "strip") {
           lastFoundationBlock = flags.lastFoundationBlock;
         }
@@ -4606,11 +4869,10 @@
           billBlock = state.block;
         }
 
-        syncWallsMaterialUi();
+        syncWallsUi();
         syncPlasterMeshUi();
         syncRoofInsulationUi();
         syncSummaryUi();
-        updateWallsOpeningUi();
         syncPilesUi();
 
         if (state.block && BLOCK_LEADS[state.block]) {
@@ -4646,10 +4908,12 @@
 
       form.addEventListener("input", function () {
         syncRoofFootprintFromFoundation();
+        syncWallsPerimeterFromFoundation();
         render();
       });
       form.addEventListener("change", function () {
         syncRoofFootprintFromFoundation();
+        syncWallsPerimeterFromFoundation();
         render();
       });
       form.addEventListener("submit", function (event) {
@@ -4659,10 +4923,12 @@
 
       stripForm.addEventListener("input", function () {
         syncRoofFootprintFromFoundation();
+        syncWallsPerimeterFromFoundation();
         render();
       });
       stripForm.addEventListener("change", function () {
         syncRoofFootprintFromFoundation();
+        syncWallsPerimeterFromFoundation();
         render();
       });
       stripForm.addEventListener("submit", function (event) {
@@ -4701,40 +4967,42 @@
         render();
       });
 
-      wallsMaterialEl.addEventListener("change", function () {
-        syncWallsMaterialUi();
-        render();
-      });
+      wallsArmopoyasEl.addEventListener("change", syncWallsUi);
+      wallsPartitionsEl.addEventListener("change", syncWallsUi);
 
-      wallsOpeningModeEl.addEventListener("change", function () {
-        updateWallsOpeningUi();
-        render();
+      wallsPerimeterEl.addEventListener("input", function () {
+        wallsPerimeterManual = true;
       });
 
       document.getElementById("walls-add-opening").addEventListener("click", function () {
-        wallsOpeningsList.appendChild(openingRowTemplate());
-        render();
+        wallsOpeningsBody.appendChild(
+          wallsOpeningRowTemplate({
+            locked: false,
+            type: "window",
+            width: "1.5",
+            height: "1.5",
+            count: "1",
+          })
+        );
       });
 
       wallsForm.addEventListener("click", function (event) {
         const del = event.target.closest(".js-opening-del");
-        if (!del) return;
-        const row = del.closest(".opening-row");
-        if (row && wallsOpeningsList.querySelectorAll(".opening-row").length > 1) {
-          row.remove();
-        } else if (row) {
-          row.querySelector(".js-ow").value = "";
-          row.querySelector(".js-oh").value = "";
-          row.querySelector(".js-on").value = "";
+        if (!del) {
+          return;
         }
-        render();
+        const row = del.closest("tr.opening-row");
+        if (!row || row.getAttribute("data-opening-locked") === "true") {
+          return;
+        }
+        row.remove();
       });
 
-      wallsForm.addEventListener("input", render);
-      wallsForm.addEventListener("change", render);
+      wallsForm.addEventListener("input", syncWallsUi);
+      wallsForm.addEventListener("change", syncWallsUi);
       wallsForm.addEventListener("submit", function (event) {
         event.preventDefault();
-        render();
+        renderWalls();
       });
 
       plasterMixEl.addEventListener("change", function () {
@@ -4874,9 +5142,10 @@
         setActiveBlock("roof");
       });
 
-      syncWallsMaterialUi();
+      syncWallsUi();
       syncPlasterMeshUi();
       syncRoofInsulationUi();
+      syncOpeningSeq();
       syncPileSeq();
       syncPilesUi();
       runRegressionTests();
