@@ -424,13 +424,15 @@
         right: 12px;
         bottom: 12px;
         z-index: 100;
-        max-width: 420px;
+        min-width: 320px;
+        max-width: 550px;
         padding: 6px 10px;
         border: 1px solid;
         background: #fff;
         font-size: 11px;
         font-weight: 650;
         line-height: 1.35;
+        white-space: nowrap;
         pointer-events: none;
         opacity: 0.92;
       }
@@ -1291,6 +1293,18 @@
                 </div>
               </fieldset>
 
+              <fieldset>
+                <legend>Кровля</legend>
+                <label class="check">
+                  <input id="summary-include-roof" name="summary-include-roof" type="checkbox" />
+                  Кровля
+                </label>
+                <p id="summary-snap-roof" class="snap"></p>
+                <div class="node-actions">
+                  <button type="button" class="btn-text" id="summary-jump-roof">Править кровлю</button>
+                </div>
+              </fieldset>
+
               <p id="summary-error" class="error"></p>
             </form>
           </section>
@@ -1809,10 +1823,12 @@
       const summaryIncludeFoundEl = document.getElementById("summary-include-found");
       const summaryIncludeWallsEl = document.getElementById("summary-include-walls");
       const summaryIncludePlasterEl = document.getElementById("summary-include-plaster");
+      const summaryIncludeRoofEl = document.getElementById("summary-include-roof");
       const summaryFoundChoiceEl = document.getElementById("summary-found-choice");
       const summarySnapFoundEl = document.getElementById("summary-snap-found");
       const summarySnapWallsEl = document.getElementById("summary-snap-walls");
       const summarySnapPlasterEl = document.getElementById("summary-snap-plaster");
+      const summarySnapRoofEl = document.getElementById("summary-snap-roof");
       const printSubEl = document.getElementById("print-sub");
       const printNodesEl = document.getElementById("print-nodes");
       const plasterMixEl = document.getElementById("plaster-mix");
@@ -1938,6 +1954,9 @@
           name.indexOf("Сетка кладочная") === 0
         ) {
           return "masonry";
+        }
+        if (name.indexOf("Кровля —") === 0) {
+          return "timber";
         }
         if (
           name.indexOf("Клей для блоков") === 0 ||
@@ -3559,6 +3578,41 @@
         return "";
       }
 
+      function roofSummaryRows(bill, input) {
+        let workCost = 0;
+        let materialsCost = 0;
+        for (let i = 0; i < bill.rows.length; i++) {
+          const row = bill.rows[i];
+          if (row.name.indexOf("Монтаж кровли") === 0) {
+            workCost += row.cost;
+          } else {
+            materialsCost += row.cost;
+          }
+        }
+        return [
+          {
+            name:
+              "Кровля — материалы (скаты " +
+              formatQty(bill.area, 2) +
+              " м², " +
+              roofTypeLabel(input.type) +
+              ")",
+            netLabel: formatQty(bill.area, 2) + " м²",
+            k: 1,
+            orderLabel: formatMoney(materialsCost).replace(" Br", ""),
+            cost: materialsCost,
+          },
+          {
+            name:
+              "Кровля — работы (монтаж под ключ, " + formatQty(bill.area, 2) + " м²)",
+            netLabel: formatQty(bill.area, 2) + " м²",
+            k: 1,
+            orderLabel: formatQty(bill.area, 2) + " м²",
+            cost: workCost,
+          },
+        ];
+      }
+
       function readRoofPrices() {
         return {
           timberPrice: parseNumber(document.getElementById("roof-timber-price").value),
@@ -3810,12 +3864,14 @@
         const includeFound = summaryIncludeFoundEl.checked;
         const includeWalls = summaryIncludeWallsEl.checked;
         const includePlaster = summaryIncludePlasterEl.checked;
+        const includeRoof = summaryIncludeRoofEl.checked;
         const foundType = summaryFoundType();
 
         const slabInput = readForm();
         const stripInput = readStripForm();
         const wallsInput = readWallsForm();
         const plasterInput = readPlasterForm();
+        const roofInput = readRoofForm();
 
         summarySnapFoundEl.textContent =
           foundType === "strip"
@@ -3847,8 +3903,20 @@
           " м² · слой " +
           formatQty(plasterInput.thicknessMm, 0) +
           " мм";
+        summarySnapRoofEl.textContent =
+          "Кровля " +
+          roofTypeLabel(roofInput.type) +
+          " · " +
+          formatQty(roofInput.width, 2) +
+          " × " +
+          formatQty(roofInput.length, 2) +
+          " м · конёк " +
+          formatQty(roofInput.ridgeHeight, 2) +
+          " м · свес " +
+          formatQty(roofInput.eave, 2) +
+          " м";
 
-        if (!includeFound && !includeWalls && !includePlaster) {
+        if (!includeFound && !includeWalls && !includePlaster && !includeRoof) {
           showBillError("Включите хотя бы один узел объекта.", summaryErrorEl);
           return;
         }
@@ -3930,6 +3998,26 @@
           }
         }
 
+        if (includeRoof) {
+          const message = validateRoof(roofInput);
+          if (message) {
+            errors.push("Кровля: " + message);
+          } else {
+            const bill = calculateRoof(roofInput);
+            rows.push.apply(rows, roofSummaryRows(bill, roofInput));
+            total += bill.total;
+            nodes.push(
+              "кровля " +
+                roofTypeLabel(roofInput.type) +
+                " " +
+                formatQty(roofInput.width, 2) +
+                " × " +
+                formatQty(roofInput.length, 2) +
+                " м"
+            );
+          }
+        }
+
         if (errors.length) {
           showBillError(errors.join(" "), summaryErrorEl);
           return;
@@ -3999,6 +4087,7 @@
         plaster: 1068.6,
         summary: 19675.09,
         stripPiles: 10791.16,
+        roof: 14955.59,
       };
 
       function moneyEqual(actual, expected) {
@@ -4072,6 +4161,10 @@
         summaryIncludeFoundEl.checked = true;
         summaryIncludeWallsEl.checked = true;
         summaryIncludePlasterEl.checked = true;
+        summaryIncludeRoofEl.checked = false;
+        roofWidthManual = false;
+        roofLengthManual = false;
+        roofNeedsCalc = true;
         const slabFoundRadio = summaryForm.querySelector(
           'input[name="summary-found-type"][value="slab"]'
         );
@@ -4125,6 +4218,37 @@
         setActiveBlock("strip");
       }
 
+      function applyRoofRegressionFixtures() {
+        roofWidthManual = false;
+        roofLengthManual = false;
+        roofNeedsCalc = false;
+        lastFoundationBlock = "slab";
+        setRegressionField("length", "10");
+        setRegressionField("width", "8");
+        document.getElementById("roof-type").value = "gable";
+        setRegressionField("roof-width", "8.0");
+        setRegressionField("roof-length", "10.0");
+        setRegressionField("roof-ridge-height", "2.5");
+        setRegressionField("roof-eave", "0.5");
+        document.getElementById("roof-rafter-section").value = "50x200";
+        setRegressionField("roof-rafter-step", "600");
+        document.getElementById("roof-mauerlat-section").value = "150x150";
+        setRegressionField("roof-batten-step", "350");
+        document.getElementById("roof-batten-section").value = "25x100";
+        roofWarmEl.checked = true;
+        setRegressionField("roof-insulation-mm", "150");
+        document.getElementById("roof-covering").value = "metal-tile";
+        setRegressionField("roof-timber-price", "450.00");
+        setRegressionField("roof-board-price", "380.00");
+        setRegressionField("roof-metal-price", "28.00");
+        setRegressionField("roof-insulation-price", "95.00");
+        setRegressionField("roof-membrane-price", "110.00");
+        setRegressionField("roof-vapor-price", "85.00");
+        setRegressionField("roof-work-price", "65.00");
+        syncRoofInsulationUi();
+        setActiveBlock("roof");
+      }
+
       function computeRegressionSummaryTotal() {
         const includeFound = summaryIncludeFoundEl.checked;
         const includeWalls = summaryIncludeWallsEl.checked;
@@ -4174,7 +4298,7 @@
         return { total: total, errors: errors };
       }
 
-      function updateRegressionBadge(passed, failures, summaryExpected, stripPilesExpected) {
+      function updateRegressionBadge(passed, failures, summaryExpected, stripPilesExpected, roofExpected) {
         const badge = document.getElementById("regression-badge");
         badge.hidden = false;
         badge.classList.toggle("pass", passed);
@@ -4185,6 +4309,8 @@
             formatMoney(summaryExpected) +
             ") | Лента со сваями (" +
             formatMoney(stripPilesExpected) +
+            ") | Кровля (" +
+            formatMoney(roofExpected) +
             ")";
           badge.removeAttribute("title");
         } else {
@@ -4282,6 +4408,24 @@
           }
         }
 
+        applyRoofRegressionFixtures();
+        const roofInput = readRoofForm();
+        const roofMessage = validateRoof(roofInput);
+        let roofTotal = NaN;
+        if (roofMessage) {
+          failures.push("Кровля: " + roofMessage);
+        } else {
+          roofTotal = calculateRoof(roofInput).total;
+          if (!moneyEqual(roofTotal, REGRESSION_EXPECT.roof)) {
+            failures.push(
+              "Кровля: " +
+                formatMoney(roofTotal) +
+                " ≠ " +
+                formatMoney(REGRESSION_EXPECT.roof)
+            );
+          }
+        }
+
         applyRegressionFixtures();
         setActiveBlock("summary");
 
@@ -4290,7 +4434,8 @@
           passed,
           failures,
           REGRESSION_EXPECT.summary,
-          REGRESSION_EXPECT.stripPiles
+          REGRESSION_EXPECT.stripPiles,
+          REGRESSION_EXPECT.roof
         );
         return passed;
       }
@@ -4724,6 +4869,9 @@
       });
       document.getElementById("summary-jump-plaster").addEventListener("click", function () {
         setActiveBlock("plaster");
+      });
+      document.getElementById("summary-jump-roof").addEventListener("click", function () {
+        setActiveBlock("roof");
       });
 
       syncWallsMaterialUi();
