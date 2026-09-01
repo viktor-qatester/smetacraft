@@ -1683,7 +1683,7 @@
       const PLASTER_LEAD =
         "Штукатурка стен: гипсовая или ЦПС, грунтовка глубокого проникновения, маяки 6 мм, стеклосетка. Цены в Br — ориентир, правьте под поставщика.";
       const ROOF_LEAD =
-        "Кровля: стропила, мауэрлат, обрешётка, утепление и покрытие. Цены в Br — ориентир, правьте под поставщика. Расчёт материалов — на следующем шаге.";
+        "Кровля: стропила, мауэрлат, обрешётка, утепление и покрытие. Цены в Br — ориентир, правьте под поставщика.";
       const SUMMARY_LEAD =
         "Сводная смета объекта: включите узлы, параметры читаются из их форм. Итоговая ведомость закупки по категориям, 0 токенов.";
       const PRICE_LEAD =
@@ -1757,6 +1757,15 @@
       const PILE_WIRE_KG_NODE = 0.002;
       const PILE_WIRE_NODES = 4;
       const PILE_RUBEROID_RESERVE = 0.15;
+
+      const ROOF_TIMBER_RESERVE = 1.05;
+      const ROOF_MEMBRANE_OVERLAP = 1.15;
+      const ROOF_MEMBRANE_ROLL = 75;
+      const ROOF_INSULATION_FRAME = 0.9;
+      const ROOF_COVER_METAL_RESERVE = 1.1;
+      const ROOF_COVER_PROFILED_RESERVE = 1.08;
+      const ROOF_COVER_SOFT_RESERVE = 1.05;
+      const ROOF_COUNTER_BATTON = 0.05;
 
       // ==========================================
       // MODULE: STATE & DOM REFS
@@ -3237,7 +3246,7 @@
       }
 
       // ==========================================
-      // MODULE: ENGINE — ROOF (stub)
+      // MODULE: ENGINE — ROOF
       // ==========================================
       function roofTypeLabel(type) {
         if (type === "mono") {
@@ -3259,12 +3268,295 @@
         return "металлочерепица";
       }
 
-      function calculateRoof(input) {
+      function parseRoofSection(code) {
+        const parts = String(code).split("x");
         return {
-          rows: [],
-          total: 0,
-          input: input,
+          width: Number(parts[0]) / 1000,
+          height: Number(parts[1]) / 1000,
         };
+      }
+
+      function formatRoofSection(code) {
+        return String(code).replace(/x/gi, "×");
+      }
+
+      function roofCoveringReserve(type) {
+        if (type === "profiled") {
+          return ROOF_COVER_PROFILED_RESERVE;
+        }
+        if (type === "soft-tile") {
+          return ROOF_COVER_SOFT_RESERVE;
+        }
+        return ROOF_COVER_METAL_RESERVE;
+      }
+
+      function roofCoveringReserveLabel(type) {
+        if (type === "profiled") {
+          return "+8%";
+        }
+        if (type === "soft-tile") {
+          return "+5%";
+        }
+        return "+10%";
+      }
+
+      function calculateRoofGeometry(input) {
+        const W = input.width;
+        const L = input.length;
+        const H = input.ridgeHeight;
+        const S = input.eave;
+        const Wtotal = W + 2 * S;
+        const Ltotal = L + 2 * S;
+        let area;
+        let Lraf;
+        let alpha;
+        let slopeCount;
+
+        if (input.type === "mono") {
+          const X = W + 2 * S;
+          alpha = Math.atan2(H, W);
+          Lraf = X / Math.cos(alpha);
+          area = Lraf * Ltotal;
+          slopeCount = 1;
+        } else if (input.type === "hip") {
+          alpha = Math.atan2(H, W / 2);
+          const hFace = (W / 2 + S) / Math.cos(alpha);
+          const triArea = Wtotal * hFace;
+          const trapArea = 2 * (Ltotal - W / 2 + S) * hFace;
+          area = triArea + trapArea;
+          Lraf = hFace;
+          slopeCount = 4;
+        } else {
+          const X = W / 2 + S;
+          alpha = Math.atan2(H, W / 2);
+          Lraf = X / Math.cos(alpha);
+          area = 2 * Lraf * Ltotal;
+          slopeCount = 2;
+        }
+
+        return {
+          area: area,
+          Lraf: Lraf,
+          alpha: alpha,
+          slopeCount: slopeCount,
+          Wtotal: Wtotal,
+          Ltotal: Ltotal,
+        };
+      }
+
+      function calculateRoof(input) {
+        const geom = calculateRoofGeometry(input);
+        const area = geom.area;
+        const Lraf = geom.Lraf;
+        const slopeCount = geom.slopeCount;
+        const rafterSection = parseRoofSection(input.rafterSection);
+        const mauerlatSection = parseRoofSection(input.mauerlatSection);
+        const battenSection = parseRoofSection(input.battenSection);
+        const stepM = input.rafterStepMm / 1000;
+        const battenStepM = input.battenStepMm / 1000;
+        const rafterRows = Math.ceil(input.length / stepM) + 1;
+        const rafterCount =
+          input.type === "mono" ? rafterRows : rafterRows * 2;
+
+        const rafterNetVol =
+          rafterCount * Lraf * rafterSection.width * rafterSection.height;
+        const rafterOrderVol = rafterNetVol * ROOF_TIMBER_RESERVE;
+
+        const mauerlatLength = 2 * (input.width + input.length);
+        const mauerlatNetVol =
+          mauerlatLength * mauerlatSection.width * mauerlatSection.height;
+        const mauerlatOrderVol = mauerlatNetVol * ROOF_TIMBER_RESERVE;
+
+        const counterNetLength = rafterCount * Lraf;
+        const counterNetVol =
+          counterNetLength * ROOF_COUNTER_BATTON * ROOF_COUNTER_BATTON;
+        const counterOrderVol = counterNetVol * ROOF_TIMBER_RESERVE;
+
+        const timberNetVol = rafterNetVol + mauerlatNetVol + counterNetVol;
+        const timberOrderVol = rafterOrderVol + mauerlatOrderVol + counterOrderVol;
+
+        const battenRows = Math.ceil(Lraf / battenStepM) + 1;
+        const battenNetLength = battenRows * geom.Ltotal * slopeCount;
+        const battenNetVol =
+          battenNetLength * battenSection.width * battenSection.height;
+        const battenOrderVol = battenNetVol * ROOF_TIMBER_RESERVE;
+
+        const insulationTh = input.insulationMm / 1000;
+        const insulationNetVol = input.warmRoof ? area * insulationTh * ROOF_INSULATION_FRAME : 0;
+        const insulationOrderVol = insulationNetVol;
+
+        const membraneNetArea = area * ROOF_MEMBRANE_OVERLAP;
+        const membraneRolls = Math.ceil(membraneNetArea / ROOF_MEMBRANE_ROLL);
+        const vaporRolls = membraneRolls;
+
+        const coverReserve = roofCoveringReserve(input.covering);
+        const coverNetArea = area;
+        const coverOrderArea = area * coverReserve;
+
+        const rows = [];
+
+        rows.push({
+          name:
+            "Брус стропил и мауэрлат " +
+            formatRoofSection(input.rafterSection) +
+            "/" +
+            formatRoofSection(input.mauerlatSection) +
+            " (стропила " +
+            formatQty(rafterOrderVol, 2) +
+            " м³ + мауэрлат " +
+            formatQty(mauerlatOrderVol, 2) +
+            " м³ + контр-обр. " +
+            formatQty(counterOrderVol, 2) +
+            " м³): " +
+            formatQty(timberOrderVol, 2) +
+            " м³",
+          netLabel: formatQty(timberNetVol, 2) + " м³",
+          k: timberNetVol > 0 ? timberOrderVol / timberNetVol : ROOF_TIMBER_RESERVE,
+          orderLabel: formatQty(timberOrderVol, 2) + " м³",
+          cost: timberOrderVol * input.timberPrice,
+        });
+
+        rows.push({
+          name:
+            "Доска обрешётки " +
+            formatRoofSection(input.battenSection) +
+            " (рядов " +
+            battenRows +
+            " × " +
+            formatQty(geom.Ltotal, 2) +
+            " м × " +
+            slopeCount +
+            " скат.): " +
+            formatQty(battenOrderVol, 2) +
+            " м³",
+          netLabel: formatQty(battenNetVol, 2) + " м³",
+          k: battenNetVol > 0 ? battenOrderVol / battenNetVol : ROOF_TIMBER_RESERVE,
+          orderLabel: formatQty(battenOrderVol, 2) + " м³",
+          cost: battenOrderVol * input.boardPrice,
+        });
+
+        if (input.warmRoof) {
+          rows.push({
+            name:
+              "Утеплитель минвата " +
+              formatQty(input.insulationMm, 0) +
+              " мм (с учётом каркаса 90%): " +
+              formatQty(insulationOrderVol, 2) +
+              " м³",
+            netLabel: formatQty(insulationNetVol, 2) + " м³",
+            k: ROOF_INSULATION_FRAME,
+            orderLabel: formatQty(insulationOrderVol, 2) + " м³",
+            cost: insulationOrderVol * input.insulationPrice,
+          });
+        }
+
+        rows.push({
+          name:
+            "Гидро-ветрозащитная мембрана (с нахлёстом 15%): " +
+            membraneRolls +
+            " рул. (" +
+            formatQty(membraneNetArea, 2) +
+            " м²)",
+          netLabel: formatQty(area, 2) + " м²",
+          k: ROOF_MEMBRANE_OVERLAP,
+          orderLabel: membraneRolls + " рул.",
+          cost: membraneRolls * input.membranePrice,
+        });
+
+        rows.push({
+          name:
+            "Пароизоляция (с нахлёстом 15%): " +
+            vaporRolls +
+            " рул. (" +
+            formatQty(membraneNetArea, 2) +
+            " м²)",
+          netLabel: formatQty(area, 2) + " м²",
+          k: ROOF_MEMBRANE_OVERLAP,
+          orderLabel: vaporRolls + " рул.",
+          cost: vaporRolls * input.vaporPrice,
+        });
+
+        rows.push({
+          name:
+            roofCoveringLabel(input.covering) +
+            " (площадь скатов " +
+            formatQty(coverNetArea, 2) +
+            " м², запас " +
+            roofCoveringReserveLabel(input.covering) +
+            "): " +
+            formatQty(coverOrderArea, 2) +
+            " м²",
+          netLabel: formatQty(coverNetArea, 2) + " м²",
+          k: coverReserve,
+          orderLabel: formatQty(coverOrderArea, 2) + " м²",
+          cost: coverOrderArea * input.metalPrice,
+        });
+
+        rows.push({
+          name:
+            "Монтаж кровли «под ключ» (" +
+            formatQty(area, 2) +
+            " м² скатов)",
+          netLabel: formatQty(area, 2) + " м²",
+          k: 1,
+          orderLabel: formatQty(area, 2) + " м²",
+          cost: area * input.workPrice,
+        });
+
+        const total = rows.reduce(function (sum, item) {
+          return sum + item.cost;
+        }, 0);
+
+        return {
+          rows: rows,
+          total: total,
+          area: area,
+          Lraf: Lraf,
+          alpha: geom.alpha,
+          Wtotal: geom.Wtotal,
+          Ltotal: geom.Ltotal,
+          rafterCount: rafterCount,
+        };
+      }
+
+      function validateRoof(input) {
+        if (!(input.width > 0 && input.length > 0)) {
+          return "Введите ширину и длину дома больше нуля.";
+        }
+        if (input.ridgeHeight < 0) {
+          return "Высота конька не может быть отрицательной.";
+        }
+        if (input.eave < 0) {
+          return "Ширина свеса карниза не может быть отрицательной.";
+        }
+        if (input.type !== "mono" && !(input.width / 2 > 0)) {
+          return "Ширина дома должна быть больше нуля для расчёта скатов.";
+        }
+        if (input.type === "mono" && !(input.width > 0)) {
+          return "Ширина дома должна быть больше нуля для односкатной крыши.";
+        }
+        if (!(input.rafterStepMm > 0 && input.battenStepMm > 0)) {
+          return "Введите шаг стропил и обрешётки больше нуля.";
+        }
+        if (input.warmRoof && !(input.insulationMm > 0)) {
+          return "Введите толщину утеплителя больше нуля.";
+        }
+        if (
+          !(
+            input.timberPrice > 0 &&
+            input.boardPrice > 0 &&
+            input.metalPrice > 0 &&
+            input.membranePrice > 0 &&
+            input.vaporPrice > 0 &&
+            input.workPrice > 0
+          )
+        ) {
+          return "Введите цены кровельных материалов и работ в прайс-листе.";
+        }
+        if (input.warmRoof && !(input.insulationPrice > 0)) {
+          return "Введите цену утеплителя в прайс-листе.";
+        }
+        return "";
       }
 
       function readRoofPrices() {
@@ -3340,18 +3632,6 @@
         roofInsulationWrap.hidden = !roofWarmEl.checked;
       }
 
-      function roofStubRows() {
-        const dash = "—";
-        return [
-          { name: "Стропильные ноги", netLabel: dash, k: 1, orderLabel: dash, cost: 0 },
-          { name: "Мауэрлат", netLabel: dash, k: 1, orderLabel: dash, cost: 0 },
-          { name: "Обрешётка и контробрешётка", netLabel: dash, k: 1, orderLabel: dash, cost: 0 },
-          { name: "Утеплитель кровли", netLabel: dash, k: 1, orderLabel: dash, cost: 0 },
-          { name: "Покрытие и доборные элементы", netLabel: dash, k: 1, orderLabel: dash, cost: 0 },
-          { name: "Плёнки, мембраны и крепёж", netLabel: dash, k: 1, orderLabel: dash, cost: 0 },
-        ];
-      }
-
       function showRoofPending() {
         roofErrorEl.classList.remove("visible");
         billWrapEl.hidden = true;
@@ -3367,27 +3647,49 @@
         syncRoofInsulationUi();
         syncRoofFootprintFromFoundation();
         const input = readRoofForm();
-        calculateRoof(input);
 
         if (forcePending !== false && roofNeedsCalc) {
           showRoofPending();
           return;
         }
 
+        const message = validateRoof(input);
+        if (message) {
+          showBillError(message, roofErrorEl);
+          return;
+        }
+
+        const bill = calculateRoof(input);
+        const alphaDeg = (bill.alpha * 180) / Math.PI;
         showBill(
-          roofStubRows(),
-          0,
+          bill.rows,
+          bill.total,
           "Кровля · " +
             roofTypeLabel(input.type) +
             " · " +
             formatQty(input.width, 2) +
             " × " +
             formatQty(input.length, 2) +
-            " м · покрытие " +
-            roofCoveringLabel(input.covering),
-          { printNodes: "Расчёт кровли — заглушка, математика на следующем шаге" }
+            " м + свес " +
+            formatQty(input.eave, 2) +
+            " м · скаты " +
+            formatQty(bill.area, 2) +
+            " м² · угол " +
+            formatQty(alphaDeg, 1) +
+            "° · стропило " +
+            formatQty(bill.Lraf, 2) +
+            " м",
+          {
+            printNodes:
+              "Кровля " +
+              formatQty(bill.Wtotal, 2) +
+              " × " +
+              formatQty(bill.Ltotal, 2) +
+              " м в плане · " +
+              bill.rafterCount +
+              " стропил",
+          }
         );
-        billTotalEl.textContent = formatMoney(0);
       }
 
       // ==========================================
