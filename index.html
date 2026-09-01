@@ -276,6 +276,84 @@
         font-weight: 650;
       }
 
+      .piles-box {
+        display: grid;
+        grid-template-rows: 0fr;
+        margin-top: 10px;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: grid-template-rows 0.22s ease, opacity 0.18s ease, visibility 0.18s ease;
+      }
+
+      .piles-box.is-open {
+        grid-template-rows: 1fr;
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+      }
+
+      .piles-box-inner {
+        overflow: hidden;
+        min-height: 0;
+      }
+
+      .piles-box.is-open .piles-box-inner {
+        overflow: visible;
+      }
+
+      .piles-table-wrap {
+        overflow-x: auto;
+      }
+
+      .piles-table {
+        min-width: 560px;
+      }
+
+      .piles-table th {
+        text-transform: none;
+        letter-spacing: 0;
+        white-space: nowrap;
+      }
+
+      .piles-table th,
+      .piles-table td {
+        padding: 6px 6px;
+        vertical-align: middle;
+      }
+
+      .piles-table input,
+      .piles-table select {
+        height: 32px;
+      }
+
+      .piles-table .pile-action {
+        width: 1%;
+        white-space: nowrap;
+      }
+
+      .piles-table .pile-locked {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .piles-add {
+        margin-top: 8px;
+        height: 36px;
+        padding: 0 12px;
+        border: 1px solid var(--ink);
+        background: #fff;
+        color: var(--ink);
+        font: inherit;
+        font-weight: 650;
+        letter-spacing: 0.02em;
+        cursor: pointer;
+      }
+
+      .piles-add:hover {
+        background: var(--total-bg);
+      }
+
       label.check {
         display: flex;
         align-items: center;
@@ -346,7 +424,7 @@
         right: 12px;
         bottom: 12px;
         z-index: 100;
-        max-width: 240px;
+        max-width: 420px;
         padding: 6px 10px;
         border: 1px solid;
         background: #fff;
@@ -810,6 +888,56 @@
                 <p class="note">Подошва + два вертикальных борта. Нахлёст 15%. Площадь рулона 10 м².</p>
               </fieldset>
 
+              <fieldset>
+                <legend>Свайное поле</legend>
+                <label class="check">
+                  <input id="strip-piles-enabled" name="strip-piles-enabled" type="checkbox" />
+                  Добавить сваи (Свайно-ростверковый фундамент)
+                </label>
+                <div id="strip-piles-box" class="piles-box" aria-hidden="true">
+                  <div class="piles-box-inner">
+                    <div class="piles-table-wrap">
+                      <table class="piles-table">
+                        <thead>
+                          <tr>
+                            <th>Название группы свай</th>
+                            <th>Диаметр, мм</th>
+                            <th>Глубина заложения, м</th>
+                            <th>Количество, шт</th>
+                            <th>Действие</th>
+                          </tr>
+                        </thead>
+                        <tbody id="strip-piles-body">
+                          <tr class="pile-row" id="pile-row-1" data-pile-id="1" data-pile-locked="true">
+                            <td>
+                              <input id="pile-name-1" class="js-pile-name" type="text" value="Основная группа" placeholder="Под несущие стены" autocomplete="off" />
+                            </td>
+                            <td>
+                              <select id="pile-diameter-1" class="js-pile-diameter">
+                                <option value="200">200</option>
+                                <option value="250">250</option>
+                                <option value="300" selected>300</option>
+                                <option value="350">350</option>
+                                <option value="400">400</option>
+                              </select>
+                            </td>
+                            <td>
+                              <input id="pile-depth-1" class="js-pile-depth" type="number" inputmode="decimal" step="0.1" min="0.1" value="2.5" autocomplete="off" />
+                            </td>
+                            <td>
+                              <input id="pile-count-1" class="js-pile-count" type="number" inputmode="numeric" step="1" min="1" value="20" autocomplete="off" />
+                            </td>
+                            <td class="pile-action"><span class="pile-locked">—</span></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <button type="button" class="piles-add" id="strip-add-pile">[+ Добавить группу свай]</button>
+                  </div>
+                </div>
+                <p class="note">Каждая строка — группа свай одного диаметра и глубины. Расчёт бетона и арматуры свай пока не выполняется.</p>
+              </fieldset>
+
               <p id="strip-error" class="error"></p>
             </form>
           </section>
@@ -1167,6 +1295,34 @@
               </div>
 
               <div class="price-group">
+                <p class="price-cat">Свайное поле</p>
+                <table class="price-table">
+                  <thead>
+                    <tr>
+                      <th>Позиция</th>
+                      <th>Единица</th>
+                      <th class="num">Цена, Br</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Бетон для свай</td>
+                      <td class="unit">м³</td>
+                      <td class="price"><input id="pile-concrete-price" name="pile-concrete-price" type="text" inputmode="decimal" value="185.00" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Бурение и заливка свай</td>
+                      <td class="unit">м.п.</td>
+                      <td class="price"><input id="pile-work-drilling-price" name="pile-work-drilling-price" type="text" inputmode="decimal" value="45.00" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td colspan="3" class="note" style="padding: 4px 8px 0; border: 0">Арматура А3, вязальная проволока и рубероид — цены из блока «Ленточный фундамент» выше.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="price-group">
                 <p class="price-cat">Стены</p>
                 <table class="price-table">
                   <thead>
@@ -1417,6 +1573,17 @@
       const BEACON_LENGTH = 3;
       const MESH_ROLL_M2 = 50;
       const MESH_OVERLAP = 0.1;
+      const PILE_CONCRETE_LOSS = 0.1;
+      const PILE_REBAR_RESERVE = 0.05;
+      const PILE_ROSTRVERK = 0.4;
+      const PILE_LONG_BARS = 4;
+      const PILE_LONG_KG_M = 0.888;
+      const PILE_STIRRUP_STEP = 0.25;
+      const PILE_STIRRUP_KG_M = 0.222;
+      const PILE_STIRRUP_INNER = 0.1;
+      const PILE_WIRE_KG_NODE = 0.002;
+      const PILE_WIRE_NODES = 4;
+      const PILE_RUBEROID_RESERVE = 0.15;
 
       let activeBlock = "slab";
       let billBlock = "slab";
@@ -1470,6 +1637,10 @@
       const wallsOpeningModeEl = document.getElementById("walls-opening-mode");
       const wallsBlockFields = document.getElementById("walls-block-fields");
       const wallsBrickFields = document.getElementById("walls-brick-fields");
+      const pilesEnabledEl = document.getElementById("strip-piles-enabled");
+      const pilesBoxEl = document.getElementById("strip-piles-box");
+      const pilesBodyEl = document.getElementById("strip-piles-body");
+      let pileSeq = 1;
       const billMetaEl = document.getElementById("bill-meta");
       const billEmptyEl = document.getElementById("bill-empty");
       const billWrapEl = document.getElementById("bill-wrap");
@@ -1547,7 +1718,7 @@
       }
 
       function classifyMaterial(name) {
-        if (name.indexOf("Бетон ") === 0 || name === "Песок" || name === "Щебень") {
+        if (name.indexOf("Бетон ") === 0 || name === "Песок" || name === "Щебень" || name.indexOf("Бурение") === 0) {
           return "concrete";
         }
         if (
@@ -1766,6 +1937,78 @@
         return { rows: rows, total: total, perimeter: perimeter, area: area };
       }
 
+      function computePileTotals(piles) {
+        const totals = {
+          concreteNet: 0,
+          concreteOrder: 0,
+          longNetM: 0,
+          longOrderM: 0,
+          longNetKg: 0,
+          longOrderKg: 0,
+          stirrupNetM: 0,
+          stirrupOrderM: 0,
+          stirrupNetKg: 0,
+          stirrupOrderKg: 0,
+          wireKg: 0,
+          ruberoidNet: 0,
+          ruberoidOrder: 0,
+          drillingM: 0,
+          pileCount: 0,
+        };
+
+        for (let i = 0; i < piles.length; i++) {
+          const group = piles[i];
+          const dM = group.diameterMm / 1000;
+          const hM = group.depthM;
+          const n = group.count;
+          if (!(dM > 0 && hM > 0 && n > 0)) {
+            continue;
+          }
+
+          const concreteNet = Math.PI * Math.pow(dM / 2, 2) * hM * n;
+          totals.concreteNet += concreteNet;
+          totals.concreteOrder += concreteNet * (1 + PILE_CONCRETE_LOSS);
+
+          const longNetM = (hM + PILE_ROSTRVERK) * PILE_LONG_BARS * n;
+          const longOrderM = longNetM * (1 + PILE_REBAR_RESERVE);
+          totals.longNetM += longNetM;
+          totals.longOrderM += longOrderM;
+          totals.longNetKg += longNetM * PILE_LONG_KG_M;
+          totals.longOrderKg += longOrderM * PILE_LONG_KG_M;
+
+          const stirrupsPerPile = Math.floor(hM / PILE_STIRRUP_STEP) + 1;
+          const stirrupLen = Math.PI * (dM - PILE_STIRRUP_INNER);
+          const stirrupNetM = stirrupLen * stirrupsPerPile * n;
+          const stirrupOrderM = stirrupNetM * (1 + PILE_REBAR_RESERVE);
+          totals.stirrupNetM += stirrupNetM;
+          totals.stirrupOrderM += stirrupOrderM;
+          totals.stirrupNetKg += stirrupNetM * PILE_STIRRUP_KG_M;
+          totals.stirrupOrderKg += stirrupOrderM * PILE_STIRRUP_KG_M;
+
+          totals.wireKg += PILE_WIRE_NODES * stirrupsPerPile * n * PILE_WIRE_KG_NODE;
+
+          const ruberoidNet = Math.PI * dM * hM * n;
+          totals.ruberoidNet += ruberoidNet;
+          totals.ruberoidOrder += ruberoidNet * (1 + PILE_RUBEROID_RESERVE);
+
+          totals.drillingM += hM * n;
+          totals.pileCount += n;
+        }
+
+        return totals;
+      }
+
+      function pileTotalsCost(totals, prices) {
+        return {
+          concrete: totals.concreteOrder * prices.pileConcretePrice,
+          longRebar: totals.longOrderKg * prices.rebarPrice,
+          stirrupRebar: totals.stirrupOrderKg * prices.rebarPrice,
+          wire: totals.wireKg * prices.wirePrice,
+          ruberoid: totals.ruberoidOrder * prices.hydroPrice,
+          drilling: totals.drillingM * prices.pileDrillingPrice,
+        };
+      }
+
       function calculateStrip(input) {
         const volume = input.length * input.width * input.height;
         const overlap = OVERLAP_DIAMETERS * (input.diameterMm / 1000);
@@ -1899,6 +2142,117 @@
           cost: rolls * input.hydroPrice,
         });
 
+        let pileTotals = null;
+        let pileCosts = null;
+        if (input.pilesEnabled && input.piles && input.piles.length) {
+          pileTotals = computePileTotals(input.piles);
+          if (pileTotals.pileCount > 0) {
+            pileCosts = pileTotalsCost(pileTotals, {
+              pileConcretePrice: input.pileConcretePrice,
+              pileDrillingPrice: input.pileDrillingPrice,
+              rebarPrice: input.rebarPrice,
+              wirePrice: input.wirePrice,
+              hydroPrice: input.hydroPrice,
+            });
+
+            const stripConcreteNet = volume;
+            const stripConcreteOrder = volume * (1 + CONCRETE_RESERVE);
+            const stripConcreteCost = stripConcreteOrder * input.concretePrice;
+            const pileConcreteOrder = pileTotals.concreteOrder;
+            const combinedConcreteOrder = stripConcreteOrder + pileConcreteOrder;
+            rows[0].name =
+              "Бетон " +
+              input.grade +
+              " (лента " +
+              formatQty(stripConcreteOrder, 2) +
+              " м³ + сваи " +
+              formatQty(pileConcreteOrder, 2) +
+              " м³): " +
+              formatQty(combinedConcreteOrder, 2) +
+              " м³";
+            rows[0].netLabel =
+              formatQty(stripConcreteNet + pileTotals.concreteNet, 2) + " м³";
+            rows[0].orderLabel = formatQty(combinedConcreteOrder, 2) + " м³";
+            rows[0].k =
+              stripConcreteNet + pileTotals.concreteNet > 0
+                ? combinedConcreteOrder / (stripConcreteNet + pileTotals.concreteNet)
+                : 1;
+            rows[0].cost = stripConcreteCost + pileCosts.concrete;
+
+            const combinedLongNetKg = netKg + pileTotals.longNetKg;
+            const combinedLongOrderKg = orderKg + pileTotals.longOrderKg;
+            rows[1].netLabel = formatQty(combinedLongNetKg, 1) + " кг";
+            rows[1].orderLabel = formatQty(combinedLongOrderKg, 1) + " кг";
+            rows[1].k = combinedLongNetKg > 0 ? combinedLongOrderKg / combinedLongNetKg : 1;
+            rows[1].name =
+              "Арматура рабочая А3 Ø12 (лента " +
+              formatQty(orderKg, 1) +
+              " кг + сваи " +
+              formatQty(pileTotals.longOrderKg, 1) +
+              " кг): " +
+              formatQty(combinedLongOrderKg, 1) +
+              " кг";
+            rows[1].cost += pileCosts.longRebar;
+
+            const combinedStirrupNetKg = stirrupNetKg + pileTotals.stirrupNetKg;
+            const combinedStirrupOrderKg = stirrupOrderKg + pileTotals.stirrupOrderKg;
+            rows[2].name =
+              "Хомуты Ø" +
+              input.stirrupMm +
+              " мм + кольца свай Ø6 (лента " +
+              formatQty(stirrupOrderKg, 1) +
+              " кг + сваи " +
+              formatQty(pileTotals.stirrupOrderKg, 1) +
+              " кг): " +
+              formatQty(combinedStirrupOrderKg, 1) +
+              " кг";
+            rows[2].netLabel = formatQty(combinedStirrupNetKg, 1) + " кг";
+            rows[2].orderLabel = formatQty(combinedStirrupOrderKg, 1) + " кг";
+            rows[2].k =
+              combinedStirrupNetKg > 0 ? combinedStirrupOrderKg / combinedStirrupNetKg : 1;
+            rows[2].cost += pileCosts.stirrupRebar;
+
+            const combinedWireKg = wireKg + pileTotals.wireKg;
+            rows[3].name =
+              "Вязальная проволока (лента " +
+              formatQty(wireKg, 2) +
+              " кг + сваи " +
+              formatQty(pileTotals.wireKg, 2) +
+              " кг): " +
+              formatQty(combinedWireKg, 2) +
+              " кг";
+            rows[3].netLabel = formatQty(combinedWireKg, 2) + " кг";
+            rows[3].orderLabel = formatQty(combinedWireKg, 2) + " кг";
+            rows[3].cost += pileCosts.wire;
+
+            const combinedHydroNet = hydroNet + pileTotals.ruberoidNet;
+            const combinedHydroOrder = hydroNet * (1 + HYDRO_OVERLAP) + pileTotals.ruberoidOrder;
+            const combinedRolls = Math.ceil(combinedHydroOrder / ROLL_AREA);
+            rows[rows.length - 1].name =
+              "Гидроизоляция / Рубероид (лента " +
+              formatQty(hydroNet, 2) +
+              " м² + гильзы свай " +
+              formatQty(pileTotals.ruberoidNet, 2) +
+              " м²): " +
+              formatQty(combinedHydroNet, 2) +
+              " м²";
+            rows[rows.length - 1].netLabel = formatQty(combinedHydroNet, 2) + " м²";
+            rows[rows.length - 1].orderLabel = String(combinedRolls) + " рул.";
+            rows[rows.length - 1].k =
+              combinedHydroNet > 0 ? combinedHydroOrder / combinedHydroNet : 1 + HYDRO_OVERLAP;
+            rows[rows.length - 1].cost =
+              rolls * input.hydroPrice + pileCosts.ruberoid;
+
+            rows.push({
+              name: "Бурение и заливка свай",
+              netLabel: formatQty(pileTotals.drillingM, 2) + " м.п.",
+              k: 1,
+              orderLabel: formatQty(pileTotals.drillingM, 2) + " м.п.",
+              cost: pileCosts.drilling,
+            });
+          }
+        }
+
         const total = rows.reduce(function (sum, item) {
           return sum + item.cost;
         }, 0);
@@ -1909,6 +2263,7 @@
           volume: volume,
           formLength: formLength,
           stirrupN: stirrupN,
+          pileTotals: pileTotals,
         };
       }
 
@@ -1951,6 +2306,10 @@
           sandHeight: parseNumber(document.getElementById("strip-sand-height").value),
           sandPrice: parseNumber(document.getElementById("strip-sand-price").value),
           hydroPrice: parseNumber(document.getElementById("strip-hydro-price").value),
+          pilesEnabled: pilesEnabledEl.checked,
+          pileConcretePrice: parseNumber(document.getElementById("pile-concrete-price").value),
+          pileDrillingPrice: parseNumber(document.getElementById("pile-work-drilling-price").value),
+          piles: getPilesData(),
         };
       }
 
@@ -2019,6 +2378,26 @@
         if (input.sandHeight > 0 && !(input.sandPrice > 0)) {
           return "Введите цену песка больше нуля.";
         }
+        if (input.pilesEnabled) {
+          if (!(input.pileConcretePrice > 0 && input.pileDrillingPrice > 0)) {
+            return "Введите цены бетона свай и бурения больше нуля.";
+          }
+          if (!input.piles.length) {
+            return "Добавьте хотя бы одну группу свай.";
+          }
+          for (let i = 0; i < input.piles.length; i++) {
+            const pile = input.piles[i];
+            if (!(pile.diameterMm > 0)) {
+              return "Укажите диаметр свай в группе «" + (pile.name || i + 1) + "».";
+            }
+            if (!(pile.depthM > 0)) {
+              return "Укажите глубину заложения свай в группе «" + (pile.name || i + 1) + "».";
+            }
+            if (!(pile.count >= 1 && Number.isInteger(pile.count))) {
+              return "Количество свай в группе «" + (pile.name || i + 1) + "» — целое число от 1.";
+            }
+          }
+        }
         return "";
       }
 
@@ -2052,6 +2431,170 @@
           '<label>Шт<input class="js-on" type="text" inputmode="numeric" value="1" autocomplete="off" /></label>' +
           '<button type="button" class="btn-text js-opening-del" aria-label="Удалить проём">×</button>';
         return row;
+      }
+
+      const PILE_DIAMETERS = [200, 250, 300, 350, 400];
+
+      function nextPileId() {
+        pileSeq += 1;
+        return pileSeq;
+      }
+
+      function syncPileSeq() {
+        let max = 0;
+        const nodes = pilesBodyEl.querySelectorAll("[data-pile-id]");
+        for (let i = 0; i < nodes.length; i++) {
+          const n = Number(nodes[i].getAttribute("data-pile-id"));
+          if (n > max) {
+            max = n;
+          }
+        }
+        pileSeq = max;
+      }
+
+      function pileDiameterOptions(selected) {
+        const sel = Number(selected) || 300;
+        let html = "";
+        for (let i = 0; i < PILE_DIAMETERS.length; i++) {
+          const d = PILE_DIAMETERS[i];
+          html += '<option value="' + d + '"' + (d === sel ? " selected" : "") + ">" + d + "</option>";
+        }
+        return html;
+      }
+
+      function pileRowTemplate(opts) {
+        const options = opts || {};
+        const id = options.id != null ? Number(options.id) : nextPileId();
+        if (id > pileSeq) {
+          pileSeq = id;
+        }
+        const locked = Boolean(options.locked);
+        const name = options.name != null ? String(options.name) : "";
+        const diameterMm = options.diameterMm != null ? Number(options.diameterMm) : 300;
+        const depthM = options.depthM != null ? String(options.depthM) : "2.5";
+        const count = options.count != null ? String(options.count) : "10";
+        const tr = document.createElement("tr");
+        tr.className = "pile-row";
+        tr.id = "pile-row-" + id;
+        tr.setAttribute("data-pile-id", String(id));
+        if (locked) {
+          tr.setAttribute("data-pile-locked", "true");
+        }
+        const action = locked
+          ? '<span class="pile-locked">—</span>'
+          : '<button type="button" class="btn-text js-pile-del" aria-label="Удалить группу свай">Удалить 🗑️</button>';
+        tr.innerHTML =
+          "<td><input id=\"pile-name-" +
+          id +
+          '" class="js-pile-name" type="text" value="' +
+          name.replace(/"/g, "&quot;") +
+          '" placeholder="Под террасу" autocomplete="off" /></td>' +
+          '<td><select id="pile-diameter-' +
+          id +
+          '" class="js-pile-diameter">' +
+          pileDiameterOptions(diameterMm) +
+          "</select></td>" +
+          '<td><input id="pile-depth-' +
+          id +
+          '" class="js-pile-depth" type="number" inputmode="decimal" step="0.1" min="0.1" value="' +
+          depthM +
+          '" autocomplete="off" /></td>' +
+          '<td><input id="pile-count-' +
+          id +
+          '" class="js-pile-count" type="number" inputmode="numeric" step="1" min="1" value="' +
+          count +
+          '" autocomplete="off" /></td>' +
+          '<td class="pile-action">' +
+          action +
+          "</td>";
+        return tr;
+      }
+
+      function defaultPileRow() {
+        return pileRowTemplate({
+          id: 1,
+          locked: true,
+          name: "Основная группа",
+          diameterMm: 300,
+          depthM: "2.5",
+          count: "20",
+        });
+      }
+
+      function ensureDefaultPileRow() {
+        if (!pilesBodyEl.querySelector(".pile-row")) {
+          pileSeq = 0;
+          pilesBodyEl.appendChild(defaultPileRow());
+        }
+      }
+
+      function syncPilesUi() {
+        const on = pilesEnabledEl.checked;
+        pilesBoxEl.classList.toggle("is-open", on);
+        pilesBoxEl.setAttribute("aria-hidden", on ? "false" : "true");
+        if (on) {
+          ensureDefaultPileRow();
+        }
+      }
+
+      function readPilesRows() {
+        const rows = [];
+        const nodes = pilesBodyEl.querySelectorAll("tr.pile-row");
+        for (let i = 0; i < nodes.length; i++) {
+          const tr = nodes[i];
+          rows.push({
+            id: Number(tr.getAttribute("data-pile-id")),
+            locked: tr.getAttribute("data-pile-locked") === "true",
+            name: tr.querySelector(".js-pile-name").value,
+            diameterMm: parseNumber(tr.querySelector(".js-pile-diameter").value),
+            depthM: parseNumber(tr.querySelector(".js-pile-depth").value),
+            count: parseNumber(tr.querySelector(".js-pile-count").value),
+          });
+        }
+        return rows;
+      }
+
+      function getPilesData() {
+        if (!pilesEnabledEl.checked) {
+          return [];
+        }
+        const rows = readPilesRows();
+        const data = [];
+        for (let i = 0; i < rows.length; i++) {
+          data.push({
+            id: rows[i].id,
+            name: rows[i].name,
+            diameterMm: rows[i].diameterMm,
+            depthM: rows[i].depthM,
+            count: rows[i].count,
+          });
+        }
+        return data;
+      }
+
+      function writePilesState(list) {
+        const rows = Array.isArray(list) && list.length ? list : [];
+        while (pilesBodyEl.firstElementChild) {
+          pilesBodyEl.firstElementChild.remove();
+        }
+        if (!rows.length) {
+          pileSeq = 0;
+          pilesBodyEl.appendChild(defaultPileRow());
+        } else {
+          rows.forEach(function (item, index) {
+            pilesBodyEl.appendChild(
+              pileRowTemplate({
+                id: item && item.id != null ? item.id : index + 1,
+                locked: index === 0,
+                name: item && item.name != null ? item.name : "",
+                diameterMm: item && item.diameterMm != null ? item.diameterMm : 300,
+                depthM: item && item.depthM != null ? item.depthM : "2.5",
+                count: item && item.count != null ? item.count : "10",
+              })
+            );
+          });
+        }
+        syncPileSeq();
       }
 
       function readOpeningRows() {
@@ -2560,21 +3103,22 @@
         }
 
         const bill = calculateStrip(input);
-        showBill(
-          bill.rows,
-          bill.total,
+        let meta =
           "Лента " +
-            formatQty(input.length, 2) +
-            " × " +
-            formatQty(input.width, 2) +
-            " × " +
-            formatQty(input.height, 2) +
-            " м · объём " +
-            formatQty(bill.volume, 2) +
-            " м³ · опалубка " +
-            formatQty(bill.formLength, 2) +
-            " м"
-        );
+          formatQty(input.length, 2) +
+          " × " +
+          formatQty(input.width, 2) +
+          " × " +
+          formatQty(input.height, 2) +
+          " м · объём " +
+          formatQty(bill.volume, 2) +
+          " м³ · опалубка " +
+          formatQty(bill.formLength, 2) +
+          " м";
+        if (bill.pileTotals && bill.pileTotals.pileCount > 0) {
+          meta += " · сваи " + bill.pileTotals.pileCount + " шт";
+        }
+        showBill(bill.rows, bill.total, meta);
       }
 
       function renderSummary() {
@@ -2758,6 +3302,7 @@
         walls: 6507.3,
         plaster: 1068.6,
         summary: 19675.09,
+        stripPiles: 12156.81,
       };
 
       function moneyEqual(actual, expected) {
@@ -2841,6 +3386,45 @@
         syncWallsMaterialUi();
         syncPlasterMeshUi();
         updateWallsOpeningUi();
+        pilesEnabledEl.checked = false;
+        writePilesState([]);
+        syncPilesUi();
+        setRegressionField("pile-concrete-price", "185.00");
+        setRegressionField("pile-work-drilling-price", "45.00");
+      }
+
+      function applyStripPilesRegressionFixtures() {
+        setRegressionField("strip-length", "40");
+        setRegressionField("strip-width", "0.4");
+        setRegressionField("strip-height", "1.0");
+        stripGradeEl.value = "М250";
+        stripConcretePriceEl.value = "210";
+        document.getElementById("strip-bar-diameter").value = "12";
+        setRegressionField("strip-bar-count", "4");
+        document.getElementById("strip-stirrup-diameter").value = "8";
+        setRegressionField("strip-stirrup-step", "300");
+        setRegressionField("strip-rebar-price", "3.20");
+        setRegressionField("strip-wire-price", "4.50");
+        setRegressionField("strip-board-price", "14");
+        setRegressionField("strip-timber-price", "8");
+        setRegressionField("strip-sand-height", "0.2");
+        setRegressionField("strip-sand-price", "32");
+        setRegressionField("strip-hydro-price", "28");
+        setRegressionField("pile-concrete-price", "185.00");
+        setRegressionField("pile-work-drilling-price", "45.00");
+        pilesEnabledEl.checked = true;
+        writePilesState([
+          {
+            id: 1,
+            locked: true,
+            name: "Основная группа",
+            diameterMm: 300,
+            depthM: 2.5,
+            count: 20,
+          },
+        ]);
+        syncPilesUi();
+        setActiveBlock("strip");
       }
 
       function computeRegressionSummaryTotal() {
@@ -2892,13 +3476,18 @@
         return { total: total, errors: errors };
       }
 
-      function updateRegressionBadge(passed, summaryExpected, failures) {
+      function updateRegressionBadge(passed, failures, summaryExpected, stripPilesExpected) {
         const badge = document.getElementById("regression-badge");
         badge.hidden = false;
         badge.classList.toggle("pass", passed);
         badge.classList.toggle("fail", !passed);
         if (passed) {
-          badge.textContent = "Тесты пройдены: " + formatMoney(summaryExpected);
+          badge.textContent =
+            "Тесты пройдены: Сводная (" +
+            formatMoney(summaryExpected) +
+            ") | Лента со сваями (" +
+            formatMoney(stripPilesExpected) +
+            ")";
           badge.removeAttribute("title");
         } else {
           badge.textContent = "Ошибка регрессии!";
@@ -2977,8 +3566,34 @@
           );
         }
 
+        applyStripPilesRegressionFixtures();
+        const stripPilesInput = readStripForm();
+        const stripPilesMessage = validateStrip(stripPilesInput);
+        let stripPilesTotal = NaN;
+        if (stripPilesMessage) {
+          failures.push("Лента со сваями: " + stripPilesMessage);
+        } else {
+          stripPilesTotal = calculateStrip(stripPilesInput).total;
+          if (!moneyEqual(stripPilesTotal, REGRESSION_EXPECT.stripPiles)) {
+            failures.push(
+              "Лента со сваями: " +
+                formatMoney(stripPilesTotal) +
+                " ≠ " +
+                formatMoney(REGRESSION_EXPECT.stripPiles)
+            );
+          }
+        }
+
+        applyRegressionFixtures();
+        setActiveBlock("summary");
+
         const passed = failures.length === 0;
-        updateRegressionBadge(passed, REGRESSION_EXPECT.summary, failures);
+        updateRegressionBadge(
+          passed,
+          failures,
+          REGRESSION_EXPECT.summary,
+          REGRESSION_EXPECT.stripPiles
+        );
         return passed;
       }
 
@@ -3042,6 +3657,7 @@
           checks: checks,
           radios: radios,
           openings: readOpeningsState(),
+          piles: readPilesRows(),
         };
       }
 
@@ -3104,6 +3720,10 @@
           applied++;
         });
 
+        if (Array.isArray(state.piles)) {
+          writePilesState(state.piles);
+        }
+
         const radios = state.radios && typeof state.radios === "object" ? state.radios : {};
         const radioNodes = document.querySelectorAll('input[type="radio"][name]');
         Object.keys(radios).forEach(function (name) {
@@ -3128,6 +3748,7 @@
         syncPlasterMeshUi();
         syncSummaryUi();
         updateWallsOpeningUi();
+        syncPilesUi();
         render();
         return applied;
       }
@@ -3161,6 +3782,37 @@
       stripForm.addEventListener("change", render);
       stripForm.addEventListener("submit", function (event) {
         event.preventDefault();
+        render();
+      });
+
+      pilesEnabledEl.addEventListener("change", function () {
+        syncPilesUi();
+        render();
+      });
+
+      document.getElementById("strip-add-pile").addEventListener("click", function () {
+        pilesBodyEl.appendChild(
+          pileRowTemplate({
+            locked: false,
+            name: "",
+            diameterMm: 300,
+            depthM: "2.5",
+            count: "10",
+          })
+        );
+        render();
+      });
+
+      stripForm.addEventListener("click", function (event) {
+        const del = event.target.closest(".js-pile-del");
+        if (!del) {
+          return;
+        }
+        const row = del.closest("tr.pile-row");
+        if (!row || row.getAttribute("data-pile-locked") === "true") {
+          return;
+        }
+        row.remove();
         render();
       });
 
@@ -3295,6 +3947,8 @@
 
       syncWallsMaterialUi();
       syncPlasterMeshUi();
+      syncPileSeq();
+      syncPilesUi();
       runRegressionTests();
       render();
     </script>
