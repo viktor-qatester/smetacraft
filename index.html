@@ -1639,6 +1639,11 @@
                       <td class="unit">рул.</td>
                       <td class="price"><input id="plaster-mesh-price" name="plaster-mesh-price" type="text" inputmode="decimal" value="42" autocomplete="off" /></td>
                     </tr>
+                    <tr>
+                      <td>Штукатурные работы по маякам</td>
+                      <td class="unit">м²</td>
+                      <td class="price"><input id="plaster-work-price" name="plaster-work-price" type="text" inputmode="decimal" value="10.00" autocomplete="off" /></td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -1703,6 +1708,15 @@
           <section class="panel" id="panel-project" hidden>
             <h2>Проект</h2>
             <form id="project-form">
+              <fieldset>
+                <legend>Новый проект</legend>
+                <div class="project-actions">
+                  <button type="button" class="btn-action" id="project-reset">🧹 Новый проект</button>
+                  <button type="button" class="btn-action" id="project-demo">📋 Загрузить демо-проект</button>
+                </div>
+                <p class="note">Обнуляет геометрию всех узлов, чистит таблицу проёмов и снимает дополнительные опции. «Демо-проект» возвращает золотые стартовые размеры (плита 8×10 м, стены 36 м, двухскатная кровля). Цены прайс-листа сохраняются при «Новом проекте».</p>
+              </fieldset>
+
               <fieldset>
                 <legend>Сохранить проект</legend>
                 <div class="project-actions">
@@ -1790,6 +1804,9 @@
       const COVER = 0.04;
       const HOOK_MIN = 0.075;
       const HOOK_DIAMETERS = 10;
+      // Порог «нулевого» габарита: ниже него узел не считается, чтобы в ведомость
+      // не попали NaN/Infinity из делений и тригонометрии пустого проекта.
+      const ZERO_SIZE = 1e-9;
 
       const SLAB_LEAD =
         "Плитный фундамент: бетон, арматура, опалубка, подушка, гидроизоляция. Цены в Br — ориентир, правьте под поставщика.";
@@ -1824,6 +1841,7 @@
       const PROJECT_FORMAT = "smetacraft-project";
       const PROJECT_VERSION = 1;
       const PROJECT_FILENAME = "smetacraft_project.json";
+      const STORAGE_KEY = "smetacraft_project";
 
       const BILL_PRINT_SUB = "Ведомость закупки материалов";
       const SUMMARY_PRINT_SUB = "Сводный акт / ведомость закупки";
@@ -1896,6 +1914,8 @@
       let plasterLengthManual = false;
       let plasterHeightManual = false;
       let lastFoundationBlock = "slab";
+      let persistSuspended = false;
+      let demoProjectSnapshot = null;
 
       const form = document.getElementById("calc-form");
       const stripForm = document.getElementById("strip-form");
@@ -1985,6 +2005,10 @@
         return (
           n.toLocaleString("ru-BY", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " Br"
         );
+      }
+
+      function isZeroSize(value) {
+        return !(Number(value) > ZERO_SIZE);
       }
 
       function kgPerMeter(diameterMm) {
@@ -2152,10 +2176,39 @@
         setPrintHead(BILL_PRINT_SUB, "");
       }
 
+      // Пустой (только что созданный) проект — не ошибка ввода: ведомость показывает
+      // честный ноль вместо требования заполнить размеры.
+      function showZeroBill(meta, options) {
+        showBill([], 0, meta, options);
+      }
+
+      function slabIsEmpty(input) {
+        return isZeroSize(input.length) || isZeroSize(input.width) || isZeroSize(input.height);
+      }
+
+      function stripIsEmpty(input) {
+        return isZeroSize(input.length) || isZeroSize(input.width) || isZeroSize(input.height);
+      }
+
+      function wallsIsEmpty(input) {
+        return isZeroSize(input.perimeter) || isZeroSize(input.height);
+      }
+
+      function plasterIsEmpty(input) {
+        return isZeroSize(input.length) || isZeroSize(input.wallHeight);
+      }
+
+      function roofIsEmpty(input) {
+        return isZeroSize(input.width) || isZeroSize(input.length) || isZeroSize(input.ridgeHeight);
+      }
+
       // ==========================================
       // MODULE: ENGINE — SLAB
       // ==========================================
       function calculateSlab(input) {
+        if (isZeroSize(input.length) || isZeroSize(input.width) || isZeroSize(input.height)) {
+          return { rows: [], total: 0, perimeter: 0, area: 0 };
+        }
         const area = input.length * input.width;
         const perimeter = 2 * (input.length + input.width);
         const volume = area * input.height;
@@ -2349,6 +2402,16 @@
       // MODULE: ENGINE — STRIP
       // ==========================================
       function calculateStrip(input) {
+        if (isZeroSize(input.length) || isZeroSize(input.width) || isZeroSize(input.height)) {
+          return {
+            rows: [],
+            total: 0,
+            volume: 0,
+            formLength: 0,
+            stirrupN: 0,
+            pileTotals: null,
+          };
+        }
         const volume = input.length * input.width * input.height;
         const overlap = OVERLAP_DIAMETERS * (input.diameterMm / 1000);
         const kgLong = kgPerMeter(input.diameterMm);
@@ -3163,6 +3226,9 @@
       }
 
       function _calculateWallsLegacy(input) {
+        if (isZeroSize(input.perimeter) || isZeroSize(input.height) || isZeroSize(input.thick)) {
+          return { rows: [], total: 0, sGross: 0, sOpen: 0, sNet: 0, volume: 0 };
+        }
         const sGross = input.perimeter * input.height;
         const sOpen = input.openings.area;
         const sNet = sGross - sOpen;
@@ -3466,6 +3532,17 @@
       }
 
       function calculateWalls(input) {
+        if (isZeroSize(input.perimeter) || isZeroSize(input.height)) {
+          return {
+            rows: [],
+            total: 0,
+            meta: "Стены не заданы",
+            vGross: 0,
+            vNet: 0,
+            sOpTotal: 0,
+            vOpTotal: 0,
+          };
+        }
         const P = input.perimeter;
         const H = input.height;
         const D = wallLoadMaterialThickness(input.loadMaterial);
@@ -3817,7 +3894,33 @@
         plasterMeshPriceWrap.hidden = !plasterMeshEl.checked;
       }
 
+      function zeroPlasterBill() {
+        return {
+          rows: [],
+          total: 0,
+          area: 0,
+          netKg: 0,
+          orderKg: 0,
+          bags: 0,
+          primerNet: 0,
+          primerOrder: 0,
+          cans: 0,
+          wallLength: 0,
+          beacons: 0,
+          materialsCost: 0,
+          workCost: 0,
+        };
+      }
+
       function calculatePlaster(input) {
+        if (
+          isZeroSize(input.length) ||
+          isZeroSize(input.wallHeight) ||
+          isZeroSize(input.thicknessMm) ||
+          isZeroSize(computePlasterArea(input))
+        ) {
+          return zeroPlasterBill();
+        }
         const rate = input.mix === "cps" ? CPS_RATE : GYPSUM_RATE;
         const bagKg = input.mix === "cps" ? CPS_BAG_KG : GYPSUM_BAG_KG;
         const mixTitle =
@@ -3878,13 +3981,27 @@
           });
         }
 
-        const total = rows.reduce(function (sum, item) {
+        const materialsCost = rows.reduce(function (sum, item) {
           return sum + item.cost;
         }, 0);
 
+        const workCost = area * input.workPrice;
+        rows.push({
+          name:
+            "Штукатурные работы по маякам, " +
+            formatQty(area, 2) +
+            " м² × " +
+            formatQty(input.workPrice, 2) +
+            " Br/м²",
+          netLabel: formatQty(area, 2) + " м²",
+          k: 1,
+          orderLabel: formatQty(area, 2) + " м²",
+          cost: workCost,
+        });
+
         return {
           rows: rows,
-          total: total,
+          total: materialsCost + workCost,
           area: area,
           netKg: netKg,
           orderKg: orderKg,
@@ -3894,6 +4011,8 @@
           cans: cans,
           wallLength: wallLength,
           beacons: beacons,
+          materialsCost: materialsCost,
+          workCost: workCost,
         };
       }
 
@@ -3912,6 +4031,7 @@
           beaconPrice: parseNumber(document.getElementById("plaster-beacon-price").value),
           useMesh: plasterMeshEl.checked,
           meshPrice: parseNumber(document.getElementById("plaster-mesh-price").value),
+          workPrice: parseNumber(document.getElementById("plaster-work-price").value),
         };
       }
 
@@ -3934,6 +4054,9 @@
         }
         if (!(input.mixPrice > 0 && input.primerPrice > 0 && input.beaconPrice > 0)) {
           return "Введите цены смеси, грунтовки и маяков больше нуля.";
+        }
+        if (!(input.workPrice > 0)) {
+          return "Введите цену штукатурных работ больше нуля.";
         }
         if (input.useMesh && !(input.meshPrice > 0)) {
           return "Введите цену рулона сетки больше нуля.";
@@ -4041,6 +4164,18 @@
       }
 
       function calculateRoof(input) {
+        if (isZeroSize(input.width) || isZeroSize(input.length) || isZeroSize(input.ridgeHeight)) {
+          return {
+            rows: [],
+            total: 0,
+            area: 0,
+            Lraf: 0,
+            alpha: 0,
+            Wtotal: 0,
+            Ltotal: 0,
+            rafterCount: 0,
+          };
+        }
         const geom = calculateRoofGeometry(input);
         const area = geom.area;
         const Lraf = geom.Lraf;
@@ -4295,6 +4430,34 @@
         ];
       }
 
+      function plasterSummaryRows(bill, input) {
+        const mixTitle = input.mix === "cps" ? "ЦПС" : "гипс";
+        return [
+          {
+            name:
+              "Штукатурка — материалы (" +
+              mixTitle +
+              ", слой " +
+              formatQty(input.thicknessMm, 0) +
+              " мм, " +
+              formatQty(bill.area, 2) +
+              " м²)",
+            netLabel: formatQty(bill.area, 2) + " м²",
+            k: 1,
+            orderLabel: formatMoney(bill.materialsCost).replace(" Br", ""),
+            cost: bill.materialsCost,
+          },
+          {
+            name:
+              "Штукатурка — работы (по маякам, " + formatQty(bill.area, 2) + " м²)",
+            netLabel: formatQty(bill.area, 2) + " м²",
+            k: 1,
+            orderLabel: formatQty(bill.area, 2) + " м²",
+            cost: bill.workCost,
+          },
+        ];
+      }
+
       function roofSummaryRows(bill, input) {
         let workCost = 0;
         let materialsCost = 0;
@@ -4419,6 +4582,11 @@
         syncRoofFootprintFromFoundation();
         const input = readRoofForm();
 
+        if (roofIsEmpty(input)) {
+          showZeroBill("Кровля не задана — введите габариты дома и высоту конька.");
+          return;
+        }
+
         if (forcePending !== false && roofNeedsCalc) {
           showRoofPending();
           return;
@@ -4469,6 +4637,12 @@
       function renderPlaster() {
         syncPlasterMeshUi();
         const input = readPlasterForm();
+
+        if (plasterIsEmpty(input)) {
+          showZeroBill("Штукатурка не задана — введите длину и высоту стен.");
+          return;
+        }
+
         const message = validatePlaster(input);
 
         if (message) {
@@ -4498,6 +4672,12 @@
       function renderWalls() {
         syncWallsUi();
         const input = readWallsForm();
+
+        if (wallsIsEmpty(input)) {
+          showZeroBill("Стены не заданы — введите периметр и высоту.");
+          return;
+        }
+
         const message = validateWallsEngine(input);
 
         if (message) {
@@ -4511,6 +4691,12 @@
 
       function renderSlab() {
         const input = readForm();
+
+        if (slabIsEmpty(input)) {
+          showZeroBill("Плита не задана — введите длину, ширину и толщину.");
+          return;
+        }
+
         const message = validate(input);
 
         if (message) {
@@ -4536,6 +4722,12 @@
 
       function renderStrip() {
         const input = readStripForm();
+
+        if (stripIsEmpty(input)) {
+          showZeroBill("Лента не задана — введите длину, ширину и высоту.");
+          return;
+        }
+
         const message = validateStrip(input);
 
         if (message) {
@@ -4641,44 +4833,48 @@
         let total = 0;
 
         if (includeFound && foundType === "slab") {
-          const message = validate(slabInput);
-          if (message) {
-            errors.push("Плита: " + message);
-          } else {
-            const bill = calculateSlab(slabInput);
-            rows.push.apply(rows, bill.rows);
-            total += bill.total;
-            nodes.push(
-              "плита " +
-                formatQty(slabInput.length, 2) +
-                " × " +
-                formatQty(slabInput.width, 2) +
-                " × " +
-                formatQty(slabInput.height, 2) +
-                " м"
-            );
+          if (!slabIsEmpty(slabInput)) {
+            const message = validate(slabInput);
+            if (message) {
+              errors.push("Плита: " + message);
+            } else {
+              const bill = calculateSlab(slabInput);
+              rows.push.apply(rows, bill.rows);
+              total += bill.total;
+              nodes.push(
+                "плита " +
+                  formatQty(slabInput.length, 2) +
+                  " × " +
+                  formatQty(slabInput.width, 2) +
+                  " × " +
+                  formatQty(slabInput.height, 2) +
+                  " м"
+              );
+            }
           }
         } else if (includeFound) {
-          const message = validateStrip(stripInput);
-          if (message) {
-            errors.push("Лента: " + message);
-          } else {
-            const bill = calculateStrip(stripInput);
-            rows.push.apply(rows, bill.rows);
-            total += bill.total;
-            nodes.push(
-              "лента " +
-                formatQty(stripInput.length, 2) +
-                " × " +
-                formatQty(stripInput.width, 2) +
-                " × " +
-                formatQty(stripInput.height, 2) +
-                " м"
-            );
+          if (!stripIsEmpty(stripInput)) {
+            const message = validateStrip(stripInput);
+            if (message) {
+              errors.push("Лента: " + message);
+            } else {
+              const bill = calculateStrip(stripInput);
+              rows.push.apply(rows, bill.rows);
+              total += bill.total;
+              nodes.push(
+                "лента " +
+                  formatQty(stripInput.length, 2) +
+                  " × " +
+                  formatQty(stripInput.width, 2) +
+                  " × " +
+                  formatQty(stripInput.height, 2) +
+                  " м"
+              );
+            }
           }
         }
 
-        if (includeWalls) {
+        if (includeWalls && !wallsIsEmpty(wallsInput)) {
           const message = validateWallsEngine(wallsInput);
           if (message) {
             errors.push("Стены: " + message);
@@ -4698,22 +4894,20 @@
           }
         }
 
-        if (includePlaster) {
+        if (includePlaster && !plasterIsEmpty(plasterInput)) {
           syncPlasterMeshUi();
           const message = validatePlaster(plasterInput);
           if (message) {
             errors.push("Штукатурка: " + message);
           } else {
             const bill = calculatePlaster(plasterInput);
-            rows.push.apply(rows, bill.rows);
+            rows.push.apply(rows, plasterSummaryRows(bill, plasterInput));
             total += bill.total;
-            nodes.push(
-              "штукатурка " + formatQty(calculatePlaster(plasterInput).area, 2) + " м²"
-            );
+            nodes.push("штукатурка " + formatQty(bill.area, 2) + " м²");
           }
         }
 
-        if (includeRoof) {
+        if (includeRoof && !roofIsEmpty(roofInput)) {
           const message = validateRoof(roofInput);
           if (message) {
             errors.push("Кровля: " + message);
@@ -4738,6 +4932,15 @@
           return;
         }
 
+        if (!nodes.length) {
+          showZeroBill("Объект: параметры не заданы — новый проект.", {
+            grouped: true,
+            printTitle: SUMMARY_PRINT_SUB,
+            printNodes: "Узлы: не заданы",
+          });
+          return;
+        }
+
         showBill(rows, total, "Объект: " + nodes.join(" · "), {
           grouped: true,
           printTitle: SUMMARY_PRINT_SUB,
@@ -4759,6 +4962,7 @@
         } else {
           renderSlab();
         }
+        saveToLocalStorage();
       }
 
       function setActiveBlock(block) {
@@ -4805,7 +5009,10 @@
       const REGRESSION_EXPECT = {
         slab: 12099.19,
         walls: 7821.96,
-        plaster: 1068.6,
+        // Штукатурка: 40 × 3 м, одна сторона, автовычет 13.5 м² проёмов → 106.5 м².
+        // 48 меш. × 16.50 + 2 кан. × 28 + 34 маяка × 3.20 + 106.5 м² × 10.00 работ.
+        plaster: 2021.8,
+        // Сводная регрессия: плита + legacy-стены + материалы штукатурки (без работ).
         summary: 19675.09,
         stripPiles: 10791.16,
         roof: 14955.59,
@@ -4877,6 +5084,7 @@
         setRegressionField("plaster-primer-price", "28");
         setRegressionField("plaster-beacon-step", "1.2");
         setRegressionField("plaster-beacon-price", "3.20");
+        setRegressionField("plaster-work-price", "10.00");
         plasterMeshEl.checked = false;
 
         summaryIncludeFoundEl.checked = true;
@@ -4999,6 +5207,32 @@
         setActiveBlock("walls");
       }
 
+      function applyPlasterRegressionFixtures() {
+        // Длина и высота штукатурки подтягиваются из «Стен»: флаги ручного ввода
+        // сброшены, поэтому эталон задаётся периметром 40 м и высотой 3 м.
+        setRegressionField("walls-perimeter", "40");
+        wallsPerimeterManual = true;
+        setRegressionField("walls-height", "3.0");
+        writeOpeningsState([
+          { type: "window", width: "1.5", height: "1.5", count: "6", locked: true },
+        ]);
+        plasterLengthManual = false;
+        plasterHeightManual = false;
+        document.getElementById("plaster-sides").value = "1";
+        document.getElementById("plaster-exclude-openings").checked = true;
+        plasterMixEl.value = "gypsum";
+        plasterMixPriceEl.value = "16.50";
+        setRegressionField("plaster-thick", "15");
+        document.getElementById("plaster-primer-layers").value = "1";
+        setRegressionField("plaster-primer-price", "28");
+        setRegressionField("plaster-beacon-step", "1.2");
+        setRegressionField("plaster-beacon-price", "3.20");
+        setRegressionField("plaster-work-price", "10.00");
+        plasterMeshEl.checked = false;
+        syncPlasterMeshUi();
+        setActiveBlock("plaster");
+      }
+
       function computeRegressionSummaryTotal() {
         const includeFound = summaryIncludeFoundEl.checked;
         const includeWalls = summaryIncludeWallsEl.checked;
@@ -5041,7 +5275,8 @@
           if (message) {
             errors.push("Штукатурка: " + message);
           } else {
-            total += calculatePlaster(input).total;
+            const bill = calculatePlaster(input);
+            total += bill.materialsCost;
           }
         }
 
@@ -5054,7 +5289,8 @@
         summaryExpected,
         stripPilesExpected,
         roofExpected,
-        wallsExpected
+        wallsExpected,
+        plasterExpected
       ) {
         const badge = document.getElementById("regression-badge");
         badge.hidden = false;
@@ -5070,6 +5306,8 @@
             formatMoney(roofExpected) +
             ") | Стены (" +
             formatMoney(wallsExpected) +
+            ") | Штукатурка (" +
+            formatMoney(plasterExpected) +
             ")";
           badge.removeAttribute("title");
         } else {
@@ -5079,6 +5317,8 @@
       }
 
       function runRegressionTests() {
+        const previousPersist = persistSuspended;
+        persistSuspended = true;
         applyRegressionFixtures();
 
         const failures = [];
@@ -5093,18 +5333,6 @@
                 return { total: NaN, error: message };
               }
               return { total: calculateSlab(input).total, error: "" };
-            },
-          },
-          {
-            name: "Штукатурка",
-            expected: REGRESSION_EXPECT.plaster,
-            run: function () {
-              const input = readPlasterForm();
-              const message = validatePlaster(input);
-              if (message) {
-                return { total: NaN, error: message };
-              }
-              return { total: calculatePlaster(input).total, error: "" };
             },
           },
         ];
@@ -5191,8 +5419,29 @@
           }
         }
 
+        applyPlasterRegressionFixtures();
+        const plasterInput = readPlasterForm();
+        const plasterMessage = validatePlaster(plasterInput);
+        let plasterTotal = NaN;
+        if (plasterMessage) {
+          failures.push("Штукатурка: " + plasterMessage);
+        } else if (!document.getElementById("plaster-exclude-openings").checked) {
+          failures.push("Штукатурка: автовычет проёмов выключен.");
+        } else {
+          plasterTotal = calculatePlaster(plasterInput).total;
+          if (!moneyEqual(plasterTotal, REGRESSION_EXPECT.plaster)) {
+            failures.push(
+              "Штукатурка: " +
+                formatMoney(plasterTotal) +
+                " ≠ " +
+                formatMoney(REGRESSION_EXPECT.plaster)
+            );
+          }
+        }
+
         applyRegressionFixtures();
         summaryIncludeWallsEl.checked = false;
+        summaryIncludePlasterEl.checked = false;
         setActiveBlock("summary");
 
         const passed = failures.length === 0;
@@ -5202,8 +5451,10 @@
           REGRESSION_EXPECT.summary,
           REGRESSION_EXPECT.stripPiles,
           REGRESSION_EXPECT.roof,
-          REGRESSION_EXPECT.walls
+          REGRESSION_EXPECT.walls,
+          REGRESSION_EXPECT.plaster
         );
+        persistSuspended = previousPersist;
         return passed;
       }
 
@@ -5288,6 +5539,7 @@
             plasterLengthManual: plasterLengthManual,
             plasterHeightManual: plasterHeightManual,
             lastFoundationBlock: lastFoundationBlock,
+            roofNeedsCalc: roofNeedsCalc,
           },
         };
       }
@@ -5374,6 +5626,9 @@
         if (flags.lastFoundationBlock === "slab" || flags.lastFoundationBlock === "strip") {
           lastFoundationBlock = flags.lastFoundationBlock;
         }
+        if (typeof flags.roofNeedsCalc === "boolean") {
+          roofNeedsCalc = flags.roofNeedsCalc;
+        }
 
         const radios = state.radios && typeof state.radios === "object" ? state.radios : {};
         const radioNodes = document.querySelectorAll('input[type="radio"][name]');
@@ -5409,6 +5664,147 @@
           render();
         }
         return applied;
+      }
+
+      function cloneProject(state) {
+        return JSON.parse(JSON.stringify(state));
+      }
+
+      function saveToLocalStorage() {
+        if (persistSuspended) {
+          return;
+        }
+        try {
+          window.localStorage.setItem(STORAGE_KEY, JSON.stringify(collectProject()));
+        } catch (error) {
+          return;
+        }
+      }
+
+      function readStoredProject() {
+        try {
+          const raw = window.localStorage.getItem(STORAGE_KEY);
+          if (!raw) {
+            return null;
+          }
+          return parseProjectText(raw);
+        } catch (error) {
+          return null;
+        }
+      }
+
+      function loadFromLocalStorage() {
+        const state = readStoredProject();
+        if (!state) {
+          return false;
+        }
+        try {
+          applyProject(state);
+          return true;
+        } catch (error) {
+          return false;
+        }
+      }
+
+      function applyDemoTemplate() {
+        if (!demoProjectSnapshot) {
+          return;
+        }
+        const state = cloneProject(demoProjectSnapshot);
+        state.flags = {
+          roofWidthManual: false,
+          roofLengthManual: false,
+          wallsPerimeterManual: false,
+          plasterLengthManual: false,
+          plasterHeightManual: false,
+          lastFoundationBlock: "slab",
+          roofNeedsCalc: false,
+        };
+        roofNeedsCalc = false;
+        applyProject(state);
+      }
+
+      // ==========================================
+      // MODULE: NEW PROJECT (SAFE RESET)
+      // ==========================================
+      // Обнуляется только геометрия объекта. Инженерные настройки (марки бетона,
+      // диаметры и шаги арматуры, сечения бруса, толщина слоёв) и цены прайс-листа
+      // остаются — новый проект начинается с рабочих нормативов, а не с пустых полей.
+      const RESET_GEOMETRY_IDS = [
+        "length",
+        "width",
+        "height",
+        "sand-height",
+        "stone-height",
+        "strip-length",
+        "strip-width",
+        "strip-height",
+        "strip-sand-height",
+        "walls-perimeter",
+        "walls-height",
+        "walls-partition-length",
+        "walls-partition-height",
+        "plaster-length",
+        "plaster-height",
+        "roof-width",
+        "roof-length",
+        "roof-ridge-height",
+        "roof-eave",
+      ];
+
+      const RESET_OPTION_CHECKBOX_IDS = [
+        "strip-piles-enabled",
+        "walls-reinforce-mesh",
+        "walls-armopoyas",
+        "walls-lintels",
+        "walls-partitions-enabled",
+        "plaster-exclude-openings",
+        "plaster-mesh",
+        "roof-warm",
+      ];
+
+      function clearTableBody(tbody) {
+        while (tbody.firstElementChild) {
+          tbody.firstElementChild.remove();
+        }
+      }
+
+      function resetProjectToZero() {
+        RESET_GEOMETRY_IDS.forEach(function (id) {
+          const el = document.getElementById(id);
+          if (el) {
+            el.value = "0";
+          }
+        });
+
+        RESET_OPTION_CHECKBOX_IDS.forEach(function (id) {
+          const el = document.getElementById(id);
+          if (el) {
+            el.checked = false;
+          }
+        });
+
+        clearTableBody(wallsOpeningsBody);
+        openingSeq = 0;
+        clearTableBody(pilesBodyEl);
+        pileSeq = 0;
+
+        wallsPerimeterManual = false;
+        roofWidthManual = false;
+        roofLengthManual = false;
+        plasterLengthManual = false;
+        plasterHeightManual = false;
+        roofNeedsCalc = false;
+
+        syncWallsUi();
+        syncPlasterMeshUi();
+        syncRoofInsulationUi();
+        syncSummaryUi();
+        syncPilesUi();
+        syncWallsPerimeterFromFoundation();
+        syncRoofFootprintFromFoundation();
+        syncPlasterFromWalls();
+        render();
       }
 
       // ==========================================
@@ -5510,6 +5906,7 @@
             count: "1",
           })
         );
+        saveToLocalStorage();
       });
 
       wallsForm.addEventListener("click", function (event) {
@@ -5522,13 +5919,20 @@
           return;
         }
         row.remove();
+        saveToLocalStorage();
       });
 
-      wallsForm.addEventListener("input", syncWallsUi);
-      wallsForm.addEventListener("change", syncWallsUi);
+      wallsForm.addEventListener("input", function () {
+        syncWallsUi();
+        saveToLocalStorage();
+      });
+      wallsForm.addEventListener("change", function () {
+        syncWallsUi();
+        saveToLocalStorage();
+      });
       wallsForm.addEventListener("submit", function (event) {
         event.preventDefault();
-        renderWalls();
+        render();
       });
 
       plasterMixEl.addEventListener("change", function () {
@@ -5610,6 +6014,33 @@
         });
       });
 
+      document.getElementById("project-reset").addEventListener("click", function () {
+        if (!window.confirm("Вы уверены, что хотите очистить все данные и начать новый проект?")) {
+          return;
+        }
+        resetProjectToZero();
+        setProjectStatus(
+          "Новый проект: геометрия узлов обнулена, таблицы проёмов и свай очищены, дополнительные опции сняты. Цены прайс-листа сохранены.",
+          false
+        );
+      });
+
+      document.getElementById("project-demo").addEventListener("click", function () {
+        if (
+          !window.confirm(
+            "Загрузить демонстрационный проект? Текущие введённые данные будут заменены золотыми значениями (плита 8×10 м, стены 36 м, двухскатная кровля)."
+          )
+        ) {
+          return;
+        }
+        applyDemoTemplate();
+        saveToLocalStorage();
+        setProjectStatus(
+          "Загружен демо-проект: плита 8×10 м, стены 36 м, двухскатная кровля. Смета пересчитана.",
+          false
+        );
+      });
+
       document.getElementById("project-export").addEventListener("click", function () {
         const text = JSON.stringify(collectProject(), null, 2);
         try {
@@ -5681,8 +6112,12 @@
       syncOpeningSeq();
       syncPileSeq();
       syncPilesUi();
+      demoProjectSnapshot = collectProject();
       runRegressionTests();
-      render();
+      if (!loadFromLocalStorage()) {
+        applyDemoTemplate();
+        saveToLocalStorage();
+      }
     </script>
   </body>
 </html>
