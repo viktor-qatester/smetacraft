@@ -683,6 +683,7 @@
           <button type="button" class="tab" data-block="strip">Ленточный</button>
           <button type="button" class="tab" data-block="walls">Стены</button>
           <button type="button" class="tab" data-block="plaster">Штукатурка</button>
+          <button type="button" class="tab" data-block="roof">Кровля</button>
           <button type="button" class="tab" data-block="summary">Сводная смета</button>
           <button type="button" class="tab" data-block="price">Прайс-лист</button>
           <button type="button" class="tab" data-block="project">Проект</button>
@@ -1132,6 +1133,114 @@
             </form>
           </section>
 
+          <section class="panel" id="panel-roof" hidden>
+            <h2>Параметры кровли</h2>
+            <p class="hint">
+              <button type="button" class="link-btn js-goto-price">Цены материалов — вкладка «Прайс-лист» ↗</button>
+            </p>
+            <form id="roof-form">
+              <fieldset>
+                <legend>Тип и геометрия крыши</legend>
+                <label>
+                  Тип крыши
+                  <select id="roof-type" name="roof-type">
+                    <option value="mono">Односкатная</option>
+                    <option value="gable" selected>Двухскатная</option>
+                    <option value="hip">Вальмовая</option>
+                  </select>
+                </label>
+                <div class="row">
+                  <label>
+                    Ширина дома по наружным стенам, м
+                    <input id="roof-width" name="roof-width" type="text" inputmode="decimal" value="8.0" autocomplete="off" />
+                  </label>
+                  <label>
+                    Длина дома по наружным стенам, м
+                    <input id="roof-length" name="roof-length" type="text" inputmode="decimal" value="10.0" autocomplete="off" />
+                  </label>
+                </div>
+                <div class="row">
+                  <label>
+                    Высота конька от чердачного перекрытия, м
+                    <input id="roof-ridge-height" name="roof-ridge-height" type="text" inputmode="decimal" value="2.5" autocomplete="off" />
+                  </label>
+                  <label>
+                    Ширина свеса карниза, м
+                    <input id="roof-eave" name="roof-eave" type="text" inputmode="decimal" value="0.5" autocomplete="off" />
+                  </label>
+                </div>
+                <p class="note">Свес карниза — со всех сторон здания, шаг ввода 0.1 м. Геометрия задаётся по наружному контуру стен.</p>
+              </fieldset>
+
+              <fieldset>
+                <legend>Стропила и мауэрлат</legend>
+                <div class="row">
+                  <label>
+                    Сечение стропильной ноги
+                    <select id="roof-rafter-section" name="roof-rafter-section">
+                      <option value="50x150">50×150 мм</option>
+                      <option value="50x200" selected>50×200 мм</option>
+                    </select>
+                  </label>
+                  <label>
+                    Шаг стропильных ног, мм
+                    <input id="roof-rafter-step" name="roof-rafter-step" type="text" inputmode="numeric" value="600" autocomplete="off" />
+                  </label>
+                </div>
+                <label>
+                  Сечение мауэрлата
+                  <select id="roof-mauerlat-section" name="roof-mauerlat-section">
+                    <option value="100x100">100×100 мм</option>
+                    <option value="150x150" selected>150×150 мм</option>
+                  </select>
+                </label>
+                <p class="note">Шаг стропил под ширину утеплителя. Мауэрлат — опорный брус по периметру несущих стен.</p>
+              </fieldset>
+
+              <fieldset>
+                <legend>Обрешётка и утепление</legend>
+                <div class="row">
+                  <label>
+                    Шаг обрешётки, мм
+                    <input id="roof-batten-step" name="roof-batten-step" type="text" inputmode="numeric" value="350" autocomplete="off" />
+                  </label>
+                  <label>
+                    Сечение доски обрешётки
+                    <select id="roof-batten-section" name="roof-batten-section">
+                      <option value="25x100" selected>25×100 мм</option>
+                      <option value="25x150">25×150 мм</option>
+                    </select>
+                  </label>
+                </div>
+                <label class="check">
+                  <input id="roof-warm" name="roof-warm" type="checkbox" checked />
+                  Теплая мансардная кровля
+                </label>
+                <label id="roof-insulation-wrap">
+                  Толщина утеплителя, мм
+                  <input id="roof-insulation-mm" name="roof-insulation-mm" type="text" inputmode="numeric" value="150" autocomplete="off" />
+                </label>
+                <p class="note">Шаг обрешётки — под стандарт металлочерепицы. Утеплитель между стропилами при включённой тёплой кровле.</p>
+              </fieldset>
+
+              <fieldset>
+                <legend>Выбор покрытия</legend>
+                <label>
+                  Тип покрытия
+                  <select id="roof-covering" name="roof-covering">
+                    <option value="metal-tile" selected>Металлочерепица</option>
+                    <option value="soft-tile">Мягкая черепица</option>
+                    <option value="profiled">Профнастил</option>
+                  </select>
+                </label>
+                <p class="note">Расчёт расхода листов, доборных элементов и крепежа будет добавлен на следующем шаге.</p>
+              </fieldset>
+
+              <button type="submit" class="btn-action">Рассчитать смету</button>
+              <p id="roof-error" class="error"></p>
+            </form>
+          </section>
+
           <section class="panel" id="panel-summary" hidden>
             <h2>Состав объекта</h2>
             <form id="summary-form">
@@ -1316,7 +1425,12 @@
                       <td class="price"><input id="pile-work-drilling-price" name="pile-work-drilling-price" type="text" inputmode="decimal" value="45.00" autocomplete="off" /></td>
                     </tr>
                     <tr>
-                      <td colspan="3" class="note" style="padding: 4px 8px 0; border: 0">Арматура А3, вязальная проволока и рубероид — цены из блока «Ленточный фундамент» выше.</td>
+                      <td>Рубероид для гильз свай</td>
+                      <td class="unit">м²</td>
+                      <td class="price"><input id="pile-hydro-price" name="pile-hydro-price" type="text" inputmode="decimal" value="2.80" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td colspan="3" class="note" style="padding: 4px 8px 0; border: 0">Арматура А3 и вязальная проволока — цены из блока «Ленточный фундамент» выше.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -1412,6 +1526,59 @@
                 </table>
               </div>
 
+              <div class="price-group">
+                <p class="price-cat">Кровельные материалы и работы</p>
+                <table class="price-table">
+                  <thead>
+                    <tr>
+                      <th>Позиция</th>
+                      <th>Единица</th>
+                      <th class="num">Цена, Br</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Брус стропил и мауэрлата</td>
+                      <td class="unit">м³</td>
+                      <td class="price"><input id="roof-timber-price" name="roof-timber-price" type="text" inputmode="decimal" value="450.00" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Доска обрешётки</td>
+                      <td class="unit">м³</td>
+                      <td class="price"><input id="roof-board-price" name="roof-board-price" type="text" inputmode="decimal" value="380.00" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Покрытие (металлочерепица)</td>
+                      <td class="unit">м²</td>
+                      <td class="price"><input id="roof-metal-price" name="roof-metal-price" type="text" inputmode="decimal" value="28.00" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Утеплитель (минеральная вата)</td>
+                      <td class="unit">м³</td>
+                      <td class="price"><input id="roof-insulation-price" name="roof-insulation-price" type="text" inputmode="decimal" value="95.00" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Гидро-ветрозащитная мембрана</td>
+                      <td class="unit">рул.</td>
+                      <td class="price"><input id="roof-membrane-price" name="roof-membrane-price" type="text" inputmode="decimal" value="110.00" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td colspan="3" class="note" style="padding: 4px 8px 0; border: 0">Рулон мембраны — 75 м². Пароизоляция — тоже 75 м² в рулоне.</td>
+                    </tr>
+                    <tr>
+                      <td>Пароизоляция</td>
+                      <td class="unit">рул.</td>
+                      <td class="price"><input id="roof-vapor-price" name="roof-vapor-price" type="text" inputmode="decimal" value="85.00" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Монтаж кровли «под ключ»</td>
+                      <td class="unit">м²</td>
+                      <td class="price"><input id="roof-work-price" name="roof-work-price" type="text" inputmode="decimal" value="65.00" autocomplete="off" /></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
               <p class="note">Цены применяются к ведомости сразу. Марки бетона и состав штукатурки подставляют свою цену при смене в параметрах. Строка стеклосетки появляется, когда сетка включена в параметрах штукатурки.</p>
             </form>
           </section>
@@ -1485,6 +1652,9 @@
     <div id="regression-badge" class="regression-badge pass" hidden aria-live="polite"></div>
 
     <script>
+      // ==========================================
+      // MODULE: CONSTANTS
+      // ==========================================
       const CONCRETE_RESERVE = 0.05;
       const MESHES = 2;
       const ROD_LENGTH = 11.7;
@@ -1512,6 +1682,8 @@
         "Стены и проёмы: газобетон или кирпич, вычет окон и дверей, клей или раствор, арматура штроб Ø8, перемычки, крепёж. Цены в Br — ориентир, правьте под поставщика.";
       const PLASTER_LEAD =
         "Штукатурка стен: гипсовая или ЦПС, грунтовка глубокого проникновения, маяки 6 мм, стеклосетка. Цены в Br — ориентир, правьте под поставщика.";
+      const ROOF_LEAD =
+        "Кровля: стропила, мауэрлат, обрешётка, утепление и покрытие. Цены в Br — ориентир, правьте под поставщика. Расчёт материалов — на следующем шаге.";
       const SUMMARY_LEAD =
         "Сводная смета объекта: включите узлы, параметры читаются из их форм. Итоговая ведомость закупки по категориям, 0 токенов.";
       const PRICE_LEAD =
@@ -1524,12 +1696,13 @@
         strip: STRIP_LEAD,
         walls: WALLS_LEAD,
         plaster: PLASTER_LEAD,
+        roof: ROOF_LEAD,
         summary: SUMMARY_LEAD,
         price: PRICE_LEAD,
         project: PROJECT_LEAD,
       };
 
-      const BILL_BLOCKS = ["slab", "strip", "walls", "plaster", "summary"];
+      const BILL_BLOCKS = ["slab", "strip", "walls", "plaster", "roof", "summary"];
 
       const PROJECT_FORMAT = "smetacraft-project";
       const PROJECT_VERSION = 1;
@@ -1585,13 +1758,21 @@
       const PILE_WIRE_NODES = 4;
       const PILE_RUBEROID_RESERVE = 0.15;
 
+      // ==========================================
+      // MODULE: STATE & DOM REFS
+      // ==========================================
       let activeBlock = "slab";
       let billBlock = "slab";
+      let roofNeedsCalc = true;
+      let roofWidthManual = false;
+      let roofLengthManual = false;
+      let lastFoundationBlock = "slab";
 
       const form = document.getElementById("calc-form");
       const stripForm = document.getElementById("strip-form");
       const wallsForm = document.getElementById("walls-form");
       const plasterForm = document.getElementById("plaster-form");
+      const roofForm = document.getElementById("roof-form");
       const summaryForm = document.getElementById("summary-form");
       const gradeEl = document.getElementById("grade");
       const concretePriceEl = document.getElementById("concrete-price");
@@ -1601,12 +1782,14 @@
       const stripErrorEl = document.getElementById("strip-error");
       const wallsErrorEl = document.getElementById("walls-error");
       const plasterErrorEl = document.getElementById("plaster-error");
+      const roofErrorEl = document.getElementById("roof-error");
       const summaryErrorEl = document.getElementById("summary-error");
       const leadEl = document.getElementById("lead");
       const panelSlab = document.getElementById("panel-slab");
       const panelStrip = document.getElementById("panel-strip");
       const panelWalls = document.getElementById("panel-walls");
       const panelPlaster = document.getElementById("panel-plaster");
+      const panelRoof = document.getElementById("panel-roof");
       const panelSummary = document.getElementById("panel-summary");
       const panelPrice = document.getElementById("panel-price");
       const panelProject = document.getElementById("panel-project");
@@ -1627,6 +1810,10 @@
       const plasterMixPriceEl = document.getElementById("plaster-mix-price");
       const plasterMeshEl = document.getElementById("plaster-mesh");
       const plasterMeshPriceWrap = document.getElementById("plaster-mesh-price-wrap");
+      const roofWarmEl = document.getElementById("roof-warm");
+      const roofInsulationWrap = document.getElementById("roof-insulation-wrap");
+      const roofWidthEl = document.getElementById("roof-width");
+      const roofLengthEl = document.getElementById("roof-length");
       const printDateEl = document.getElementById("print-date");
       const billPrintEl = document.getElementById("bill-print");
       const wallsOpeningsList = document.getElementById("walls-openings-list");
@@ -1647,6 +1834,9 @@
       const billBodyEl = document.getElementById("bill-body");
       const billTotalEl = document.getElementById("bill-total");
 
+      // ==========================================
+      // MODULE: UTILS
+      // ==========================================
       function parseNumber(value) {
         const n = Number(String(value).trim().replace(",", "."));
         return Number.isFinite(n) ? n : NaN;
@@ -1687,6 +1877,9 @@
         return 2 * (innerW + innerH) + 2 * hook;
       }
 
+      // ==========================================
+      // MODULE: BILL UI
+      // ==========================================
       function rowHtml(item) {
         return (
           "<tr>" +
@@ -1797,6 +1990,7 @@
         stripErrorEl.classList.remove("visible");
         wallsErrorEl.classList.remove("visible");
         plasterErrorEl.classList.remove("visible");
+        roofErrorEl.classList.remove("visible");
         summaryErrorEl.classList.remove("visible");
         billEmptyEl.hidden = true;
         billWrapEl.hidden = false;
@@ -1818,10 +2012,14 @@
         billWrapEl.hidden = true;
         billPrintEl.hidden = true;
         billEmptyEl.hidden = false;
+        billEmptyEl.textContent = "Заполните размеры и цены слева.";
         billMetaEl.textContent = "";
         setPrintHead(BILL_PRINT_SUB, "");
       }
 
+      // ==========================================
+      // MODULE: ENGINE — SLAB
+      // ==========================================
       function calculateSlab(input) {
         const area = input.length * input.width;
         const perimeter = 2 * (input.length + input.width);
@@ -1937,6 +2135,9 @@
         return { rows: rows, total: total, perimeter: perimeter, area: area };
       }
 
+      // ==========================================
+      // MODULE: ENGINE — PILES
+      // ==========================================
       function computePileTotals(piles) {
         const totals = {
           concreteNet: 0,
@@ -2004,11 +2205,14 @@
           longRebar: totals.longOrderKg * prices.rebarPrice,
           stirrupRebar: totals.stirrupOrderKg * prices.rebarPrice,
           wire: totals.wireKg * prices.wirePrice,
-          ruberoid: totals.ruberoidOrder * prices.hydroPrice,
+          ruberoid: totals.ruberoidOrder * prices.pileHydroPrice,
           drilling: totals.drillingM * prices.pileDrillingPrice,
         };
       }
 
+      // ==========================================
+      // MODULE: ENGINE — STRIP
+      // ==========================================
       function calculateStrip(input) {
         const volume = input.length * input.width * input.height;
         const overlap = OVERLAP_DIAMETERS * (input.diameterMm / 1000);
@@ -2135,6 +2339,7 @@
         }
 
         rows.push({
+          id: "strip-hydro",
           name: "Гидроизоляция, рулон 1×10 м",
           netLabel: formatQty(hydroNet, 2) + " м²",
           k: 1 + HYDRO_OVERLAP,
@@ -2152,7 +2357,7 @@
               pileDrillingPrice: input.pileDrillingPrice,
               rebarPrice: input.rebarPrice,
               wirePrice: input.wirePrice,
-              hydroPrice: input.hydroPrice,
+              pileHydroPrice: input.pileHydroPrice,
             });
 
             const stripConcreteNet = volume;
@@ -2228,20 +2433,27 @@
             const combinedHydroNet = hydroNet + pileTotals.ruberoidNet;
             const combinedHydroOrder = hydroNet * (1 + HYDRO_OVERLAP) + pileTotals.ruberoidOrder;
             const combinedRolls = Math.ceil(combinedHydroOrder / ROLL_AREA);
-            rows[rows.length - 1].name =
-              "Гидроизоляция / Рубероид (лента " +
-              formatQty(hydroNet, 2) +
-              " м² + гильзы свай " +
-              formatQty(pileTotals.ruberoidNet, 2) +
-              " м²): " +
-              formatQty(combinedHydroNet, 2) +
-              " м²";
-            rows[rows.length - 1].netLabel = formatQty(combinedHydroNet, 2) + " м²";
-            rows[rows.length - 1].orderLabel = String(combinedRolls) + " рул.";
-            rows[rows.length - 1].k =
-              combinedHydroNet > 0 ? combinedHydroOrder / combinedHydroNet : 1 + HYDRO_OVERLAP;
-            rows[rows.length - 1].cost =
-              rolls * input.hydroPrice + pileCosts.ruberoid;
+            const hydroRow = rows.find(function (row) {
+              return (
+                row.id === "strip-hydro" ||
+                String(row.name).toLowerCase().indexOf("гидроизоляция") !== -1
+              );
+            });
+            if (hydroRow) {
+              hydroRow.name =
+                "Гидроизоляция / Рубероид (лента " +
+                formatQty(hydroNet, 2) +
+                " м² + гильзы свай " +
+                formatQty(pileTotals.ruberoidNet, 2) +
+                " м²): " +
+                formatQty(combinedHydroNet, 2) +
+                " м²";
+              hydroRow.netLabel = formatQty(combinedHydroNet, 2) + " м²";
+              hydroRow.orderLabel = String(combinedRolls) + " рул.";
+              hydroRow.k =
+                combinedHydroNet > 0 ? combinedHydroOrder / combinedHydroNet : 1 + HYDRO_OVERLAP;
+              hydroRow.cost = rolls * input.hydroPrice + pileCosts.ruberoid;
+            }
 
             rows.push({
               name: "Бурение и заливка свай",
@@ -2309,6 +2521,7 @@
           pilesEnabled: pilesEnabledEl.checked,
           pileConcretePrice: parseNumber(document.getElementById("pile-concrete-price").value),
           pileDrillingPrice: parseNumber(document.getElementById("pile-work-drilling-price").value),
+          pileHydroPrice: parseNumber(document.getElementById("pile-hydro-price").value),
           piles: getPilesData(),
         };
       }
@@ -2379,8 +2592,14 @@
           return "Введите цену песка больше нуля.";
         }
         if (input.pilesEnabled) {
-          if (!(input.pileConcretePrice > 0 && input.pileDrillingPrice > 0)) {
-            return "Введите цены бетона свай и бурения больше нуля.";
+          if (
+            !(
+              input.pileConcretePrice > 0 &&
+              input.pileDrillingPrice > 0 &&
+              input.pileHydroPrice > 0
+            )
+          ) {
+            return "Введите цены бетона свай, бурения и рубероида гильз больше нуля.";
           }
           if (!input.piles.length) {
             return "Добавьте хотя бы одну группу свай.";
@@ -2401,6 +2620,9 @@
         return "";
       }
 
+      // ==========================================
+      // MODULE: ENGINE — WALLS
+      // ==========================================
       function parseBlockSize(value) {
         const parts = String(value).split("x");
         return {
@@ -2888,6 +3110,9 @@
         return "";
       }
 
+      // ==========================================
+      // MODULE: ENGINE — PLASTER
+      // ==========================================
       function syncPlasterMeshUi() {
         plasterMeshPriceWrap.hidden = !plasterMeshEl.checked;
       }
@@ -3011,6 +3236,163 @@
         return "";
       }
 
+      // ==========================================
+      // MODULE: ENGINE — ROOF (stub)
+      // ==========================================
+      function roofTypeLabel(type) {
+        if (type === "mono") {
+          return "односкатная";
+        }
+        if (type === "hip") {
+          return "вальмовая";
+        }
+        return "двухскатная";
+      }
+
+      function roofCoveringLabel(type) {
+        if (type === "soft-tile") {
+          return "мягкая черепица";
+        }
+        if (type === "profiled") {
+          return "профнастил";
+        }
+        return "металлочерепица";
+      }
+
+      function calculateRoof(input) {
+        return {
+          rows: [],
+          total: 0,
+          input: input,
+        };
+      }
+
+      function readRoofPrices() {
+        return {
+          timberPrice: parseNumber(document.getElementById("roof-timber-price").value),
+          boardPrice: parseNumber(document.getElementById("roof-board-price").value),
+          metalPrice: parseNumber(document.getElementById("roof-metal-price").value),
+          insulationPrice: parseNumber(document.getElementById("roof-insulation-price").value),
+          membranePrice: parseNumber(document.getElementById("roof-membrane-price").value),
+          vaporPrice: parseNumber(document.getElementById("roof-vapor-price").value),
+          workPrice: parseNumber(document.getElementById("roof-work-price").value),
+        };
+      }
+
+      function foundationFootprintSource() {
+        if (lastFoundationBlock === "strip" || lastFoundationBlock === "slab") {
+          return lastFoundationBlock;
+        }
+        return summaryFoundType();
+      }
+
+      function readFoundationFootprint() {
+        const source = foundationFootprintSource();
+        if (source === "strip") {
+          return {
+            width: document.getElementById("strip-width").value,
+            length: document.getElementById("strip-length").value,
+          };
+        }
+        return {
+          width: document.getElementById("width").value,
+          length: document.getElementById("length").value,
+        };
+      }
+
+      function syncRoofFootprintFromFoundation() {
+        const footprint = readFoundationFootprint();
+        if (!roofWidthManual && footprint.width !== "") {
+          roofWidthEl.value = footprint.width;
+        }
+        if (!roofLengthManual && footprint.length !== "") {
+          roofLengthEl.value = footprint.length;
+        }
+      }
+
+      function readRoofForm() {
+        const prices = readRoofPrices();
+        return {
+          type: document.getElementById("roof-type").value,
+          width: parseNumber(roofWidthEl.value),
+          length: parseNumber(roofLengthEl.value),
+          ridgeHeight: parseNumber(document.getElementById("roof-ridge-height").value),
+          eave: parseNumber(document.getElementById("roof-eave").value),
+          rafterSection: document.getElementById("roof-rafter-section").value,
+          rafterStepMm: parseNumber(document.getElementById("roof-rafter-step").value),
+          mauerlatSection: document.getElementById("roof-mauerlat-section").value,
+          battenStepMm: parseNumber(document.getElementById("roof-batten-step").value),
+          battenSection: document.getElementById("roof-batten-section").value,
+          warmRoof: roofWarmEl.checked,
+          insulationMm: parseNumber(document.getElementById("roof-insulation-mm").value),
+          covering: document.getElementById("roof-covering").value,
+          timberPrice: prices.timberPrice,
+          boardPrice: prices.boardPrice,
+          metalPrice: prices.metalPrice,
+          insulationPrice: prices.insulationPrice,
+          membranePrice: prices.membranePrice,
+          vaporPrice: prices.vaporPrice,
+          workPrice: prices.workPrice,
+        };
+      }
+
+      function syncRoofInsulationUi() {
+        roofInsulationWrap.hidden = !roofWarmEl.checked;
+      }
+
+      function roofStubRows() {
+        const dash = "—";
+        return [
+          { name: "Стропильные ноги", netLabel: dash, k: 1, orderLabel: dash, cost: 0 },
+          { name: "Мауэрлат", netLabel: dash, k: 1, orderLabel: dash, cost: 0 },
+          { name: "Обрешётка и контробрешётка", netLabel: dash, k: 1, orderLabel: dash, cost: 0 },
+          { name: "Утеплитель кровли", netLabel: dash, k: 1, orderLabel: dash, cost: 0 },
+          { name: "Покрытие и доборные элементы", netLabel: dash, k: 1, orderLabel: dash, cost: 0 },
+          { name: "Плёнки, мембраны и крепёж", netLabel: dash, k: 1, orderLabel: dash, cost: 0 },
+        ];
+      }
+
+      function showRoofPending() {
+        roofErrorEl.classList.remove("visible");
+        billWrapEl.hidden = true;
+        billPrintEl.hidden = true;
+        billEmptyEl.hidden = false;
+        billEmptyEl.textContent =
+          "Параметры изменены. Нажмите «Рассчитать смету» для получения результатов.";
+        billMetaEl.textContent = "";
+        setPrintHead(BILL_PRINT_SUB, "");
+      }
+
+      function renderRoof(forcePending) {
+        syncRoofInsulationUi();
+        syncRoofFootprintFromFoundation();
+        const input = readRoofForm();
+        calculateRoof(input);
+
+        if (forcePending !== false && roofNeedsCalc) {
+          showRoofPending();
+          return;
+        }
+
+        showBill(
+          roofStubRows(),
+          0,
+          "Кровля · " +
+            roofTypeLabel(input.type) +
+            " · " +
+            formatQty(input.width, 2) +
+            " × " +
+            formatQty(input.length, 2) +
+            " м · покрытие " +
+            roofCoveringLabel(input.covering),
+          { printNodes: "Расчёт кровли — заглушка, математика на следующем шаге" }
+        );
+        billTotalEl.textContent = formatMoney(0);
+      }
+
+      // ==========================================
+      // MODULE: RENDER & TABS
+      // ==========================================
       function renderPlaster() {
         syncPlasterMeshUi();
         const input = readPlasterForm();
@@ -3265,6 +3647,8 @@
           renderWalls();
         } else if (billBlock === "plaster") {
           renderPlaster();
+        } else if (billBlock === "roof") {
+          renderRoof();
         } else if (billBlock === "summary") {
           renderSummary();
         } else {
@@ -3274,6 +3658,9 @@
 
       function setActiveBlock(block) {
         activeBlock = block;
+        if (block === "slab" || block === "strip") {
+          lastFoundationBlock = block;
+        }
         if (BILL_BLOCKS.indexOf(block) !== -1) {
           billBlock = block;
         }
@@ -3281,9 +3668,13 @@
         panelStrip.hidden = block !== "strip";
         panelWalls.hidden = block !== "walls";
         panelPlaster.hidden = block !== "plaster";
+        panelRoof.hidden = block !== "roof";
         panelSummary.hidden = block !== "summary";
         panelPrice.hidden = block !== "price";
         panelProject.hidden = block !== "project";
+        if (block === "roof") {
+          syncRoofFootprintFromFoundation();
+        }
         leadEl.textContent = BLOCK_LEADS[block] || SLAB_LEAD;
         document.querySelectorAll(".tab[data-block]").forEach(function (tab) {
           const on = tab.getAttribute("data-block") === block;
@@ -3297,12 +3688,15 @@
         render();
       }
 
+      // ==========================================
+      // MODULE: REGRESSION TESTS
+      // ==========================================
       const REGRESSION_EXPECT = {
         slab: 12099.19,
         walls: 6507.3,
         plaster: 1068.6,
         summary: 19675.09,
-        stripPiles: 12156.81,
+        stripPiles: 10791.16,
       };
 
       function moneyEqual(actual, expected) {
@@ -3391,6 +3785,7 @@
         syncPilesUi();
         setRegressionField("pile-concrete-price", "185.00");
         setRegressionField("pile-work-drilling-price", "45.00");
+        setRegressionField("pile-hydro-price", "2.80");
       }
 
       function applyStripPilesRegressionFixtures() {
@@ -3412,6 +3807,7 @@
         setRegressionField("strip-hydro-price", "28");
         setRegressionField("pile-concrete-price", "185.00");
         setRegressionField("pile-work-drilling-price", "45.00");
+        setRegressionField("pile-hydro-price", "2.80");
         pilesEnabledEl.checked = true;
         writePilesState([
           {
@@ -3597,6 +3993,9 @@
         return passed;
       }
 
+      // ==========================================
+      // MODULE: IMPORT / EXPORT
+      // ==========================================
       function setProjectStatus(message, isError) {
         projectStatusEl.textContent = message;
         projectStatusEl.classList.toggle("is-error", Boolean(isError));
@@ -3658,6 +4057,11 @@
           radios: radios,
           openings: readOpeningsState(),
           piles: readPilesRows(),
+          flags: {
+            roofWidthManual: roofWidthManual,
+            roofLengthManual: roofLengthManual,
+            lastFoundationBlock: lastFoundationBlock,
+          },
         };
       }
 
@@ -3724,6 +4128,17 @@
           writePilesState(state.piles);
         }
 
+        const flags = state.flags && typeof state.flags === "object" ? state.flags : {};
+        if (typeof flags.roofWidthManual === "boolean") {
+          roofWidthManual = flags.roofWidthManual;
+        }
+        if (typeof flags.roofLengthManual === "boolean") {
+          roofLengthManual = flags.roofLengthManual;
+        }
+        if (flags.lastFoundationBlock === "slab" || flags.lastFoundationBlock === "strip") {
+          lastFoundationBlock = flags.lastFoundationBlock;
+        }
+
         const radios = state.radios && typeof state.radios === "object" ? state.radios : {};
         const radioNodes = document.querySelectorAll('input[type="radio"][name]');
         Object.keys(radios).forEach(function (name) {
@@ -3746,13 +4161,24 @@
 
         syncWallsMaterialUi();
         syncPlasterMeshUi();
+        syncRoofInsulationUi();
         syncSummaryUi();
         updateWallsOpeningUi();
         syncPilesUi();
-        render();
+
+        if (state.block && BLOCK_LEADS[state.block]) {
+          setActiveBlock(state.block);
+        } else if (BILL_BLOCKS.indexOf(billBlock) !== -1) {
+          setActiveBlock(billBlock);
+        } else {
+          render();
+        }
         return applied;
       }
 
+      // ==========================================
+      // MODULE: DOM EVENTS & BOOT
+      // ==========================================
       document.querySelectorAll(".tab[data-block]").forEach(function (tab) {
         tab.addEventListener("click", function () {
           setActiveBlock(tab.getAttribute("data-block"));
@@ -3771,15 +4197,27 @@
         render();
       });
 
-      form.addEventListener("input", render);
-      form.addEventListener("change", render);
+      form.addEventListener("input", function () {
+        syncRoofFootprintFromFoundation();
+        render();
+      });
+      form.addEventListener("change", function () {
+        syncRoofFootprintFromFoundation();
+        render();
+      });
       form.addEventListener("submit", function (event) {
         event.preventDefault();
         render();
       });
 
-      stripForm.addEventListener("input", render);
-      stripForm.addEventListener("change", render);
+      stripForm.addEventListener("input", function () {
+        syncRoofFootprintFromFoundation();
+        render();
+      });
+      stripForm.addEventListener("change", function () {
+        syncRoofFootprintFromFoundation();
+        render();
+      });
       stripForm.addEventListener("submit", function (event) {
         event.preventDefault();
         render();
@@ -3870,6 +4308,47 @@
         render();
       });
 
+      roofWarmEl.addEventListener("change", function () {
+        syncRoofInsulationUi();
+        roofNeedsCalc = true;
+        if (billBlock === "roof") {
+          renderRoof();
+        }
+      });
+      roofWidthEl.addEventListener("input", function () {
+        roofWidthManual = true;
+        roofNeedsCalc = true;
+        if (billBlock === "roof") {
+          renderRoof();
+        }
+      });
+      roofLengthEl.addEventListener("input", function () {
+        roofLengthManual = true;
+        roofNeedsCalc = true;
+        if (billBlock === "roof") {
+          renderRoof();
+        }
+      });
+      roofForm.addEventListener("input", function (event) {
+        if (event.target !== roofWidthEl && event.target !== roofLengthEl) {
+          roofNeedsCalc = true;
+        }
+        if (billBlock === "roof") {
+          renderRoof();
+        }
+      });
+      roofForm.addEventListener("change", function () {
+        roofNeedsCalc = true;
+        if (billBlock === "roof") {
+          renderRoof();
+        }
+      });
+      roofForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        roofNeedsCalc = false;
+        renderRoof(false);
+      });
+
       priceForm.addEventListener("input", render);
       priceForm.addEventListener("change", render);
       priceForm.addEventListener("submit", function (event) {
@@ -3947,6 +4426,7 @@
 
       syncWallsMaterialUi();
       syncPlasterMeshUi();
+      syncRoofInsulationUi();
       syncPileSeq();
       syncPilesUi();
       runRegressionTests();
