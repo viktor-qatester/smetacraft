@@ -369,6 +369,137 @@
         background: #fdf0ee;
       }
 
+      .link-btn {
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: var(--ink);
+        font: inherit;
+        font-size: 12px;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+        cursor: pointer;
+      }
+
+      .link-btn:hover {
+        color: var(--muted);
+      }
+
+      .hint {
+        margin: -4px 0 12px;
+      }
+
+      .bill-head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .bill-head h2 {
+        margin: 0 0 12px;
+      }
+
+      .price-group {
+        margin-bottom: 18px;
+      }
+
+      .price-group:last-of-type {
+        margin-bottom: 0;
+      }
+
+      .price-cat {
+        margin: 0 0 6px;
+        font-size: 12px;
+        font-weight: 650;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .price-table th,
+      .price-table td {
+        padding: 4px 8px;
+      }
+
+      .price-table td.unit {
+        width: 88px;
+        white-space: nowrap;
+        color: var(--muted);
+      }
+
+      .price-table td.price {
+        width: 120px;
+      }
+
+      .price-table input {
+        height: 32px;
+        text-align: right;
+      }
+
+      .project-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .btn-action {
+        display: inline-flex;
+        align-items: center;
+        height: 36px;
+        padding: 0 14px;
+        border: 1px solid var(--ink);
+        background: #fff;
+        color: var(--ink);
+        font: inherit;
+        font-weight: 650;
+        letter-spacing: 0.02em;
+        cursor: pointer;
+      }
+
+      .btn-action:hover {
+        background: var(--total-bg);
+      }
+
+      .file-btn {
+        position: relative;
+        gap: 0;
+      }
+
+      .file-btn:focus-within {
+        outline: 2px solid var(--ink);
+        outline-offset: 2px;
+      }
+
+      .file-btn input[type="file"] {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        border: 0;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .file-name {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .project-status {
+        margin: 14px 0 0;
+        padding-top: 12px;
+        border-top: 1px solid var(--line);
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--muted);
+      }
+
+      .project-status.is-error {
+        color: var(--error);
+      }
+
       .print-letterhead {
         display: none;
       }
@@ -404,7 +535,7 @@
           padding: 0;
         }
 
-        .bill > h2 {
+        .bill .bill-head {
           display: none;
         }
 
@@ -475,6 +606,8 @@
           <button type="button" class="tab" data-block="walls">Стены</button>
           <button type="button" class="tab" data-block="plaster">Штукатурка</button>
           <button type="button" class="tab" data-block="summary">Сводная смета</button>
+          <button type="button" class="tab" data-block="price">Прайс-лист</button>
+          <button type="button" class="tab" data-block="project">Проект</button>
         </nav>
       </header>
 
@@ -482,6 +615,9 @@
         <div class="params">
           <section class="panel" id="panel-slab">
             <h2>Параметры плиты</h2>
+            <p class="hint">
+              <button type="button" class="link-btn js-goto-price">Цены материалов — вкладка «Прайс-лист» ↗</button>
+            </p>
             <form id="calc-form">
               <fieldset>
                 <legend>Геометрия</legend>
@@ -517,12 +653,8 @@
                       <option value="М500" data-price="315">М500</option>
                     </select>
                   </label>
-                  <label>
-                    Цена, Br/м³
-                    <input id="concrete-price" name="concrete-price" type="text" inputmode="decimal" value="210" autocomplete="off" />
-                  </label>
                 </div>
-                <p class="note">Запас бетона +5% на усадку и распирание опалубки.</p>
+                <p class="note">Запас бетона +5% на усадку и распирание опалубки. Смена марки подставляет её цену в прайс-лист.</p>
               </fieldset>
 
               <fieldset>
@@ -543,31 +675,11 @@
                     <input id="bar-step" name="bar-step" type="text" inputmode="decimal" value="200" autocomplete="off" />
                   </label>
                 </div>
-                <div class="row">
-                  <label>
-                    Арматура, Br/кг
-                    <input id="rebar-price" name="rebar-price" type="text" inputmode="decimal" value="3.20" autocomplete="off" />
-                  </label>
-                  <label>
-                    Проволока, Br/кг
-                    <input id="wire-price" name="wire-price" type="text" inputmode="decimal" value="4.50" autocomplete="off" />
-                  </label>
-                </div>
                 <p class="note">Две сетки, нахлёст 40d, хлыст 11.7 м. Проволока — 1% от массы арматуры.</p>
               </fieldset>
 
               <fieldset>
                 <legend>Опалубка</legend>
-                <div class="row">
-                  <label>
-                    Доска 25×150×6000, Br/шт
-                    <input id="board-price" name="board-price" type="text" inputmode="decimal" value="14" autocomplete="off" />
-                  </label>
-                  <label>
-                    Брус 50×50×3000, Br/шт
-                    <input id="timber-price" name="timber-price" type="text" inputmode="decimal" value="8" autocomplete="off" />
-                  </label>
-                </div>
                 <p class="note">Борт по периметру на высоту плиты. Упоры брусом каждые 0.6 м, выпуск в грунт 0.4 м.</p>
               </fieldset>
 
@@ -579,18 +691,8 @@
                     <input id="sand-height" name="sand-height" type="text" inputmode="decimal" value="0.2" autocomplete="off" />
                   </label>
                   <label>
-                    Песок, Br/м³
-                    <input id="sand-price" name="sand-price" type="text" inputmode="decimal" value="32" autocomplete="off" />
-                  </label>
-                </div>
-                <div class="row">
-                  <label>
                     Щебень, толщина м
                     <input id="stone-height" name="stone-height" type="text" inputmode="decimal" value="0.2" autocomplete="off" />
-                  </label>
-                  <label>
-                    Щебень, Br/м³
-                    <input id="stone-price" name="stone-price" type="text" inputmode="decimal" value="55" autocomplete="off" />
                   </label>
                 </div>
                 <p class="note">Коэффициент трамбования 1.10. Толщина 0 — строка не попадает в ведомость.</p>
@@ -598,10 +700,6 @@
 
               <fieldset>
                 <legend>Гидроизоляция</legend>
-                <label>
-                  Рулон 1×10 м, Br/шт
-                  <input id="hydro-price" name="hydro-price" type="text" inputmode="decimal" value="28" autocomplete="off" />
-                </label>
                 <p class="note">Нахлёст 15% к площади плиты. Площадь рулона 10 м².</p>
               </fieldset>
 
@@ -611,6 +709,9 @@
 
           <section class="panel" id="panel-strip" hidden>
             <h2>Параметры ленты</h2>
+            <p class="hint">
+              <button type="button" class="link-btn js-goto-price">Цены материалов — вкладка «Прайс-лист» ↗</button>
+            </p>
             <form id="strip-form">
               <fieldset>
                 <legend>Геометрия</legend>
@@ -646,17 +747,13 @@
                       <option value="М500" data-price="315">М500</option>
                     </select>
                   </label>
-                  <label>
-                    Цена, Br/м³
-                    <input id="strip-concrete-price" name="strip-concrete-price" type="text" inputmode="decimal" value="210" autocomplete="off" />
-                  </label>
                 </div>
-                <p class="note">Объём = длина × ширина × высота. Запас бетона +5%.</p>
+                <p class="note">Объём = длина × ширина × высота. Запас бетона +5%. Смена марки подставляет её цену в прайс-лист.</p>
               </fieldset>
 
               <fieldset>
                 <legend>Рабочие стержни</legend>
-                <div class="row-3">
+                <div class="row">
                   <label>
                     Диаметр, мм
                     <select id="strip-bar-diameter" name="strip-bar-diameter">
@@ -671,17 +768,13 @@
                     Число стержней
                     <input id="strip-bar-count" name="strip-bar-count" type="text" inputmode="numeric" value="4" autocomplete="off" />
                   </label>
-                  <label>
-                    Арматура, Br/кг
-                    <input id="strip-rebar-price" name="strip-rebar-price" type="text" inputmode="decimal" value="3.20" autocomplete="off" />
-                  </label>
                 </div>
                 <p class="note">Продольные стержни по длине ленты. Нахлёст 40d, хлыст 11.7 м. Типично 4 стержня (2+2) для ленты 400 мм.</p>
               </fieldset>
 
               <fieldset>
                 <legend>Хомуты</legend>
-                <div class="row-3">
+                <div class="row">
                   <label>
                     Диаметр, мм
                     <select id="strip-stirrup-diameter" name="strip-stirrup-diameter">
@@ -694,50 +787,26 @@
                     Шаг, мм
                     <input id="strip-stirrup-step" name="strip-stirrup-step" type="text" inputmode="decimal" value="300" autocomplete="off" />
                   </label>
-                  <label>
-                    Проволока, Br/кг
-                    <input id="strip-wire-price" name="strip-wire-price" type="text" inputmode="decimal" value="4.50" autocomplete="off" />
-                  </label>
                 </div>
                 <p class="note">Прямоугольный хомут: защитный слой 40 мм, два крюка по 10d (не менее 75 мм). Нарезка из хлыстов 11.7 м.</p>
               </fieldset>
 
               <fieldset>
                 <legend>Опалубка</legend>
-                <div class="row">
-                  <label>
-                    Доска 25×150×6000, Br/шт
-                    <input id="strip-board-price" name="strip-board-price" type="text" inputmode="decimal" value="14" autocomplete="off" />
-                  </label>
-                  <label>
-                    Брус 50×50×3000, Br/шт
-                    <input id="strip-timber-price" name="strip-timber-price" type="text" inputmode="decimal" value="8" autocomplete="off" />
-                  </label>
-                </div>
                 <p class="note">Два борта по длине ленты. Упоры брусом каждые 0.6 м, выпуск в грунт 0.4 м.</p>
               </fieldset>
 
               <fieldset>
                 <legend>Подушка</legend>
-                <div class="row">
-                  <label>
-                    Песок, толщина м
-                    <input id="strip-sand-height" name="strip-sand-height" type="text" inputmode="decimal" value="0.2" autocomplete="off" />
-                  </label>
-                  <label>
-                    Песок, Br/м³
-                    <input id="strip-sand-price" name="strip-sand-price" type="text" inputmode="decimal" value="32" autocomplete="off" />
-                  </label>
-                </div>
+                <label>
+                  Песок, толщина м
+                  <input id="strip-sand-height" name="strip-sand-height" type="text" inputmode="decimal" value="0.2" autocomplete="off" />
+                </label>
                 <p class="note">Под подошвой ленты. Коэффициент трамбования 1.10. Толщина 0 — строка не в ведомости.</p>
               </fieldset>
 
               <fieldset>
                 <legend>Гидроизоляция</legend>
-                <label>
-                  Рулон 1×10 м, Br/шт
-                  <input id="strip-hydro-price" name="strip-hydro-price" type="text" inputmode="decimal" value="28" autocomplete="off" />
-                </label>
                 <p class="note">Подошва + два вертикальных борта. Нахлёст 15%. Площадь рулона 10 м².</p>
               </fieldset>
 
@@ -747,6 +816,9 @@
 
           <section class="panel" id="panel-walls" hidden>
             <h2>Параметры стен</h2>
+            <p class="hint">
+              <button type="button" class="link-btn js-goto-price">Цены материалов — вкладка «Прайс-лист» ↗</button>
+            </p>
             <form id="walls-form">
               <fieldset>
                 <legend>Геометрия</legend>
@@ -793,22 +865,12 @@
                     </select>
                   </label>
                 </div>
-                <div class="row">
-                  <label>
-                    Блок, Br/шт
-                    <input id="walls-block-price" name="walls-block-price" type="text" inputmode="decimal" value="5.50" autocomplete="off" />
-                  </label>
-                  <label>
-                    Клей, Br/ед.
-                    <input id="walls-glue-price" name="walls-glue-price" type="text" inputmode="decimal" value="18" autocomplete="off" />
-                  </label>
-                </div>
                 <p class="note">Формат Д×Толщина×Высота. Запас блоков +5% на подрезку у проёмов и углов. Клей 25 кг/м³ кладки; пена — 1 баллон на 10 м² стены.</p>
               </fieldset>
 
               <fieldset id="walls-brick-fields" hidden>
                 <legend>Кирпич</legend>
-                <div class="row-3">
+                <div class="row">
                   <label>
                     Формат
                     <select id="walls-brick-format" name="walls-brick-format">
@@ -824,20 +886,6 @@
                       <option value="380">380 (1½ кирпича)</option>
                       <option value="510">510 (2 кирпича)</option>
                     </select>
-                  </label>
-                  <label>
-                    Кирпич, Br/шт
-                    <input id="walls-brick-price" name="walls-brick-price" type="text" inputmode="decimal" value="0.42" autocomplete="off" />
-                  </label>
-                </div>
-                <div class="row">
-                  <label>
-                    ЦПС 25 кг, Br/меш.
-                    <input id="walls-mortar-price" name="walls-mortar-price" type="text" inputmode="decimal" value="7.50" autocomplete="off" />
-                  </label>
-                  <label>
-                    Сетка, Br/м²
-                    <input id="walls-mesh-price" name="walls-mesh-price" type="text" inputmode="decimal" value="8" autocomplete="off" />
                   </label>
                 </div>
                 <p class="note">Швы 10 мм вертикальный и 12 мм горизонтальный. Бой кирпича +5%. Сетка перевязки в каждом армопоясе.</p>
@@ -881,20 +929,6 @@
 
               <fieldset>
                 <legend>Армирование и крепёж</legend>
-                <div class="row-3">
-                  <label>
-                    Арматура Ø8, Br/кг
-                    <input id="walls-rebar-price" name="walls-rebar-price" type="text" inputmode="decimal" value="3.20" autocomplete="off" />
-                  </label>
-                  <label>
-                    Перемычки, Br/м
-                    <input id="walls-lintel-price" name="walls-lintel-price" type="text" inputmode="decimal" value="28" autocomplete="off" />
-                  </label>
-                  <label>
-                    Дюбели, Br/упак. 100
-                    <input id="walls-screw-price" name="walls-screw-price" type="text" inputmode="decimal" value="12" autocomplete="off" />
-                  </label>
-                </div>
                 <p class="note">Ø8 в 2 прутка каждые 4 ряда, нахлёст 40d, хлыст 11.7 м. Рамные дюбели — 8 шт. на проём.</p>
               </fieldset>
 
@@ -904,6 +938,9 @@
 
           <section class="panel" id="panel-plaster" hidden>
             <h2>Параметры штукатурки</h2>
+            <p class="hint">
+              <button type="button" class="link-btn js-goto-price">Цены материалов — вкладка «Прайс-лист» ↗</button>
+            </p>
             <form id="plaster-form">
               <fieldset>
                 <legend>Геометрия</legend>
@@ -935,37 +972,21 @@
                     <input id="plaster-thick" name="plaster-thick" type="text" inputmode="decimal" value="15" autocomplete="off" />
                   </label>
                 </div>
-                <div class="row">
-                  <label>
-                    Смесь, Br/меш.
-                    <input id="plaster-mix-price" name="plaster-mix-price" type="text" inputmode="decimal" value="16.50" autocomplete="off" />
-                  </label>
-                  <label>
-                    Грунтовка, слои
-                    <select id="plaster-primer-layers" name="plaster-primer-layers">
-                      <option value="1" selected>1 слой</option>
-                      <option value="2">2 слоя</option>
-                    </select>
-                  </label>
-                </div>
+                <label>
+                  Грунтовка, слои
+                  <select id="plaster-primer-layers" name="plaster-primer-layers">
+                    <option value="1" selected>1 слой</option>
+                    <option value="2">2 слоя</option>
+                  </select>
+                </label>
                 <p class="note">Масса смеси: S × (толщина / 10) × норма × 1.05. Гипс — мешки 30 кг, ЦПС — 25 кг.</p>
               </fieldset>
 
               <fieldset>
                 <legend>Грунтовка и маяки</legend>
-                <div class="row">
-                  <label>
-                    Грунтовка 10 л, Br/кан.
-                    <input id="plaster-primer-price" name="plaster-primer-price" type="text" inputmode="decimal" value="28" autocomplete="off" />
-                  </label>
-                  <label>
-                    Шаг маяков, м
-                    <input id="plaster-beacon-step" name="plaster-beacon-step" type="text" inputmode="decimal" value="1.2" autocomplete="off" />
-                  </label>
-                </div>
                 <label>
-                  Маяк 6 мм × 3.0 м, Br/шт
-                  <input id="plaster-beacon-price" name="plaster-beacon-price" type="text" inputmode="decimal" value="3.20" autocomplete="off" />
+                  Шаг маяков, м
+                  <input id="plaster-beacon-step" name="plaster-beacon-step" type="text" inputmode="decimal" value="1.2" autocomplete="off" />
                 </label>
                 <p class="note">Грунтовка 0.15 л/м² на слой, запас +10%, канистра 10 л. Маяки по длине стен S / высота.</p>
               </fieldset>
@@ -975,10 +996,6 @@
                 <label class="check">
                   <input id="plaster-mesh" name="plaster-mesh" type="checkbox" />
                   Армирующая стеклосетка
-                </label>
-                <label id="plaster-mesh-price-wrap" hidden>
-                  Рулон 50 м², Br/шт
-                  <input id="plaster-mesh-price" name="plaster-mesh-price" type="text" inputmode="decimal" value="42" autocomplete="off" />
                 </label>
                 <p class="note">Рулоны 50 м², нахлёст и запас 10%.</p>
               </fieldset>
@@ -1040,6 +1057,235 @@
               <p id="summary-error" class="error"></p>
             </form>
           </section>
+
+          <section class="panel" id="panel-price" hidden>
+            <h2>Прайс-лист</h2>
+            <form id="price-form">
+              <div class="price-group">
+                <p class="price-cat">Плитный фундамент</p>
+                <table class="price-table">
+                  <thead>
+                    <tr>
+                      <th>Позиция</th>
+                      <th>Единица</th>
+                      <th class="num">Цена, Br</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Бетон (по выбранной марке)</td>
+                      <td class="unit">м³</td>
+                      <td class="price"><input id="concrete-price" name="concrete-price" type="text" inputmode="decimal" value="210" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Арматура сеток</td>
+                      <td class="unit">кг</td>
+                      <td class="price"><input id="rebar-price" name="rebar-price" type="text" inputmode="decimal" value="3.20" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Вязальная проволока</td>
+                      <td class="unit">кг</td>
+                      <td class="price"><input id="wire-price" name="wire-price" type="text" inputmode="decimal" value="4.50" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Доска 25×150×6000</td>
+                      <td class="unit">шт</td>
+                      <td class="price"><input id="board-price" name="board-price" type="text" inputmode="decimal" value="14" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Брус упоров 50×50×3000</td>
+                      <td class="unit">шт</td>
+                      <td class="price"><input id="timber-price" name="timber-price" type="text" inputmode="decimal" value="8" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Песок подушки</td>
+                      <td class="unit">м³</td>
+                      <td class="price"><input id="sand-price" name="sand-price" type="text" inputmode="decimal" value="32" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Щебень подушки</td>
+                      <td class="unit">м³</td>
+                      <td class="price"><input id="stone-price" name="stone-price" type="text" inputmode="decimal" value="55" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Гидроизоляция, рулон 1×10 м</td>
+                      <td class="unit">рул.</td>
+                      <td class="price"><input id="hydro-price" name="hydro-price" type="text" inputmode="decimal" value="28" autocomplete="off" /></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="price-group">
+                <p class="price-cat">Ленточный фундамент</p>
+                <table class="price-table">
+                  <thead>
+                    <tr>
+                      <th>Позиция</th>
+                      <th>Единица</th>
+                      <th class="num">Цена, Br</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Бетон (по выбранной марке)</td>
+                      <td class="unit">м³</td>
+                      <td class="price"><input id="strip-concrete-price" name="strip-concrete-price" type="text" inputmode="decimal" value="210" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Арматура рабочая и хомуты</td>
+                      <td class="unit">кг</td>
+                      <td class="price"><input id="strip-rebar-price" name="strip-rebar-price" type="text" inputmode="decimal" value="3.20" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Вязальная проволока</td>
+                      <td class="unit">кг</td>
+                      <td class="price"><input id="strip-wire-price" name="strip-wire-price" type="text" inputmode="decimal" value="4.50" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Доска 25×150×6000</td>
+                      <td class="unit">шт</td>
+                      <td class="price"><input id="strip-board-price" name="strip-board-price" type="text" inputmode="decimal" value="14" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Брус упоров 50×50×3000</td>
+                      <td class="unit">шт</td>
+                      <td class="price"><input id="strip-timber-price" name="strip-timber-price" type="text" inputmode="decimal" value="8" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Песок подушки</td>
+                      <td class="unit">м³</td>
+                      <td class="price"><input id="strip-sand-price" name="strip-sand-price" type="text" inputmode="decimal" value="32" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Гидроизоляция, рулон 1×10 м</td>
+                      <td class="unit">рул.</td>
+                      <td class="price"><input id="strip-hydro-price" name="strip-hydro-price" type="text" inputmode="decimal" value="28" autocomplete="off" /></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="price-group">
+                <p class="price-cat">Стены</p>
+                <table class="price-table">
+                  <thead>
+                    <tr>
+                      <th>Позиция</th>
+                      <th>Единица</th>
+                      <th class="num">Цена, Br</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Газоблок</td>
+                      <td class="unit">шт</td>
+                      <td class="price"><input id="walls-block-price" name="walls-block-price" type="text" inputmode="decimal" value="5.50" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Клей для блоков</td>
+                      <td class="unit">меш. / бал.</td>
+                      <td class="price"><input id="walls-glue-price" name="walls-glue-price" type="text" inputmode="decimal" value="18" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Кирпич кладочный</td>
+                      <td class="unit">шт</td>
+                      <td class="price"><input id="walls-brick-price" name="walls-brick-price" type="text" inputmode="decimal" value="0.42" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Кладочный раствор ЦПС 25 кг</td>
+                      <td class="unit">меш.</td>
+                      <td class="price"><input id="walls-mortar-price" name="walls-mortar-price" type="text" inputmode="decimal" value="7.50" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Сетка кладочная перевязки</td>
+                      <td class="unit">м²</td>
+                      <td class="price"><input id="walls-mesh-price" name="walls-mesh-price" type="text" inputmode="decimal" value="8" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Арматура штроб Ø8</td>
+                      <td class="unit">кг</td>
+                      <td class="price"><input id="walls-rebar-price" name="walls-rebar-price" type="text" inputmode="decimal" value="3.20" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Перемычки над проёмами</td>
+                      <td class="unit">м</td>
+                      <td class="price"><input id="walls-lintel-price" name="walls-lintel-price" type="text" inputmode="decimal" value="28" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Дюбели рамные, упак. 100</td>
+                      <td class="unit">упак.</td>
+                      <td class="price"><input id="walls-screw-price" name="walls-screw-price" type="text" inputmode="decimal" value="12" autocomplete="off" /></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="price-group">
+                <p class="price-cat">Штукатурка</p>
+                <table class="price-table">
+                  <thead>
+                    <tr>
+                      <th>Позиция</th>
+                      <th>Единица</th>
+                      <th class="num">Цена, Br</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Смесь (по выбранному составу)</td>
+                      <td class="unit">меш.</td>
+                      <td class="price"><input id="plaster-mix-price" name="plaster-mix-price" type="text" inputmode="decimal" value="16.50" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Грунтовка глубокого проникновения, 10 л</td>
+                      <td class="unit">кан.</td>
+                      <td class="price"><input id="plaster-primer-price" name="plaster-primer-price" type="text" inputmode="decimal" value="28" autocomplete="off" /></td>
+                    </tr>
+                    <tr>
+                      <td>Маячковый профиль 6 мм × 3.0 м</td>
+                      <td class="unit">шт</td>
+                      <td class="price"><input id="plaster-beacon-price" name="plaster-beacon-price" type="text" inputmode="decimal" value="3.20" autocomplete="off" /></td>
+                    </tr>
+                    <tr id="plaster-mesh-price-wrap" hidden>
+                      <td>Стеклосетка армирующая, рулон 50 м²</td>
+                      <td class="unit">рул.</td>
+                      <td class="price"><input id="plaster-mesh-price" name="plaster-mesh-price" type="text" inputmode="decimal" value="42" autocomplete="off" /></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <p class="note">Цены применяются к ведомости сразу. Марки бетона и состав штукатурки подставляют свою цену при смене в параметрах. Строка стеклосетки появляется, когда сетка включена в параметрах штукатурки.</p>
+            </form>
+          </section>
+
+          <section class="panel" id="panel-project" hidden>
+            <h2>Проект</h2>
+            <form id="project-form">
+              <fieldset>
+                <legend>Сохранить проект</legend>
+                <div class="project-actions">
+                  <button type="button" class="btn-action" id="project-export">Экспортировать проект</button>
+                </div>
+                <p class="note">Скачивает файл smetacraft_project.json со всеми параметрами и ценами.</p>
+              </fieldset>
+
+              <fieldset>
+                <legend>Загрузить проект</legend>
+                <div class="project-actions">
+                  <label class="btn-action file-btn">
+                    Выбрать файл .json
+                    <input id="project-file" type="file" accept=".json,application/json" />
+                  </label>
+                  <span id="project-file-name" class="file-name">Файл не выбран</span>
+                </div>
+                <p class="note">Смета пересчитывается сразу после чтения файла. Файл никуда не отправляется — он читается в браузере.</p>
+              </fieldset>
+
+              <p id="project-status" class="project-status">Проект хранится только у вас: ни экспорт, ни импорт не обращаются к сети.</p>
+            </form>
+          </section>
         </div>
 
         <aside class="panel bill" aria-live="polite">
@@ -1049,7 +1295,10 @@
             <p class="print-nodes" id="print-nodes"></p>
             <p class="print-date">Дата: <span id="print-date"></span></p>
           </div>
-          <h2>Ведомость закупки</h2>
+          <div class="bill-head">
+            <h2>Ведомость закупки</h2>
+            <button type="button" class="link-btn js-goto-price">изменить цену ↗</button>
+          </div>
           <p id="bill-meta" class="bill-meta"></p>
           <p id="bill-empty" class="empty">Заполните размеры и цены слева.</p>
           <div id="bill-wrap" class="bill-wrap" hidden>
@@ -1109,6 +1358,26 @@
         "Штукатурка стен: гипсовая или ЦПС, грунтовка глубокого проникновения, маяки 6 мм, стеклосетка. Цены в Br — ориентир, правьте под поставщика.";
       const SUMMARY_LEAD =
         "Сводная смета объекта: включите узлы, параметры читаются из их форм. Итоговая ведомость закупки по категориям, 0 токенов.";
+      const PRICE_LEAD =
+        "Прайс-лист: цены материалов всех узлов в одном месте. Правка цены сразу пересчитывает ведомость справа.";
+      const PROJECT_LEAD =
+        "Проект: сохранение и загрузка всех параметров и цен файлом JSON. Данные остаются в браузере, сервер не нужен.";
+
+      const BLOCK_LEADS = {
+        slab: SLAB_LEAD,
+        strip: STRIP_LEAD,
+        walls: WALLS_LEAD,
+        plaster: PLASTER_LEAD,
+        summary: SUMMARY_LEAD,
+        price: PRICE_LEAD,
+        project: PROJECT_LEAD,
+      };
+
+      const BILL_BLOCKS = ["slab", "strip", "walls", "plaster", "summary"];
+
+      const PROJECT_FORMAT = "smetacraft-project";
+      const PROJECT_VERSION = 1;
+      const PROJECT_FILENAME = "smetacraft_project.json";
 
       const BILL_PRINT_SUB = "Ведомость закупки материалов";
       const SUMMARY_PRINT_SUB = "Сводный акт / ведомость закупки";
@@ -1150,6 +1419,7 @@
       const MESH_OVERLAP = 0.1;
 
       let activeBlock = "slab";
+      let billBlock = "slab";
 
       const form = document.getElementById("calc-form");
       const stripForm = document.getElementById("strip-form");
@@ -1171,6 +1441,12 @@
       const panelWalls = document.getElementById("panel-walls");
       const panelPlaster = document.getElementById("panel-plaster");
       const panelSummary = document.getElementById("panel-summary");
+      const panelPrice = document.getElementById("panel-price");
+      const panelProject = document.getElementById("panel-project");
+      const priceForm = document.getElementById("price-form");
+      const projectFileEl = document.getElementById("project-file");
+      const projectFileNameEl = document.getElementById("project-file-name");
+      const projectStatusEl = document.getElementById("project-status");
       const summaryIncludeFoundEl = document.getElementById("summary-include-found");
       const summaryIncludeWallsEl = document.getElementById("summary-include-walls");
       const summaryIncludePlasterEl = document.getElementById("summary-include-plaster");
@@ -2439,13 +2715,13 @@
       }
 
       function render() {
-        if (activeBlock === "strip") {
+        if (billBlock === "strip") {
           renderStrip();
-        } else if (activeBlock === "walls") {
+        } else if (billBlock === "walls") {
           renderWalls();
-        } else if (activeBlock === "plaster") {
+        } else if (billBlock === "plaster") {
           renderPlaster();
-        } else if (activeBlock === "summary") {
+        } else if (billBlock === "summary") {
           renderSummary();
         } else {
           renderSlab();
@@ -2454,21 +2730,17 @@
 
       function setActiveBlock(block) {
         activeBlock = block;
+        if (BILL_BLOCKS.indexOf(block) !== -1) {
+          billBlock = block;
+        }
         panelSlab.hidden = block !== "slab";
         panelStrip.hidden = block !== "strip";
         panelWalls.hidden = block !== "walls";
         panelPlaster.hidden = block !== "plaster";
         panelSummary.hidden = block !== "summary";
-        leadEl.textContent =
-          block === "strip"
-            ? STRIP_LEAD
-            : block === "walls"
-              ? WALLS_LEAD
-              : block === "plaster"
-                ? PLASTER_LEAD
-                : block === "summary"
-                  ? SUMMARY_LEAD
-                  : SLAB_LEAD;
+        panelPrice.hidden = block !== "price";
+        panelProject.hidden = block !== "project";
+        leadEl.textContent = BLOCK_LEADS[block] || SLAB_LEAD;
         document.querySelectorAll(".tab[data-block]").forEach(function (tab) {
           const on = tab.getAttribute("data-block") === block;
           tab.classList.toggle("is-active", on);
@@ -2710,6 +2982,156 @@
         return passed;
       }
 
+      function setProjectStatus(message, isError) {
+        projectStatusEl.textContent = message;
+        projectStatusEl.classList.toggle("is-error", Boolean(isError));
+      }
+
+      function readOpeningsState() {
+        const list = [];
+        const nodes = wallsOpeningsList.querySelectorAll(".opening-row");
+        for (let i = 0; i < nodes.length; i++) {
+          list.push({
+            w: nodes[i].querySelector(".js-ow").value,
+            h: nodes[i].querySelector(".js-oh").value,
+            n: nodes[i].querySelector(".js-on").value,
+          });
+        }
+        return list;
+      }
+
+      function writeOpeningsState(list) {
+        const rows = list.length ? list : [{ w: "", h: "", n: "" }];
+        while (wallsOpeningsList.firstElementChild) {
+          wallsOpeningsList.firstElementChild.remove();
+        }
+        rows.forEach(function (item) {
+          const row = openingRowTemplate();
+          row.querySelector(".js-ow").value = item && item.w != null ? String(item.w) : "";
+          row.querySelector(".js-oh").value = item && item.h != null ? String(item.h) : "";
+          row.querySelector(".js-on").value = item && item.n != null ? String(item.n) : "";
+          wallsOpeningsList.appendChild(row);
+        });
+      }
+
+      function collectProject() {
+        const fields = {};
+        const checks = {};
+        const radios = {};
+        document.querySelectorAll("input[id], select[id]").forEach(function (el) {
+          if (el.type === "radio" || el.type === "file") {
+            return;
+          }
+          if (el.type === "checkbox") {
+            checks[el.id] = el.checked;
+          } else {
+            fields[el.id] = el.value;
+          }
+        });
+        document.querySelectorAll('input[type="radio"][name]').forEach(function (el) {
+          if (el.checked) {
+            radios[el.name] = el.value;
+          }
+        });
+        return {
+          format: PROJECT_FORMAT,
+          version: PROJECT_VERSION,
+          block: activeBlock,
+          billBlock: billBlock,
+          fields: fields,
+          checks: checks,
+          radios: radios,
+          openings: readOpeningsState(),
+        };
+      }
+
+      function parseProjectText(text) {
+        const raw = String(text).replace(/^\uFEFF/, "").trim();
+        if (!raw) {
+          throw new Error("файл пустой.");
+        }
+        try {
+          return JSON.parse(raw);
+        } catch (jsonError) {
+          throw new Error("файл не содержит корректный JSON.");
+        }
+      }
+
+      function downloadProjectFile(text) {
+        const blob = new Blob([text], { type: "application/json;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = PROJECT_FILENAME;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(function () {
+          URL.revokeObjectURL(url);
+        }, 1000);
+      }
+
+      function applyProject(state) {
+        if (!state || typeof state !== "object" || Array.isArray(state)) {
+          throw new Error("ожидался объект проекта.");
+        }
+        if (state.format && state.format !== PROJECT_FORMAT) {
+          throw new Error("код не от Smetacraft.");
+        }
+        let applied = 0;
+
+        if (Array.isArray(state.openings)) {
+          writeOpeningsState(state.openings);
+        }
+
+        const fields = state.fields && typeof state.fields === "object" ? state.fields : {};
+        Object.keys(fields).forEach(function (id) {
+          const el = document.getElementById(id);
+          if (!el || el.type === "checkbox" || el.type === "radio" || el.type === "file") {
+            return;
+          }
+          el.value = String(fields[id]);
+          applied++;
+        });
+
+        const checks = state.checks && typeof state.checks === "object" ? state.checks : {};
+        Object.keys(checks).forEach(function (id) {
+          const el = document.getElementById(id);
+          if (!el || el.type !== "checkbox") {
+            return;
+          }
+          el.checked = Boolean(checks[id]);
+          applied++;
+        });
+
+        const radios = state.radios && typeof state.radios === "object" ? state.radios : {};
+        const radioNodes = document.querySelectorAll('input[type="radio"][name]');
+        Object.keys(radios).forEach(function (name) {
+          const wanted = String(radios[name]);
+          for (let i = 0; i < radioNodes.length; i++) {
+            const el = radioNodes[i];
+            if (el.name === name && el.value === wanted) {
+              el.checked = true;
+              applied++;
+              return;
+            }
+          }
+        });
+
+        if (BILL_BLOCKS.indexOf(state.billBlock) !== -1) {
+          billBlock = state.billBlock;
+        } else if (BILL_BLOCKS.indexOf(state.block) !== -1) {
+          billBlock = state.block;
+        }
+
+        syncWallsMaterialUi();
+        syncPlasterMeshUi();
+        syncSummaryUi();
+        updateWallsOpeningUi();
+        render();
+        return applied;
+      }
+
       document.querySelectorAll(".tab[data-block]").forEach(function (tab) {
         tab.addEventListener("click", function () {
           setActiveBlock(tab.getAttribute("data-block"));
@@ -2794,6 +3216,60 @@
       plasterForm.addEventListener("submit", function (event) {
         event.preventDefault();
         render();
+      });
+
+      priceForm.addEventListener("input", render);
+      priceForm.addEventListener("change", render);
+      priceForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        render();
+      });
+
+      document.querySelectorAll(".js-goto-price").forEach(function (el) {
+        el.addEventListener("click", function () {
+          setActiveBlock("price");
+        });
+      });
+
+      document.getElementById("project-export").addEventListener("click", function () {
+        const text = JSON.stringify(collectProject(), null, 2);
+        try {
+          downloadProjectFile(text);
+        } catch (error) {
+          setProjectStatus("Экспорт не выполнен: " + error.message, true);
+          return;
+        }
+        setProjectStatus("Проект сохранён в файл " + PROJECT_FILENAME + " (" + text.length + " символов).", false);
+      });
+
+      projectFileEl.addEventListener("change", function () {
+        const file = projectFileEl.files && projectFileEl.files[0];
+        if (!file) {
+          return;
+        }
+        projectFileNameEl.textContent = file.name;
+        const reader = new FileReader();
+        reader.onload = function () {
+          try {
+            const applied = applyProject(parseProjectText(reader.result));
+            setProjectStatus(
+              "Проект загружен из «" + file.name + "»: восстановлено полей — " + applied + ". Смета пересчитана.",
+              false
+            );
+          } catch (error) {
+            setProjectStatus("Импорт не выполнен: " + error.message, true);
+          }
+          projectFileEl.value = "";
+        };
+        reader.onerror = function () {
+          setProjectStatus("Импорт не выполнен: файл не читается.", true);
+          projectFileEl.value = "";
+        };
+        reader.readAsText(file, "utf-8");
+      });
+
+      document.getElementById("project-form").addEventListener("submit", function (event) {
+        event.preventDefault();
       });
 
       billPrintEl.addEventListener("click", function () {
