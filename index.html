@@ -2042,6 +2042,19 @@
       const ROOF_COVER_SOFT_RESERVE = 1.05;
       const ROOF_COUNTER_BATTON = 0.05;
 
+      const FLOOR_TIMBER_RESERVE = 1.05;
+      const FLOOR_INSULATION_RESERVE = 1.05;
+      const FLOOR_MEMBRANE_LAYERS = 2;
+      const FLOOR_MEMBRANE_OVERLAP = 1.1;
+      const FLOOR_BOARD_THICK = 0.025;
+      const FLOOR_BOARD_RESERVE = 1.1;
+      const FLOOR_JOINT_CONCRETE = 0.05;
+      const FLOOR_JOINT_RESERVE = 1.05;
+      const FLOOR_MONO_HEIGHT = 0.22;
+      const FLOOR_MONO_RESERVE = 1.05;
+      const FLOOR_MONO_MIN_LEFT = 0.05;
+      const FLOOR_REBAR_KG_M3 = 80;
+
       // ==========================================
       // MODULE: STATE & DOM REFS
       // ==========================================
@@ -2352,6 +2365,10 @@
 
       function roofIsEmpty(input) {
         return isZeroSize(input.width) || isZeroSize(input.length) || isZeroSize(input.ridgeHeight);
+      }
+
+      function floorIsEmpty(input) {
+        return isZeroSize(input.length) || isZeroSize(input.width);
       }
 
       // ==========================================
@@ -4542,6 +4559,301 @@
         return "";
       }
 
+      function parseFloorBeamSection(value) {
+        const parts = String(value).split("x");
+        return {
+          width: parseNumber(parts[0]) / 1000,
+          height: parseNumber(parts[1]) / 1000,
+        };
+      }
+
+      function formatFloorBeamSection(value) {
+        const parts = String(value).split("x");
+        if (parts.length === 2) {
+          return parts[0] + "×" + parts[1] + " мм";
+        }
+        return String(value);
+      }
+
+      function readFloorPrices() {
+        return {
+          woodBeamPrice: parseNumber(document.getElementById("floor-wood-beam-price").value),
+          insulationPrice: parseNumber(document.getElementById("floor-insulation-price").value),
+          membranePrice: parseNumber(document.getElementById("floor-membrane-price").value),
+          boardPrice: parseNumber(document.getElementById("floor-board-price").value),
+          concreteSlabPrice: parseNumber(document.getElementById("floor-concrete-slab-price").value),
+          workWoodPrice: parseNumber(document.getElementById("floor-work-wood-price").value),
+          workConcretePrice: parseNumber(document.getElementById("floor-work-concrete-price").value),
+          wallConcretePrice: parseNumber(document.getElementById("wall-concrete-price").value),
+          stripRebarPrice: parseNumber(document.getElementById("strip-rebar-price").value),
+        };
+      }
+
+      function readFloorForm() {
+        const prices = readFloorPrices();
+        return {
+          type: floorTypeEl.value,
+          length: parseNumber(floorLengthEl.value),
+          width: parseNumber(floorWidthEl.value),
+          beamSection: document.getElementById("floor-beam-section").value,
+          beamStep: parseNumber(document.getElementById("floor-beam-step").value),
+          insulationMm: parseNumber(document.getElementById("floor-insulation-mm").value),
+          boardClad: document.getElementById("floor-board-clad").checked,
+          slabWidth: parseNumber(document.getElementById("floor-slab-width").value),
+          monolith: document.getElementById("floor-monolith").checked,
+          concreteGrade: stripGradeEl.value,
+          woodBeamPrice: prices.woodBeamPrice,
+          insulationPrice: prices.insulationPrice,
+          membranePrice: prices.membranePrice,
+          boardPrice: prices.boardPrice,
+          concreteSlabPrice: prices.concreteSlabPrice,
+          workWoodPrice: prices.workWoodPrice,
+          workConcretePrice: prices.workConcretePrice,
+          wallConcretePrice: prices.wallConcretePrice,
+          stripRebarPrice: prices.stripRebarPrice,
+        };
+      }
+
+      function validateFloor(input) {
+        if (!(input.length > 0 && input.width > 0)) {
+          return "Введите длину и ширину пролёта больше нуля.";
+        }
+        if (input.type === "wood") {
+          if (!(input.beamStep > 0)) {
+            return "Введите шаг укладки балок больше нуля.";
+          }
+          if (!(input.insulationMm > 0)) {
+            return "Введите толщину утеплителя больше нуля.";
+          }
+          if (
+            !(
+              input.woodBeamPrice > 0 &&
+              input.insulationPrice > 0 &&
+              input.membranePrice > 0 &&
+              input.workWoodPrice > 0
+            )
+          ) {
+            return "Введите цены материалов и работ деревянного перекрытия в прайс-листе.";
+          }
+          if (input.boardClad && !(input.boardPrice > 0)) {
+            return "Введите цену черновой доски наката в прайс-листе.";
+          }
+        } else {
+          if (!(input.slabWidth > 0)) {
+            return "Выберите ширину плиты перекрытия.";
+          }
+          if (
+            !(
+              input.concreteSlabPrice > 0 &&
+              input.wallConcretePrice > 0 &&
+              input.workConcretePrice > 0
+            )
+          ) {
+            return "Введите цены плит, бетона и монтажа в прайс-листе.";
+          }
+          if (input.monolith && !(input.stripRebarPrice > 0)) {
+            return "Введите цену арматуры в блоке «Ленточный фундамент» прайс-листа.";
+          }
+        }
+        return "";
+      }
+
+      function calculateFloor(input) {
+        if (isZeroSize(input.length) || isZeroSize(input.width)) {
+          return { rows: [], total: 0, area: 0, type: input.type };
+        }
+
+        const L = input.length;
+        const W = input.width;
+        const area = L * W;
+        const rows = [];
+        let total = 0;
+
+        if (input.type === "wood") {
+          const section = parseFloorBeamSection(input.beamSection);
+          const B = section.width;
+          const H = section.height;
+          const Sbeam = input.beamStep;
+          const Nbeams = Math.ceil(L / Sbeam) + 1;
+
+          const beamsNetVol = Nbeams * B * H * W;
+          const beamsOrderVol = beamsNetVol * FLOOR_TIMBER_RESERVE;
+
+          const areaIns = Math.max(0, L * W - Nbeams * B * W);
+          const Hins = input.insulationMm / 1000;
+          const insNetVol = areaIns * Hins;
+          const insOrderVol = insNetVol * FLOOR_INSULATION_RESERVE;
+
+          const membNetArea = area;
+          const membOrderArea = L * W * FLOOR_MEMBRANE_LAYERS * FLOOR_MEMBRANE_OVERLAP;
+
+          rows.push({
+            name:
+              "Брус несущий деревянный " +
+              formatFloorBeamSection(input.beamSection) +
+              " (длина пролёта " +
+              formatQty(W, 1) +
+              " м, шаг " +
+              formatQty(Sbeam, 1) +
+              " м): " +
+              formatQty(beamsOrderVol, 2) +
+              " м³",
+            netLabel: formatQty(beamsNetVol, 2) + " м³",
+            k: beamsNetVol > 0 ? beamsOrderVol / beamsNetVol : FLOOR_TIMBER_RESERVE,
+            orderLabel: formatQty(beamsOrderVol, 2) + " м³",
+            cost: beamsOrderVol * input.woodBeamPrice,
+          });
+
+          rows.push({
+            name:
+              "Минеральный утеплитель (толщина " +
+              formatQty(input.insulationMm, 0) +
+              " мм с запасом 5%): " +
+              formatQty(insOrderVol, 2) +
+              " м³",
+            netLabel: formatQty(insNetVol, 2) + " м³",
+            k: insNetVol > 0 ? insOrderVol / insNetVol : FLOOR_INSULATION_RESERVE,
+            orderLabel: formatQty(insOrderVol, 2) + " м³",
+            cost: insOrderVol * input.insulationPrice,
+          });
+
+          rows.push({
+            name:
+              "Пароизоляция и ветрозащита (2 слоя с нахлёстом 10%): " +
+              formatQty(membOrderArea, 1) +
+              " м²",
+            netLabel: formatQty(membNetArea, 2) + " м²",
+            k: FLOOR_MEMBRANE_LAYERS * FLOOR_MEMBRANE_OVERLAP,
+            orderLabel: formatQty(membOrderArea, 1) + " м²",
+            cost: membOrderArea * input.membranePrice,
+          });
+
+          if (input.boardClad) {
+            const boardNetVol = L * W * FLOOR_BOARD_THICK;
+            const boardOrderVol = boardNetVol * FLOOR_BOARD_RESERVE;
+            rows.push({
+              name:
+                "Черновая доска наката 25 мм (запас 10%): " +
+                formatQty(boardOrderVol, 2) +
+                " м³",
+              netLabel: formatQty(boardNetVol, 2) + " м³",
+              k: FLOOR_BOARD_RESERVE,
+              orderLabel: formatQty(boardOrderVol, 2) + " м³",
+              cost: boardOrderVol * input.boardPrice,
+            });
+          }
+
+          rows.push({
+            name:
+              "Монтаж деревянного перекрытия (" +
+              formatQty(area, 2) +
+              " м²): " +
+              formatQty(area, 2) +
+              " м²",
+            netLabel: formatQty(area, 2) + " м²",
+            k: 1,
+            orderLabel: formatQty(area, 2) + " м²",
+            cost: area * input.workWoodPrice,
+          });
+        } else {
+          const Wslab = input.slabWidth;
+          const Nslabs = Math.floor(L / Wslab);
+          const Lleft = L - Nslabs * Wslab;
+
+          const jointsNetVol = Nslabs * FLOOR_JOINT_CONCRETE;
+          const jointsOrderVol = jointsNetVol * FLOOR_JOINT_RESERVE;
+
+          let monoNetVol = 0;
+          let monoOrderVol = 0;
+          if (input.monolith && Lleft > FLOOR_MONO_MIN_LEFT) {
+            monoNetVol = Lleft * W * FLOOR_MONO_HEIGHT;
+            monoOrderVol = monoNetVol * FLOOR_MONO_RESERVE;
+          }
+
+          const concreteNetVol = jointsNetVol + monoNetVol;
+          const concreteOrderVol = jointsOrderVol + monoOrderVol;
+
+          if (Nslabs > 0) {
+            rows.push({
+              name:
+                "Плита перекрытия ЖБ шириной " +
+                formatQty(Wslab, 1) +
+                " м: " +
+                Nslabs +
+                " шт.",
+              netLabel: String(Nslabs) + " шт",
+              k: 1,
+              orderLabel: String(Nslabs) + " шт",
+              cost: Nslabs * input.concreteSlabPrice,
+            });
+          }
+
+          if (concreteOrderVol > 0) {
+            let concreteName =
+              "Бетон " +
+              input.concreteGrade +
+              " (заделка швов " +
+              formatQty(jointsOrderVol, 2) +
+              " м³";
+            if (monoOrderVol > 0) {
+              concreteName +=
+                " + монолитный участок " + formatQty(monoOrderVol, 2) + " м³";
+            }
+            concreteName += "): " + formatQty(concreteOrderVol, 2) + " м³";
+
+            rows.push({
+              name: concreteName,
+              netLabel: formatQty(concreteNetVol, 2) + " м³",
+              k: concreteNetVol > 0 ? concreteOrderVol / concreteNetVol : 1,
+              orderLabel: formatQty(concreteOrderVol, 2) + " м³",
+              cost: concreteOrderVol * input.wallConcretePrice,
+            });
+          }
+
+          if (monoOrderVol > 0) {
+            const rebarNetKg = monoNetVol * FLOOR_REBAR_KG_M3;
+            const rebarOrderKg = monoOrderVol * FLOOR_REBAR_KG_M3;
+            const rebarNetT = rebarNetKg / 1000;
+            const rebarOrderT = rebarOrderKg / 1000;
+            rows.push({
+              name:
+                "Арматура для монолитного участка (" +
+                formatQty(rebarOrderKg, 0) +
+                " кг, " +
+                formatQty(FLOOR_REBAR_KG_M3, 0) +
+                " кг/м³): " +
+                formatQty(rebarOrderT, 3) +
+                " т",
+              netLabel: formatQty(rebarNetT, 3) + " т",
+              k: 1,
+              orderLabel: formatQty(rebarOrderT, 3) + " т",
+              cost: rebarOrderKg * input.stripRebarPrice,
+            });
+          }
+
+          if (Nslabs > 0) {
+            rows.push({
+              name:
+                "Монтаж плит перекрытия краном (" +
+                Nslabs +
+                " шт.): " +
+                Nslabs +
+                " шт.",
+              netLabel: String(Nslabs) + " шт",
+              k: 1,
+              orderLabel: String(Nslabs) + " шт",
+              cost: Nslabs * input.workConcretePrice,
+            });
+          }
+        }
+
+        for (let i = 0; i < rows.length; i++) {
+          total += rows[i].cost;
+        }
+
+        return { rows: rows, total: total, area: area, type: input.type };
+      }
+
       function wallsSummaryRows(bill, input) {
         let workCost = 0;
         let materialsCost = 0;
@@ -4706,95 +5018,62 @@
         floorConcreteBoxEl.setAttribute("aria-hidden", isWood ? "true" : "false");
       }
 
-      function readFloorForm() {
-        return {};
-      }
-
-      function calculateFloor() {
-        return { rows: [], total: 0 };
-      }
-
-      function floorStubRows() {
-        return [
-          {
-            name: "Брус несущий",
-            netLabel: formatQty(0, 2) + " м³",
-            k: 1,
-            orderLabel: formatQty(0, 2) + " м³",
-            cost: 0,
-          },
-          {
-            name: "Минеральный утеплитель",
-            netLabel: formatQty(0, 2) + " м³",
-            k: 1,
-            orderLabel: formatQty(0, 2) + " м³",
-            cost: 0,
-          },
-          {
-            name: "Пароизоляция / гидроизоляция",
-            netLabel: formatQty(0, 2) + " м²",
-            k: 1,
-            orderLabel: formatQty(0, 2) + " м²",
-            cost: 0,
-          },
-          {
-            name: "Черновая доска наката",
-            netLabel: formatQty(0, 2) + " м³",
-            k: 1,
-            orderLabel: formatQty(0, 2) + " м³",
-            cost: 0,
-          },
-          {
-            name: "Плита перекрытия ЖБ",
-            netLabel: "0 шт",
-            k: 1,
-            orderLabel: "0 шт",
-            cost: 0,
-          },
-          {
-            name: "Монтаж деревянного перекрытия",
-            netLabel: formatQty(0, 2) + " м²",
-            k: 1,
-            orderLabel: formatQty(0, 2) + " м²",
-            cost: 0,
-          },
-          {
-            name: "Монтаж плит перекрытия краном",
-            netLabel: "0 шт",
-            k: 1,
-            orderLabel: "0 шт",
-            cost: 0,
-          },
-        ];
-      }
-
-      function showFloorStubBill() {
+      function showFloorPending() {
         floorErrorEl.classList.remove("visible");
-        billWrapEl.hidden = false;
+        billWrapEl.hidden = true;
         billPrintEl.hidden = true;
         billEmptyEl.hidden = false;
         billEmptyEl.textContent =
           "Параметры изменены. Нажмите «Рассчитать смету» для получения результатов.";
-        const length = parseNumber(floorLengthEl.value);
-        const width = parseNumber(floorWidthEl.value);
-        billMetaEl.textContent =
-          "Перекрытия · " +
-          (floorTypeEl.value === "wood" ? "деревянные балки" : "ЖБ плиты") +
-          " · " +
-          formatQty(Number.isFinite(length) ? length : 0, 2) +
-          " × " +
-          formatQty(Number.isFinite(width) ? width : 0, 2) +
-          " м";
-        billBodyEl.innerHTML = floorStubRows().map(rowHtml).join("");
-        billTotalEl.textContent = formatMoney(0);
-        setPrintHead(BILL_PRINT_SUB, "Перекрытия");
-        stampPrintDate();
+        billMetaEl.textContent = "";
+        setPrintHead(BILL_PRINT_SUB, "");
       }
 
-      function renderFloor() {
+      function renderFloor(forcePending) {
         syncFloorTypeUi();
         syncFloorFromFoundation();
-        showFloorStubBill();
+        const input = readFloorForm();
+
+        if (floorIsEmpty(input)) {
+          showZeroBill("Перекрытия не заданы — введите длину и ширину пролёта.");
+          return;
+        }
+
+        if (forcePending !== false && floorNeedsCalc) {
+          showFloorPending();
+          return;
+        }
+
+        const message = validateFloor(input);
+        if (message) {
+          showBillError(message, floorErrorEl);
+          return;
+        }
+
+        const bill = calculateFloor(input);
+        const typeLabel = input.type === "wood" ? "деревянные балки" : "ЖБ плиты";
+        showBill(
+          bill.rows,
+          bill.total,
+          "Перекрытия · " +
+            typeLabel +
+            " · " +
+            formatQty(input.length, 2) +
+            " × " +
+            formatQty(input.width, 2) +
+            " м · площадь " +
+            formatQty(bill.area, 2) +
+            " м²",
+          {
+            printNodes:
+              "Перекрытия " +
+              formatQty(input.length, 2) +
+              " × " +
+              formatQty(input.width, 2) +
+              " м · " +
+              typeLabel,
+          }
+        );
       }
 
       function readRoofForm() {
@@ -6293,7 +6572,7 @@
       floorForm.addEventListener("submit", function (event) {
         event.preventDefault();
         floorNeedsCalc = false;
-        renderFloor();
+        renderFloor(false);
       });
 
       roofWarmEl.addEventListener("change", function () {
