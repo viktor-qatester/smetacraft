@@ -2743,6 +2743,33 @@
         return Math.max(1, Math.round((thickM + BRICK_V_JOINT) / pitch));
       }
 
+      function wallLoadMaterialThickness(loadMaterial) {
+        if (loadMaterial === "gas-silicate-400") {
+          return 0.4;
+        }
+        if (loadMaterial === "ceramic-380" || loadMaterial === "brick-380") {
+          return 0.38;
+        }
+        return 0.3;
+      }
+
+      function wallLoadMaterialLabel(loadMaterial) {
+        if (loadMaterial === "gas-silicate-400") {
+          return "газосиликатные 400 мм";
+        }
+        if (loadMaterial === "ceramic-380") {
+          return "керамические 380 мм";
+        }
+        if (loadMaterial === "brick-380") {
+          return "кирпичная кладка 380 мм";
+        }
+        return "газосиликатные 300 мм";
+      }
+
+      function isLintelOpeningType(type) {
+        return type === "window" || type === "entry-door" || type === "interior-door";
+      }
+
       function wallsLegacyMaterialFromUi() {
         const sel = document.getElementById("walls-load-bearing-material").value;
         if (sel === "gas-silicate-400") {
@@ -3309,18 +3336,359 @@
           partitionLength: parseNumber(document.getElementById("walls-partition-length").value),
           partitionHeight: parseNumber(document.getElementById("walls-partition-height").value),
           prices: readWallPrices(),
+          stripRebarPrice: parseNumber(document.getElementById("strip-rebar-price").value),
         };
       }
 
+      function validateWallsEngine(input) {
+        if (!(input.perimeter > 0 && input.height > 0)) {
+          return "Введите периметр и высоту стен больше нуля.";
+        }
+        const prices = input.prices || {};
+        if (!(prices.blockPrice > 0 && prices.adhesivePrice > 0)) {
+          return "Введите цены стеновых блоков и клея больше нуля.";
+        }
+        if (!(prices.workMasonryPrice > 0)) {
+          return "Введите цену кладки несущих стен больше нуля.";
+        }
+        if (input.reinforceMesh && !(prices.meshPrice > 0)) {
+          return "Введите цену армирующей сетки больше нуля.";
+        }
+        if ((input.armopoyas || input.lintels) && !(prices.concretePrice > 0)) {
+          return "Введите цену бетона для армопояса и перемычек больше нуля.";
+        }
+        if ((input.armopoyas || input.lintels) && !(input.stripRebarPrice > 0)) {
+          return "Введите цену арматуры в прайсе ленточного фундамента больше нуля.";
+        }
+        if ((input.armopoyas || input.lintels) && !(prices.workArmopoyasPrice > 0)) {
+          return "Введите цену работ по армопоясу и перемычкам больше нуля.";
+        }
+        if (input.partitionsEnabled) {
+          if (!(input.partitionLength > 0 && input.partitionHeight > 0)) {
+            return "Введите длину и высоту перегородок больше нуля.";
+          }
+          if (!(prices.partitionBlockPrice > 0 && prices.workPartitionPrice > 0)) {
+            return "Введите цены перегородочных блоков и кладки перегородок больше нуля.";
+          }
+        }
+
+        let openingArea = 0;
+        for (let i = 0; i < input.openings.length; i++) {
+          const row = input.openings[i];
+          if (!(row.width > 0 && row.height > 0 && row.count >= 1 && Number.isInteger(row.count))) {
+            return "У каждого проёма ширина, высота > 0 и целое количество от 1.";
+          }
+          if (row.width >= input.perimeter) {
+            return "Ширина проёма не должна превышать периметр стен.";
+          }
+          if (row.height > input.height) {
+            return "Высота проёма не должна превышать высоту стен.";
+          }
+          openingArea += row.width * row.height * row.count;
+        }
+        if (openingArea > input.perimeter * input.height) {
+          return "Площадь проёмов больше площади стен.";
+        }
+
+        const D = wallLoadMaterialThickness(input.loadMaterial);
+        const vGross = input.perimeter * input.height * D;
+        let vOpTotal = 0;
+        for (let j = 0; j < input.openings.length; j++) {
+          const op = input.openings[j];
+          vOpTotal += op.width * op.height * op.count * D;
+        }
+        let vBeltDisplace = 0;
+        if (input.armopoyas) {
+          vBeltDisplace = input.perimeter * 0.25 * 0.25;
+        }
+        let vLintelDisplace = 0;
+        if (input.lintels) {
+          for (let k = 0; k < input.openings.length; k++) {
+            const lintelOp = input.openings[k];
+            if (!isLintelOpeningType(lintelOp.type)) {
+              continue;
+            }
+            vLintelDisplace += (lintelOp.width + 0.4) * 0.2 * D * lintelOp.count;
+          }
+        }
+        const vNet = vGross - vOpTotal - vBeltDisplace - vLintelDisplace;
+        if (!(vNet > 0)) {
+          return "После вычета проёмов и железобетона чистый объём кладки должен быть больше нуля.";
+        }
+        return "";
+      }
+
       function calculateWalls(input) {
-        void input;
+        const P = input.perimeter;
+        const H = input.height;
+        const D = wallLoadMaterialThickness(input.loadMaterial);
+        const prices = input.prices;
+        const rebarPriceKg = input.stripRebarPrice;
+        const reserve = 1.05;
+        const rows = [];
+
+        let sOpTotal = 0;
+        let vOpTotal = 0;
+        for (let i = 0; i < input.openings.length; i++) {
+          const op = input.openings[i];
+          const sOp = op.width * op.height * op.count;
+          sOpTotal += sOp;
+          vOpTotal += sOp * D;
+        }
+
+        let vBeltDisplace = 0;
+        let beltConcreteNet = 0;
+        let beltConcreteOrder = 0;
+        let beltRebarA3Kg = 0;
+        let beltStirrupKg = 0;
+        let beltWorkM = 0;
+        if (input.armopoyas) {
+          vBeltDisplace = P * 0.25 * 0.25;
+          beltConcreteNet = vBeltDisplace;
+          beltConcreteOrder = beltConcreteNet * reserve;
+          const beltRebarLen = P * 4 * reserve;
+          beltRebarA3Kg = beltRebarLen * 0.888;
+          const stirrupCount = Math.ceil(P / 0.25);
+          const stirrupTotalLen = stirrupCount * 0.7 * reserve;
+          beltStirrupKg = stirrupTotalLen * 0.222;
+          beltWorkM = P;
+        }
+
+        let vLintelDisplace = 0;
+        let lintelConcreteNet = 0;
+        let lintelConcreteOrder = 0;
+        let lintelRebarLenNet = 0;
+        let lintelRebarLenOrder = 0;
+        let lintelWorkM = 0;
+        if (input.lintels) {
+          for (let j = 0; j < input.openings.length; j++) {
+            const lintelOp = input.openings[j];
+            if (!isLintelOpeningType(lintelOp.type)) {
+              continue;
+            }
+            const lintelSpan = lintelOp.width + 0.4;
+            vLintelDisplace += lintelSpan * 0.2 * D * lintelOp.count;
+            lintelRebarLenNet += lintelSpan * 4 * lintelOp.count;
+            lintelWorkM += lintelSpan * lintelOp.count;
+          }
+          lintelConcreteNet = vLintelDisplace;
+          lintelConcreteOrder = vLintelDisplace * reserve;
+          lintelRebarLenOrder = lintelRebarLenNet * reserve;
+        }
+
+        const vGross = P * H * D;
+        const vNet = vGross - vOpTotal - vBeltDisplace - vLintelDisplace;
+        const vBlocksOrder = vNet * reserve;
+        const glueBagsNet = vNet * 1.2;
+        const glueBags = Math.ceil(glueBagsNet);
+
+        let meshLenNet = 0;
+        let meshLenOrder = 0;
+        if (input.reinforceMesh) {
+          const blockRows = Math.ceil(H / 0.25);
+          const armoredRows = Math.floor(blockRows / 4);
+          meshLenNet = P * 2 * armoredRows;
+          meshLenOrder = meshLenNet * reserve;
+        }
+
+        const blockDeductionParts = [
+          "проёмы " + formatQty(vOpTotal, 2) + " м³",
+        ];
+        if (input.armopoyas && vBeltDisplace > 0) {
+          blockDeductionParts.push("армопояс " + formatQty(vBeltDisplace, 2) + " м³");
+        }
+        if (input.lintels && vLintelDisplace > 0) {
+          blockDeductionParts.push("перемычки " + formatQty(vLintelDisplace, 2) + " м³");
+        }
+        rows.push({
+          name:
+            "Стеновые блоки " +
+            wallLoadMaterialLabel(input.loadMaterial) +
+            " (грязный объём " +
+            formatQty(vGross, 2) +
+            " м³ − " +
+            blockDeductionParts.join(" − ") +
+            "): " +
+            formatQty(vNet, 2) +
+            " м³",
+          netLabel: formatQty(vNet, 2) + " м³",
+          k: reserve,
+          orderLabel: formatQty(vBlocksOrder, 2) + " м³",
+          cost: vBlocksOrder * prices.blockPrice,
+        });
+
+        rows.push({
+          name: "Клей для блоков (расход 1,2 мешка/м³): " + glueBags + " меш.",
+          netLabel: formatQty(glueBagsNet, 1) + " меш.",
+          k: 1,
+          orderLabel: String(glueBags) + " меш.",
+          cost: glueBags * prices.adhesivePrice,
+        });
+
+        if (input.reinforceMesh && meshLenOrder > 0) {
+          rows.push({
+            name:
+              "Армирующая сетка (2 полосы × " +
+              Math.floor(Math.ceil(H / 0.25) / 4) +
+              " рядов): " +
+              formatQty(meshLenOrder, 1) +
+              " м.п.",
+            netLabel: formatQty(meshLenNet, 1) + " м.п.",
+            k: reserve,
+            orderLabel: formatQty(meshLenOrder, 1) + " м.п.",
+            cost: meshLenOrder * prices.meshPrice,
+          });
+        }
+
+        const concreteNet = beltConcreteNet + lintelConcreteNet;
+        const concreteOrder = beltConcreteOrder + lintelConcreteOrder;
+        if (concreteOrder > 0) {
+          const concreteParts = [];
+          if (beltConcreteNet > 0) {
+            concreteParts.push("армопояс " + formatQty(beltConcreteNet, 2) + " м³");
+          }
+          if (lintelConcreteNet > 0) {
+            concreteParts.push("перемычки " + formatQty(lintelConcreteNet, 2) + " м³");
+          }
+          rows.push({
+            name: "Бетон М250 (" + concreteParts.join(" + ") + "): " + formatQty(concreteOrder, 2) + " м³",
+            netLabel: formatQty(concreteNet, 2) + " м³",
+            k: reserve,
+            orderLabel: formatQty(concreteOrder, 2) + " м³",
+            cost: concreteOrder * prices.concretePrice,
+          });
+        }
+
+        const lintelRebarA3Kg = lintelRebarLenOrder * 0.888;
+        const rebarA3Kg = beltRebarA3Kg + lintelRebarA3Kg;
+        if (rebarA3Kg > 0) {
+          const rebarParts = [];
+          if (beltRebarA3Kg > 0) {
+            rebarParts.push("армопояс " + formatQty(beltRebarA3Kg, 0) + " кг");
+          }
+          if (lintelRebarA3Kg > 0) {
+            rebarParts.push("перемычки " + formatQty(lintelRebarA3Kg, 0) + " кг");
+          }
+          rows.push({
+            name:
+              "Арматура А3 Ø12 мм (" +
+              rebarParts.join(" + ") +
+              "): " +
+              formatQty(rebarA3Kg / 1000, 3) +
+              " т",
+            netLabel: formatQty(rebarA3Kg, 1) + " кг",
+            k: reserve,
+            orderLabel: formatQty(rebarA3Kg / 1000, 3) + " т",
+            cost: rebarA3Kg * rebarPriceKg,
+          });
+        }
+
+        if (beltStirrupKg > 0) {
+          rows.push({
+            name:
+              "Арматура А1 Ø6 мм (хомуты армопояса): " + formatQty(beltStirrupKg / 1000, 3) + " т",
+            netLabel: formatQty(beltStirrupKg, 1) + " кг",
+            k: reserve,
+            orderLabel: formatQty(beltStirrupKg / 1000, 3) + " т",
+            cost: beltStirrupKg * rebarPriceKg,
+          });
+        }
+
+        rows.push({
+          name: "Кладка несущих стен: " + formatQty(vNet, 2) + " м³",
+          netLabel: formatQty(vNet, 2) + " м³",
+          k: 1,
+          orderLabel: formatQty(vNet, 2) + " м³",
+          cost: vNet * prices.workMasonryPrice,
+        });
+
+        const rbWorkM = beltWorkM + lintelWorkM;
+        if (rbWorkM > 0) {
+          const workParts = [];
+          if (beltWorkM > 0) {
+            workParts.push("армопояс " + formatQty(beltWorkM, 1) + " м.п.");
+          }
+          if (lintelWorkM > 0) {
+            workParts.push("перемычки " + formatQty(lintelWorkM, 1) + " м.п.");
+          }
+          rows.push({
+            name: "Устройство армопояса и перемычек (" + workParts.join(" + ") + ")",
+            netLabel: formatQty(rbWorkM, 1) + " м.п.",
+            k: 1,
+            orderLabel: formatQty(rbWorkM, 1) + " м.п.",
+            cost: rbWorkM * prices.workArmopoyasPrice,
+          });
+        }
+
+        if (input.partitionsEnabled) {
+          const dPart = input.partitionMaterial === "brick-edge-120" ? 0.12 : 0.1;
+          const partLabel =
+            input.partitionMaterial === "brick-edge-120"
+              ? "кирпич на ребро 120 мм"
+              : "перегородочный блок 100 мм";
+          const vPartNet = input.partitionLength * input.partitionHeight * dPart;
+          const vPartOrder = vPartNet * reserve;
+          const partGlueNet = vPartNet * 1.5;
+          const partGlueBags = Math.ceil(partGlueNet);
+          const partArea = input.partitionLength * input.partitionHeight;
+
+          rows.push({
+            name:
+              "Перегородочные блоки " +
+              partLabel +
+              " (" +
+              formatQty(input.partitionLength, 1) +
+              " × " +
+              formatQty(input.partitionHeight, 1) +
+              " × " +
+              formatQty(dPart, 2) +
+              " м): " +
+              formatQty(vPartOrder, 2) +
+              " м³",
+            netLabel: formatQty(vPartNet, 2) + " м³",
+            k: reserve,
+            orderLabel: formatQty(vPartOrder, 2) + " м³",
+            cost: vPartOrder * prices.partitionBlockPrice,
+          });
+          rows.push({
+            name: "Клей для перегородок (расход 1,5 мешка/м³): " + partGlueBags + " меш.",
+            netLabel: formatQty(partGlueNet, 1) + " меш.",
+            k: 1,
+            orderLabel: String(partGlueBags) + " меш.",
+            cost: partGlueBags * prices.adhesivePrice,
+          });
+          rows.push({
+            name: "Кладка перегородок: " + formatQty(partArea, 1) + " м²",
+            netLabel: formatQty(partArea, 1) + " м²",
+            k: 1,
+            orderLabel: formatQty(partArea, 1) + " м²",
+            cost: partArea * prices.workPartitionPrice,
+          });
+        }
+
+        const total = rows.reduce(function (sum, item) {
+          return sum + item.cost;
+        }, 0);
+
         return {
-          rows: [],
-          total: 0,
-          sGross: 0,
-          sOpen: 0,
-          sNet: 0,
-          volume: 0,
+          rows: rows,
+          total: total,
+          meta:
+            "Стены " +
+            formatQty(P, 1) +
+            " × " +
+            formatQty(H, 1) +
+            " м · " +
+            wallLoadMaterialLabel(input.loadMaterial) +
+            " · чистая кладка " +
+            formatQty(vNet, 2) +
+            " м³ · проёмы " +
+            formatQty(sOpTotal, 2) +
+            " м²",
+          vGross: vGross,
+          vNet: vNet,
+          sOpTotal: sOpTotal,
+          vOpTotal: vOpTotal,
         };
       }
 
@@ -4008,56 +4376,16 @@
 
       function renderWalls() {
         syncWallsUi();
-        wallsErrorEl.classList.remove("visible");
-        const placeholderRows = [
-          {
-            name: "Кладочный материал (несущие стены)",
-            netLabel: "0",
-            k: "—",
-            orderLabel: "0",
-            cost: 0,
-          },
-          {
-            name: "Кладочный раствор / клей",
-            netLabel: "0",
-            k: "—",
-            orderLabel: "0",
-            cost: 0,
-          },
-          {
-            name: "Армирование кладки (сетка)",
-            netLabel: "0",
-            k: "—",
-            orderLabel: "0",
-            cost: 0,
-          },
-          {
-            name: "Армопояс (железобетон)",
-            netLabel: "0",
-            k: "—",
-            orderLabel: "0",
-            cost: 0,
-          },
-          {
-            name: "Перемычки над проёмами",
-            netLabel: "0",
-            k: "—",
-            orderLabel: "0",
-            cost: 0,
-          },
-          {
-            name: "Внутренние перегородки",
-            netLabel: "0",
-            k: "—",
-            orderLabel: "0",
-            cost: 0,
-          },
-        ];
-        showBill(
-          placeholderRows,
-          0,
-          "Параметры изменены. Нажмите «Рассчитать смету» для получения результатов"
-        );
+        const input = readWallsForm();
+        const message = validateWallsEngine(input);
+
+        if (message) {
+          showBillError(message, wallsErrorEl);
+          return;
+        }
+
+        const bill = calculateWalls(input);
+        showBill(bill.rows, bill.total, bill.meta);
       }
 
       function renderSlab() {
