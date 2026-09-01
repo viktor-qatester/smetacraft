@@ -424,9 +424,10 @@
         right: 12px;
         bottom: 12px;
         z-index: 100;
+        width: auto;
         min-width: 320px;
-        max-width: 550px;
-        padding: 6px 10px;
+        max-width: 680px;
+        padding: 10px 20px;
         border: 1px solid;
         background: #fff;
         font-size: 11px;
@@ -1288,7 +1289,7 @@
               <fieldset>
                 <legend>Стены и перегородки</legend>
                 <label class="check">
-                  <input id="summary-include-walls" name="summary-include-walls" type="checkbox" checked />
+                  <input id="summary-include-walls" name="summary-include-walls" type="checkbox" />
                   Стены и перегородки
                 </label>
                 <p id="summary-snap-walls" class="snap"></p>
@@ -4174,6 +4175,46 @@
         return "";
       }
 
+      function wallsSummaryRows(bill, input) {
+        let workCost = 0;
+        let materialsCost = 0;
+        for (let i = 0; i < bill.rows.length; i++) {
+          const row = bill.rows[i];
+          if (
+            row.name.indexOf("Кладка") === 0 ||
+            row.name.indexOf("Устройство армопояса") === 0
+          ) {
+            workCost += row.cost;
+          } else {
+            materialsCost += row.cost;
+          }
+        }
+        return [
+          {
+            name:
+              "Стены и перегородки — материалы (" +
+              wallLoadMaterialLabel(input.loadMaterial) +
+              ", чистая кладка " +
+              formatQty(bill.vNet, 2) +
+              " м³)",
+            netLabel: formatQty(bill.vNet, 2) + " м³",
+            k: 1,
+            orderLabel: formatMoney(materialsCost).replace(" Br", ""),
+            cost: materialsCost,
+          },
+          {
+            name:
+              "Стены и перегородки — работы (кладка, армопояс, перемычки" +
+              (input.partitionsEnabled ? ", перегородки" : "") +
+              ")",
+            netLabel: formatQty(input.perimeter, 1) + " м перим.",
+            k: 1,
+            orderLabel: formatMoney(workCost).replace(" Br", ""),
+            cost: workCost,
+          },
+        ];
+      }
+
       function roofSummaryRows(bill, input) {
         let workCost = 0;
         let materialsCost = 0;
@@ -4451,7 +4492,7 @@
 
         const slabInput = readForm();
         const stripInput = readStripForm();
-        const wallsInput = _readWallsFormLegacy();
+        const wallsInput = readWallsForm();
         const plasterInput = readPlasterForm();
         const roofInput = readRoofForm();
 
@@ -4473,11 +4514,18 @@
               " м";
         summarySnapWallsEl.textContent =
           "Стены " +
-          formatQty(wallsInput.perimeter, 2) +
+          formatQty(wallsInput.perimeter, 1) +
           " × " +
-          formatQty(wallsInput.height, 2) +
-          " м · вычет проёмов " +
-          formatQty(wallsInput.openings.area, 2) +
+          formatQty(wallsInput.height, 1) +
+          " м · " +
+          wallLoadMaterialLabel(wallsInput.loadMaterial) +
+          " · проёмы " +
+          formatQty(
+            wallsInput.openings.reduce(function (sum, op) {
+              return sum + op.width * op.height * op.count;
+            }, 0),
+            2
+          ) +
           " м²";
         summarySnapPlasterEl.textContent =
           "Штукатурка " +
@@ -4547,20 +4595,20 @@
         }
 
         if (includeWalls) {
-          const message = validateWalls(wallsInput);
+          const message = validateWallsEngine(wallsInput);
           if (message) {
             errors.push("Стены: " + message);
           } else {
-            const bill = _calculateWallsLegacy(wallsInput);
-            rows.push.apply(rows, bill.rows);
+            const bill = calculateWalls(wallsInput);
+            rows.push.apply(rows, wallsSummaryRows(bill, wallsInput));
             total += bill.total;
             nodes.push(
               "стены " +
-                formatQty(wallsInput.perimeter, 2) +
+                formatQty(wallsInput.perimeter, 1) +
                 " × " +
-                formatQty(wallsInput.height, 2) +
+                formatQty(wallsInput.height, 1) +
                 " м, проёмы " +
-                formatQty(bill.sOpen, 2) +
+                formatQty(bill.sOpTotal, 2) +
                 " м²"
             );
           }
@@ -4667,7 +4715,7 @@
       // ==========================================
       const REGRESSION_EXPECT = {
         slab: 12099.19,
-        walls: 6507.3,
+        walls: 7821.96,
         plaster: 1068.6,
         summary: 19675.09,
         stripPiles: 10791.16,
@@ -4826,6 +4874,34 @@
         setActiveBlock("roof");
       }
 
+      function applyWallsRegressionFixtures() {
+        wallsPerimeterManual = false;
+        setRegressionField("length", "10");
+        setRegressionField("width", "8");
+        setRegressionField("walls-perimeter", "36");
+        setRegressionField("walls-height", "3.0");
+        document.getElementById("walls-load-bearing-material").value = "gas-silicate-300";
+        setRegressionField("walls-joint-mm", "2");
+        document.getElementById("walls-reinforce-mesh").checked = true;
+        document.getElementById("walls-armopoyas").checked = true;
+        document.getElementById("walls-lintels").checked = true;
+        document.getElementById("walls-partitions-enabled").checked = false;
+        writeOpeningsState([
+          { type: "window", width: "1.5", height: "1.5", count: "6", locked: true },
+        ]);
+        setRegressionField("wall-block-price", "140.00");
+        setRegressionField("wall-adhesive-price", "9.50");
+        setRegressionField("wall-mesh-price", "3.20");
+        setRegressionField("partition-block-price", "150.00");
+        setRegressionField("wall-concrete-price", "185.00");
+        setRegressionField("wall-work-masonry-price", "45.00");
+        setRegressionField("wall-work-partition-price", "18.00");
+        setRegressionField("wall-work-armopoyas-price", "15.00");
+        setRegressionField("strip-rebar-price", "3.20");
+        syncWallsUi();
+        setActiveBlock("walls");
+      }
+
       function computeRegressionSummaryTotal() {
         const includeFound = summaryIncludeFoundEl.checked;
         const includeWalls = summaryIncludeWallsEl.checked;
@@ -4875,7 +4951,14 @@
         return { total: total, errors: errors };
       }
 
-      function updateRegressionBadge(passed, failures, summaryExpected, stripPilesExpected, roofExpected) {
+      function updateRegressionBadge(
+        passed,
+        failures,
+        summaryExpected,
+        stripPilesExpected,
+        roofExpected,
+        wallsExpected
+      ) {
         const badge = document.getElementById("regression-badge");
         badge.hidden = false;
         badge.classList.toggle("pass", passed);
@@ -4888,6 +4971,8 @@
             formatMoney(stripPilesExpected) +
             ") | Кровля (" +
             formatMoney(roofExpected) +
+            ") | Стены (" +
+            formatMoney(wallsExpected) +
             ")";
           badge.removeAttribute("title");
         } else {
@@ -4911,18 +4996,6 @@
                 return { total: NaN, error: message };
               }
               return { total: calculateSlab(input).total, error: "" };
-            },
-          },
-          {
-            name: "Стены",
-            expected: REGRESSION_EXPECT.walls,
-            run: function () {
-              const input = _readWallsFormLegacy();
-              const message = validateWalls(input);
-              if (message) {
-                return { total: NaN, error: message };
-              }
-              return { total: _calculateWallsLegacy(input).total, error: "" };
             },
           },
           {
@@ -5003,7 +5076,26 @@
           }
         }
 
+        applyWallsRegressionFixtures();
+        const wallsInput = readWallsForm();
+        const wallsMessage = validateWallsEngine(wallsInput);
+        let wallsTotal = NaN;
+        if (wallsMessage) {
+          failures.push("Стены: " + wallsMessage);
+        } else {
+          wallsTotal = calculateWalls(wallsInput).total;
+          if (!moneyEqual(wallsTotal, REGRESSION_EXPECT.walls)) {
+            failures.push(
+              "Стены: " +
+                formatMoney(wallsTotal) +
+                " ≠ " +
+                formatMoney(REGRESSION_EXPECT.walls)
+            );
+          }
+        }
+
         applyRegressionFixtures();
+        summaryIncludeWallsEl.checked = false;
         setActiveBlock("summary");
 
         const passed = failures.length === 0;
@@ -5012,7 +5104,8 @@
           failures,
           REGRESSION_EXPECT.summary,
           REGRESSION_EXPECT.stripPiles,
-          REGRESSION_EXPECT.roof
+          REGRESSION_EXPECT.roof,
+          REGRESSION_EXPECT.walls
         );
         return passed;
       }
