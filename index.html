@@ -341,6 +341,34 @@
         accent-color: var(--ink);
       }
 
+      .regression-badge {
+        position: fixed;
+        right: 12px;
+        bottom: 12px;
+        z-index: 100;
+        max-width: 240px;
+        padding: 6px 10px;
+        border: 1px solid;
+        background: #fff;
+        font-size: 11px;
+        font-weight: 650;
+        line-height: 1.35;
+        pointer-events: none;
+        opacity: 0.92;
+      }
+
+      .regression-badge.pass {
+        color: #1a5c2e;
+        border-color: #1a5c2e;
+        background: #eef8f0;
+      }
+
+      .regression-badge.fail {
+        color: var(--error);
+        border-color: var(--error);
+        background: #fdf0ee;
+      }
+
       .print-letterhead {
         display: none;
       }
@@ -428,6 +456,10 @@
 
         @page {
           margin: 16mm;
+        }
+
+        .regression-badge {
+          display: none !important;
         }
       }
     </style>
@@ -1045,6 +1077,7 @@
         </aside>
       </div>
     </div>
+    <div id="regression-badge" class="regression-badge pass" hidden aria-live="polite"></div>
 
     <script>
       const CONCRETE_RESERVE = 0.05;
@@ -2448,6 +2481,235 @@
         render();
       }
 
+      const REGRESSION_EXPECT = {
+        slab: 12099.19,
+        walls: 6507.3,
+        plaster: 1068.6,
+        summary: 19675.09,
+      };
+
+      function moneyEqual(actual, expected) {
+        if (!Number.isFinite(actual)) {
+          return false;
+        }
+        return Math.abs(actual - expected) < 0.005;
+      }
+
+      function setRegressionField(id, value) {
+        const el = document.getElementById(id);
+        if (el) {
+          el.value = String(value);
+        }
+      }
+
+      function applyRegressionFixtures() {
+        setRegressionField("length", "10");
+        setRegressionField("width", "8");
+        setRegressionField("height", "0.3");
+        gradeEl.value = "М250";
+        concretePriceEl.value = "210";
+        document.getElementById("bar-diameter").value = "12";
+        setRegressionField("bar-step", "200");
+        setRegressionField("rebar-price", "3.20");
+        setRegressionField("wire-price", "4.50");
+        setRegressionField("board-price", "14");
+        setRegressionField("timber-price", "8");
+        setRegressionField("sand-height", "0.2");
+        setRegressionField("sand-price", "32");
+        setRegressionField("stone-height", "0.2");
+        setRegressionField("stone-price", "55");
+        setRegressionField("hydro-price", "28");
+
+        setRegressionField("walls-perimeter", "40");
+        setRegressionField("walls-height", "3.0");
+        wallsMaterialEl.value = "block";
+        document.getElementById("walls-block-size").value = "600x300x200";
+        document.getElementById("walls-glue-type").value = "bag";
+        setRegressionField("walls-block-price", "5.50");
+        setRegressionField("walls-glue-price", "18");
+        wallsOpeningModeEl.value = "list";
+        while (wallsOpeningsList.querySelectorAll(".opening-row").length > 2) {
+          wallsOpeningsList.lastElementChild.remove();
+        }
+        while (wallsOpeningsList.querySelectorAll(".opening-row").length < 2) {
+          wallsOpeningsList.appendChild(openingRowTemplate());
+        }
+        const openingRows = wallsOpeningsList.querySelectorAll(".opening-row");
+        openingRows[0].querySelector(".js-ow").value = "1.5";
+        openingRows[0].querySelector(".js-oh").value = "1.4";
+        openingRows[0].querySelector(".js-on").value = "4";
+        openingRows[1].querySelector(".js-ow").value = "1.0";
+        openingRows[1].querySelector(".js-oh").value = "2.1";
+        openingRows[1].querySelector(".js-on").value = "1";
+        setRegressionField("walls-rebar-price", "3.20");
+        setRegressionField("walls-lintel-price", "28");
+        setRegressionField("walls-screw-price", "12");
+
+        setRegressionField("plaster-area", "120");
+        setRegressionField("plaster-height", "2.7");
+        plasterMixEl.value = "gypsum";
+        plasterMixPriceEl.value = "16.50";
+        setRegressionField("plaster-thick", "15");
+        document.getElementById("plaster-primer-layers").value = "1";
+        setRegressionField("plaster-primer-price", "28");
+        setRegressionField("plaster-beacon-step", "1.2");
+        setRegressionField("plaster-beacon-price", "3.20");
+        plasterMeshEl.checked = false;
+
+        summaryIncludeFoundEl.checked = true;
+        summaryIncludeWallsEl.checked = true;
+        summaryIncludePlasterEl.checked = true;
+        const slabFoundRadio = summaryForm.querySelector(
+          'input[name="summary-found-type"][value="slab"]'
+        );
+        if (slabFoundRadio) {
+          slabFoundRadio.checked = true;
+        }
+
+        syncWallsMaterialUi();
+        syncPlasterMeshUi();
+        updateWallsOpeningUi();
+      }
+
+      function computeRegressionSummaryTotal() {
+        const includeFound = summaryIncludeFoundEl.checked;
+        const includeWalls = summaryIncludeWallsEl.checked;
+        const includePlaster = summaryIncludePlasterEl.checked;
+        const foundType = summaryFoundType();
+        let total = 0;
+        const errors = [];
+
+        if (includeFound && foundType === "slab") {
+          const input = readForm();
+          const message = validate(input);
+          if (message) {
+            errors.push("Плита: " + message);
+          } else {
+            total += calculateSlab(input).total;
+          }
+        } else if (includeFound) {
+          const input = readStripForm();
+          const message = validateStrip(input);
+          if (message) {
+            errors.push("Лента: " + message);
+          } else {
+            total += calculateStrip(input).total;
+          }
+        }
+
+        if (includeWalls) {
+          const input = readWallsForm();
+          const message = validateWalls(input);
+          if (message) {
+            errors.push("Стены: " + message);
+          } else {
+            total += calculateWalls(input).total;
+          }
+        }
+
+        if (includePlaster) {
+          const input = readPlasterForm();
+          const message = validatePlaster(input);
+          if (message) {
+            errors.push("Штукатурка: " + message);
+          } else {
+            total += calculatePlaster(input).total;
+          }
+        }
+
+        return { total: total, errors: errors };
+      }
+
+      function updateRegressionBadge(passed, summaryExpected, failures) {
+        const badge = document.getElementById("regression-badge");
+        badge.hidden = false;
+        badge.classList.toggle("pass", passed);
+        badge.classList.toggle("fail", !passed);
+        if (passed) {
+          badge.textContent = "Тесты пройдены: " + formatMoney(summaryExpected);
+          badge.removeAttribute("title");
+        } else {
+          badge.textContent = "Ошибка регрессии!";
+          badge.title = failures.join(" · ");
+        }
+      }
+
+      function runRegressionTests() {
+        applyRegressionFixtures();
+
+        const failures = [];
+        const cases = [
+          {
+            name: "Плита",
+            expected: REGRESSION_EXPECT.slab,
+            run: function () {
+              const input = readForm();
+              const message = validate(input);
+              if (message) {
+                return { total: NaN, error: message };
+              }
+              return { total: calculateSlab(input).total, error: "" };
+            },
+          },
+          {
+            name: "Стены",
+            expected: REGRESSION_EXPECT.walls,
+            run: function () {
+              const input = readWallsForm();
+              const message = validateWalls(input);
+              if (message) {
+                return { total: NaN, error: message };
+              }
+              return { total: calculateWalls(input).total, error: "" };
+            },
+          },
+          {
+            name: "Штукатурка",
+            expected: REGRESSION_EXPECT.plaster,
+            run: function () {
+              const input = readPlasterForm();
+              const message = validatePlaster(input);
+              if (message) {
+                return { total: NaN, error: message };
+              }
+              return { total: calculatePlaster(input).total, error: "" };
+            },
+          },
+        ];
+
+        for (let i = 0; i < cases.length; i++) {
+          const item = cases[i];
+          const result = item.run();
+          if (result.error) {
+            failures.push(item.name + ": " + result.error);
+          } else if (!moneyEqual(result.total, item.expected)) {
+            failures.push(
+              item.name +
+                ": " +
+                formatMoney(result.total) +
+                " ≠ " +
+                formatMoney(item.expected)
+            );
+          }
+        }
+
+        const summary = computeRegressionSummaryTotal();
+        if (summary.errors.length) {
+          failures.push.apply(failures, summary.errors);
+        } else if (!moneyEqual(summary.total, REGRESSION_EXPECT.summary)) {
+          failures.push(
+            "Сводная смета: " +
+              formatMoney(summary.total) +
+              " ≠ " +
+              formatMoney(REGRESSION_EXPECT.summary)
+          );
+        }
+
+        const passed = failures.length === 0;
+        updateRegressionBadge(passed, REGRESSION_EXPECT.summary, failures);
+        return passed;
+      }
+
       document.querySelectorAll(".tab[data-block]").forEach(function (tab) {
         tab.addEventListener("click", function () {
           setActiveBlock(tab.getAttribute("data-block"));
@@ -2557,6 +2819,7 @@
 
       syncWallsMaterialUi();
       syncPlasterMeshUi();
+      runRegressionTests();
       render();
     </script>
   </body>
