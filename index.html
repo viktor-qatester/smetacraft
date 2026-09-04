@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Конструктор смет</title>
+    <title>Smetacraft — конструктор смет</title>
     <style>
       :root {
         --bg: #f4f4f2;
@@ -2180,7 +2180,7 @@
       }
 
       function barCount(span, step) {
-        return Math.floor(span / step) + 1;
+        return Math.ceil(span / step) + 1;
       }
 
       function lengthWithSplices(span, rodLength, overlap) {
@@ -5868,6 +5868,9 @@
         applyRegressionFixtures();
 
         const failures = [];
+        if (barCount(8.1, 0.2) !== 42) {
+          failures.push("Арматура: для пролёта 8,1 м с шагом 200 мм должно быть 42 стержня.");
+        }
         const cases = [
           {
             name: "Плита",
