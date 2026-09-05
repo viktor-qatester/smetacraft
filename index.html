@@ -597,6 +597,27 @@
         color: var(--error);
       }
 
+      .intake-intro {
+        margin: 0 0 14px;
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.45;
+      }
+
+      .intake-status {
+        margin: 12px 0 0;
+        font-size: 13px;
+        color: #2d5a2d;
+      }
+
+      .intake-status.is-error {
+        color: var(--error);
+      }
+
+      .intake-conditional[hidden] {
+        display: none !important;
+      }
+
       .print-letterhead {
         display: none;
       }
@@ -698,6 +719,7 @@
         <h1>Smetacraft</h1>
         <p id="lead" class="lead">Плитный фундамент: бетон, арматура, опалубка, подушка, гидроизоляция. Цены в Br — ориентир, правьте под поставщика.</p>
         <nav class="tabs" aria-label="Блоки проекта">
+          <button type="button" class="tab" data-block="intake">Мой дом</button>
           <button type="button" class="tab is-active" data-block="slab" aria-current="page">Плита</button>
           <button type="button" class="tab" data-block="strip">Ленточный</button>
           <button type="button" class="tab" data-block="walls">Стены</button>
@@ -712,6 +734,94 @@
 
       <div class="layout">
         <div class="params">
+          <section class="panel" id="panel-intake" hidden>
+            <h2>Анкета вашего дома</h2>
+            <p class="intake-intro">
+              Ответьте на несколько вопросов простым языком — без JSON и без инженерных терминов.
+              Нажмите «Посчитать смету» — справа появится ведомость материалов. Цены можно поправить
+              позже на вкладке «Прайс-лист».
+            </p>
+            <form id="intake-form">
+              <fieldset>
+                <legend>Размеры дома</legend>
+                <div class="row">
+                  <label>
+                    Длина дома, м
+                    <input id="intake-length" name="intake-length" type="text" inputmode="decimal" value="10" autocomplete="off" />
+                  </label>
+                  <label>
+                    Ширина дома, м
+                    <input id="intake-width" name="intake-width" type="text" inputmode="decimal" value="8" autocomplete="off" />
+                  </label>
+                </div>
+                <div class="row">
+                  <label>
+                    Толщина фундаментной плиты, м
+                    <input id="intake-slab-thick" name="intake-slab-thick" type="text" inputmode="decimal" value="0.3" autocomplete="off" />
+                  </label>
+                  <label>
+                    Высота стен, м
+                    <input id="intake-wall-height" name="intake-wall-height" type="text" inputmode="decimal" value="3.0" autocomplete="off" />
+                  </label>
+                </div>
+                <p class="note">Типовой частный дом: плитный фундамент, газобетонные стены. Периметр стен считается автоматически.</p>
+              </fieldset>
+
+              <fieldset>
+                <legend>Окна и двери</legend>
+                <div class="row">
+                  <label>
+                    Окон (типовое 1,5 × 1,4 м)
+                    <input id="intake-windows" name="intake-windows" type="text" inputmode="numeric" value="4" autocomplete="off" />
+                  </label>
+                  <label>
+                    Входных дверей (1,0 × 2,1 м)
+                    <input id="intake-doors" name="intake-doors" type="text" inputmode="numeric" value="1" autocomplete="off" />
+                  </label>
+                </div>
+              </fieldset>
+
+              <fieldset>
+                <legend>Что включить в смету</legend>
+                <label class="check">
+                  <input id="intake-include-found" name="intake-include-found" type="checkbox" checked />
+                  Фундамент (плита)
+                </label>
+                <label class="check">
+                  <input id="intake-include-walls" name="intake-include-walls" type="checkbox" checked />
+                  Стены
+                </label>
+                <label class="check">
+                  <input id="intake-include-plaster" name="intake-include-plaster" type="checkbox" checked />
+                  Внутренняя штукатурка
+                </label>
+                <label class="check">
+                  <input id="intake-include-floor" name="intake-include-floor" type="checkbox" />
+                  Перекрытия
+                </label>
+                <label class="check">
+                  <input id="intake-include-roof" name="intake-include-roof" type="checkbox" />
+                  Кровля
+                </label>
+                <div id="intake-roof-box" class="intake-conditional row" hidden>
+                  <label>
+                    Высота конька, м
+                    <input id="intake-ridge-height" name="intake-ridge-height" type="text" inputmode="decimal" value="2.5" autocomplete="off" />
+                  </label>
+                  <label>
+                    Свес карниза, м
+                    <input id="intake-eave" name="intake-eave" type="text" inputmode="decimal" value="0.5" autocomplete="off" />
+                  </label>
+                </div>
+              </fieldset>
+
+              <button type="submit" class="btn-action">Посчитать смету моего дома</button>
+              <p id="intake-error" class="error"></p>
+              <p id="intake-status" class="intake-status"></p>
+              <p class="note">Это предварительная ведомость закупки, не проектная документация. Перед стройкой цифры проверяет специалист.</p>
+            </form>
+          </section>
+
           <section class="panel" id="panel-slab">
             <h2>Параметры плиты</h2>
             <p class="hint">
@@ -1975,8 +2085,11 @@
         "Прайс-лист: цены материалов всех узлов в одном месте. Правка цены сразу пересчитывает ведомость справа.";
       const PROJECT_LEAD =
         "Проект: сохранение и загрузка всех параметров и цен файлом JSON. Данные остаются в браузере, сервер не нужен.";
+      const INTAKE_LEAD =
+        "Анкета: ответьте на простые вопросы о доме — калькулятор сам подставит размеры и покажет ведомость материалов.";
 
       const BLOCK_LEADS = {
+        intake: INTAKE_LEAD,
         slab: SLAB_LEAD,
         strip: STRIP_LEAD,
         walls: WALLS_LEAD,
@@ -2092,6 +2205,10 @@
       const plasterForm = document.getElementById("plaster-form");
       const roofForm = document.getElementById("roof-form");
       const summaryForm = document.getElementById("summary-form");
+      const intakeForm = document.getElementById("intake-form");
+      const intakeErrorEl = document.getElementById("intake-error");
+      const intakeStatusEl = document.getElementById("intake-status");
+      const intakeRoofBoxEl = document.getElementById("intake-roof-box");
       const gradeEl = document.getElementById("grade");
       const concretePriceEl = document.getElementById("concrete-price");
       const stripGradeEl = document.getElementById("strip-grade");
@@ -2113,6 +2230,7 @@
       const panelSummary = document.getElementById("panel-summary");
       const panelPrice = document.getElementById("panel-price");
       const panelProject = document.getElementById("panel-project");
+      const panelIntake = document.getElementById("panel-intake");
       const priceForm = document.getElementById("price-form");
       const projectFileEl = document.getElementById("project-file");
       const projectFileNameEl = document.getElementById("project-file-name");
@@ -5596,6 +5714,227 @@
         saveToLocalStorage();
       }
 
+      // ==========================================
+      // MODULE: CUSTOMER INTAKE (QUESTIONNAIRE)
+      // ==========================================
+      function setIntakeStatus(message, isError) {
+        intakeStatusEl.textContent = message || "";
+        intakeStatusEl.classList.toggle("is-error", Boolean(isError));
+      }
+
+      function syncIntakeRoofUi() {
+        const on = document.getElementById("intake-include-roof").checked;
+        intakeRoofBoxEl.hidden = !on;
+      }
+
+      function showIntakeBillHint() {
+        intakeErrorEl.classList.remove("visible");
+        billWrapEl.hidden = true;
+        billPrintEl.hidden = true;
+        billEmptyEl.hidden = false;
+        billEmptyEl.textContent =
+          "Заполните анкету слева и нажмите «Посчитать смету моего дома» — здесь появится ведомость.";
+        billMetaEl.textContent = "";
+        setPrintHead(BILL_PRINT_SUB, "");
+      }
+
+      function readIntakeForm() {
+        return {
+          length: parseNumber(document.getElementById("intake-length").value),
+          width: parseNumber(document.getElementById("intake-width").value),
+          slabThick: parseNumber(document.getElementById("intake-slab-thick").value),
+          wallHeight: parseNumber(document.getElementById("intake-wall-height").value),
+          windows: Math.round(parseNumber(document.getElementById("intake-windows").value)),
+          doors: Math.round(parseNumber(document.getElementById("intake-doors").value)),
+          ridgeHeight: parseNumber(document.getElementById("intake-ridge-height").value),
+          eave: parseNumber(document.getElementById("intake-eave").value),
+          includeFound: document.getElementById("intake-include-found").checked,
+          includeWalls: document.getElementById("intake-include-walls").checked,
+          includePlaster: document.getElementById("intake-include-plaster").checked,
+          includeFloor: document.getElementById("intake-include-floor").checked,
+          includeRoof: document.getElementById("intake-include-roof").checked,
+        };
+      }
+
+      function validateIntake(input) {
+        if (!(input.length > 0 && input.width > 0)) {
+          return "Укажите длину и ширину дома больше нуля.";
+        }
+        if (!(input.slabThick > 0)) {
+          return "Укажите толщину фундаментной плиты больше нуля.";
+        }
+        if (!(input.wallHeight > 0)) {
+          return "Укажите высоту стен больше нуля.";
+        }
+        if (!(input.windows >= 0 && Number.isInteger(input.windows))) {
+          return "Количество окон — целое число, 0 или больше.";
+        }
+        if (!(input.doors >= 0 && Number.isInteger(input.doors))) {
+          return "Количество дверей — целое число, 0 или больше.";
+        }
+        if (
+          !input.includeFound &&
+          !input.includeWalls &&
+          !input.includePlaster &&
+          !input.includeFloor &&
+          !input.includeRoof
+        ) {
+          return "Отметьте хотя бы один блок для расчёта.";
+        }
+        if (input.includeRoof && !(input.ridgeHeight > 0)) {
+          return "Для кровли укажите высоту конька больше нуля.";
+        }
+        if (input.includeRoof && !(input.eave >= 0)) {
+          return "Укажите свес карниза (можно 0).";
+        }
+        return "";
+      }
+
+      function syncIntakeFromProject() {
+        setRegressionField("intake-length", document.getElementById("length").value || "10");
+        setRegressionField("intake-width", document.getElementById("width").value || "8");
+        setRegressionField("intake-slab-thick", document.getElementById("height").value || "0.3");
+        setRegressionField("intake-wall-height", document.getElementById("walls-height").value || "3.0");
+        setRegressionField("intake-ridge-height", document.getElementById("roof-ridge-height").value || "2.5");
+        setRegressionField("intake-eave", document.getElementById("roof-eave").value || "0.5");
+
+        let windows = 0;
+        let doors = 0;
+        const openings = readOpeningsState();
+        for (let i = 0; i < openings.length; i++) {
+          const row = openings[i];
+          const n = parseNumber(row.count);
+          if (row.type === "entry-door") {
+            doors += n;
+          } else {
+            windows += n;
+          }
+        }
+        setRegressionField("intake-windows", String(windows));
+        setRegressionField("intake-doors", String(doors));
+        syncIntakeRoofUi();
+      }
+
+      function applyIntakeCustomerDefaults() {
+        document.getElementById("intake-include-found").checked = true;
+        document.getElementById("intake-include-walls").checked = true;
+        document.getElementById("intake-include-plaster").checked = true;
+        document.getElementById("intake-include-floor").checked = false;
+        document.getElementById("intake-include-roof").checked = false;
+        syncIntakeRoofUi();
+      }
+
+      function applyIntakeQuestionnaire() {
+        const input = readIntakeForm();
+        const message = validateIntake(input);
+        if (message) {
+          intakeErrorEl.textContent = message;
+          intakeErrorEl.classList.add("visible");
+          setIntakeStatus("", false);
+          return false;
+        }
+        intakeErrorEl.classList.remove("visible");
+
+        setRegressionField("length", String(input.length));
+        setRegressionField("width", String(input.width));
+        setRegressionField("height", String(input.slabThick));
+        setRegressionField("walls-height", String(input.wallHeight));
+
+        wallsPerimeterManual = false;
+        plasterLengthManual = false;
+        plasterHeightManual = false;
+        roofWidthManual = false;
+        roofLengthManual = false;
+        floorLengthManual = false;
+        floorWidthManual = false;
+        lastFoundationBlock = "slab";
+
+        const openings = [];
+        if (input.windows > 0) {
+          openings.push({
+            type: "window",
+            width: "1.5",
+            height: "1.4",
+            count: String(input.windows),
+            locked: true,
+          });
+        }
+        if (input.doors > 0) {
+          openings.push({
+            type: "entry-door",
+            width: "1.0",
+            height: "2.1",
+            count: String(input.doors),
+          });
+        }
+        if (!openings.length) {
+          openings.push({
+            type: "window",
+            width: "1.5",
+            height: "1.4",
+            count: "0",
+            locked: true,
+          });
+        }
+        writeOpeningsState(openings);
+
+        document.getElementById("walls-load-bearing-material").value = "gas-silicate-300";
+        document.getElementById("walls-reinforce-mesh").checked = true;
+        document.getElementById("walls-armopoyas").checked = true;
+        document.getElementById("walls-lintels").checked = true;
+        document.getElementById("walls-partitions-enabled").checked = false;
+        document.getElementById("plaster-exclude-openings").checked = true;
+        document.getElementById("plaster-sides").value = "1";
+        plasterMeshEl.checked = false;
+
+        pilesEnabledEl.checked = false;
+        writePilesState([]);
+        syncPilesUi();
+        syncWallsUi();
+        syncPlasterMeshUi();
+
+        const slabFoundRadio = summaryForm.querySelector('input[name="summary-found-type"][value="slab"]');
+        if (slabFoundRadio) {
+          slabFoundRadio.checked = true;
+        }
+
+        summaryIncludeFoundEl.checked = input.includeFound;
+        summaryIncludeWallsEl.checked = input.includeWalls;
+        summaryIncludePlasterEl.checked = input.includePlaster;
+        summaryIncludeFloorEl.checked = input.includeFloor;
+        summaryIncludeRoofEl.checked = input.includeRoof;
+
+        if (input.includeRoof) {
+          roofWidthEl.value = String(input.width);
+          roofLengthEl.value = String(input.length);
+          setRegressionField("roof-ridge-height", String(input.ridgeHeight));
+          setRegressionField("roof-eave", String(input.eave));
+          document.getElementById("roof-type").value = "gable";
+          roofWarmEl.checked = true;
+          roofNeedsCalc = false;
+          syncRoofInsulationUi();
+        }
+
+        if (input.includeFloor) {
+          floorLengthEl.value = String(input.length);
+          floorWidthEl.value = String(input.width);
+          floorTypeEl.value = "wood";
+          floorNeedsCalc = false;
+          syncFloorTypeUi();
+        }
+
+        syncWallsPerimeterFromFoundation();
+        syncPlasterFromWalls();
+
+        setIntakeStatus(
+          "Готово: параметры подставлены. Справа — сводная ведомость. При необходимости уточните детали на вкладках «Стены», «Кровля» и др.",
+          false
+        );
+        setActiveBlock("summary");
+        saveToLocalStorage();
+        return true;
+      }
+
       function setActiveBlock(block) {
         activeBlock = block;
         if (block === "slab" || block === "strip") {
@@ -5613,6 +5952,11 @@
         panelSummary.hidden = block !== "summary";
         panelPrice.hidden = block !== "price";
         panelProject.hidden = block !== "project";
+        panelIntake.hidden = block !== "intake";
+        if (block === "intake") {
+          syncIntakeFromProject();
+          showIntakeBillHint();
+        }
         if (block === "roof") {
           syncRoofFootprintFromFoundation();
         }
@@ -6863,6 +7207,12 @@
         setActiveBlock("floor");
       });
 
+      document.getElementById("intake-include-roof").addEventListener("change", syncIntakeRoofUi);
+      intakeForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        applyIntakeQuestionnaire();
+      });
+
       syncWallsUi();
       syncPlasterMeshUi();
       syncRoofInsulationUi();
@@ -6872,9 +7222,13 @@
       syncPilesUi();
       demoProjectSnapshot = collectProject();
       runRegressionTests();
-      if (!loadFromLocalStorage()) {
+      const hadStoredProject = loadFromLocalStorage();
+      if (!hadStoredProject) {
         applyDemoTemplate();
+        syncIntakeFromProject();
+        applyIntakeCustomerDefaults();
         saveToLocalStorage();
+        setActiveBlock("intake");
       }
     </script>
   </body>
