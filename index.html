@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Конструктор смет</title>
+    <title>Smetacraft — конструктор смет</title>
     <style>
       :root {
         --bg: #f4f4f2;
@@ -695,7 +695,7 @@
   <body>
     <div class="app">
       <header>
-        <h1>Конструктор смет</h1>
+        <h1>Smetacraft</h1>
         <p id="lead" class="lead">Плитный фундамент: бетон, арматура, опалубка, подушка, гидроизоляция. Цены в Br — ориентир, правьте под поставщика.</p>
         <nav class="tabs" aria-label="Блоки проекта">
           <button type="button" class="tab is-active" data-block="slab" aria-current="page">Плита</button>
@@ -1440,6 +1440,18 @@
                 </div>
               </fieldset>
 
+              <fieldset>
+                <legend>Перекрытия</legend>
+                <label class="check">
+                  <input id="summary-include-floor" name="summary-include-floor" type="checkbox" />
+                  Перекрытия
+                </label>
+                <p id="summary-snap-floor" class="snap"></p>
+                <div class="node-actions">
+                  <button type="button" class="btn-text" id="summary-jump-floor">Править перекрытия</button>
+                </div>
+              </fieldset>
+
               <p id="summary-error" class="error"></p>
             </form>
           </section>
@@ -2109,11 +2121,13 @@
       const summaryIncludeWallsEl = document.getElementById("summary-include-walls");
       const summaryIncludePlasterEl = document.getElementById("summary-include-plaster");
       const summaryIncludeRoofEl = document.getElementById("summary-include-roof");
+      const summaryIncludeFloorEl = document.getElementById("summary-include-floor");
       const summaryFoundChoiceEl = document.getElementById("summary-found-choice");
       const summarySnapFoundEl = document.getElementById("summary-snap-found");
       const summarySnapWallsEl = document.getElementById("summary-snap-walls");
       const summarySnapPlasterEl = document.getElementById("summary-snap-plaster");
       const summarySnapRoofEl = document.getElementById("summary-snap-roof");
+      const summarySnapFloorEl = document.getElementById("summary-snap-floor");
       const printSubEl = document.getElementById("print-sub");
       const printNodesEl = document.getElementById("print-nodes");
       const plasterMixEl = document.getElementById("plaster-mix");
@@ -2180,7 +2194,7 @@
       }
 
       function barCount(span, step) {
-        return Math.floor(span / step) + 1;
+        return Math.ceil(span / step) + 1;
       }
 
       function lengthWithSplices(span, rodLength, overlap) {
@@ -4957,6 +4971,49 @@
         ];
       }
 
+      function floorSummaryRows(bill, input) {
+        let workCost = 0;
+        let materialsCost = 0;
+        for (let i = 0; i < bill.rows.length; i++) {
+          const row = bill.rows[i];
+          if (
+            row.name.indexOf("Монтаж деревянного перекрытия") === 0 ||
+            row.name.indexOf("Монтаж плит перекрытия") === 0
+          ) {
+            workCost += row.cost;
+          } else {
+            materialsCost += row.cost;
+          }
+        }
+        const typeLabel = input.type === "wood" ? "деревянные балки" : "ЖБ плиты";
+        return [
+          {
+            name:
+              "Перекрытия — материалы (" +
+              typeLabel +
+              ", " +
+              formatQty(bill.area, 2) +
+              " м²)",
+            netLabel: formatQty(bill.area, 2) + " м²",
+            k: 1,
+            orderLabel: formatMoney(materialsCost).replace(" Br", ""),
+            cost: materialsCost,
+          },
+          {
+            name:
+              "Перекрытия — работы (" +
+              typeLabel +
+              ", " +
+              formatQty(bill.area, 2) +
+              " м²)",
+            netLabel: formatQty(bill.area, 2) + " м²",
+            k: 1,
+            orderLabel: formatMoney(workCost).replace(" Br", ""),
+            cost: workCost,
+          },
+        ];
+      }
+
       function readRoofPrices() {
         return {
           timberPrice: parseNumber(document.getElementById("roof-timber-price").value),
@@ -5300,6 +5357,7 @@
         const includeWalls = summaryIncludeWallsEl.checked;
         const includePlaster = summaryIncludePlasterEl.checked;
         const includeRoof = summaryIncludeRoofEl.checked;
+        const includeFloor = summaryIncludeFloorEl.checked;
         const foundType = summaryFoundType();
 
         const slabInput = readForm();
@@ -5307,6 +5365,7 @@
         const wallsInput = readWallsForm();
         const plasterInput = readPlasterForm();
         const roofInput = readRoofForm();
+        const floorInput = readFloorForm();
 
         summarySnapFoundEl.textContent =
           foundType === "strip"
@@ -5361,8 +5420,18 @@
           " м · свес " +
           formatQty(roofInput.eave, 2) +
           " м";
+        summarySnapFloorEl.textContent =
+          "Перекрытия " +
+          (floorInput.type === "wood" ? "деревянные" : "ЖБ") +
+          " · " +
+          formatQty(floorInput.length, 2) +
+          " × " +
+          formatQty(floorInput.width, 2) +
+          " м · площадь " +
+          formatQty(floorInput.length * floorInput.width, 2) +
+          " м²";
 
-        if (!includeFound && !includeWalls && !includePlaster && !includeRoof) {
+        if (!includeFound && !includeWalls && !includePlaster && !includeRoof && !includeFloor) {
           showBillError("Включите хотя бы один узел объекта.", summaryErrorEl);
           return;
         }
@@ -5467,6 +5536,26 @@
           }
         }
 
+        if (includeFloor && !floorIsEmpty(floorInput)) {
+          const message = validateFloor(floorInput);
+          if (message) {
+            errors.push("Перекрытия: " + message);
+          } else if (floorNeedsCalc) {
+            errors.push("Перекрытия: нажмите «Рассчитать смету» на вкладке перекрытий.");
+          } else {
+            const bill = calculateFloor(floorInput);
+            rows.push.apply(rows, floorSummaryRows(bill, floorInput));
+            total += bill.total;
+            nodes.push(
+              "перекрытия " +
+                formatQty(floorInput.length, 2) +
+                " × " +
+                formatQty(floorInput.width, 2) +
+                " м"
+            );
+          }
+        }
+
         if (errors.length) {
           showBillError(errors.join(" "), summaryErrorEl);
           return;
@@ -5556,12 +5645,14 @@
         slab: 12099.19,
         walls: 7821.96,
         // Штукатурка: 40 × 3 м, одна сторона, автовычет 13.5 м² проёмов → 106.5 м².
-        // 48 меш. × 16.50 + 2 кан. × 28 + 34 маяка × 3.20 + 106.5 м² × 10.00 работ.
-        plaster: 2021.8,
+        // 48 меш. × 16.50 + 2 кан. × 28 + 35 маяков × 3.20 + 106.5 м² × 10.00 работ.
+        plaster: 2025.0,
         // Сводная регрессия: плита + legacy-стены + материалы штукатурки (без работ).
-        summary: 19675.09,
+        summary: 19678.29,
         stripPiles: 10791.16,
         roof: 14955.59,
+        // Перекрытия: дерево 10 × 8 м, брус 100×200 шаг 0.6 м, утеплитель 150 мм, накат.
+        floor: 5495.14,
       };
 
       function moneyEqual(actual, expected) {
@@ -5637,6 +5728,7 @@
         summaryIncludeWallsEl.checked = true;
         summaryIncludePlasterEl.checked = true;
         summaryIncludeRoofEl.checked = false;
+        summaryIncludeFloorEl.checked = false;
         roofWidthManual = false;
         roofLengthManual = false;
         roofNeedsCalc = true;
@@ -5779,6 +5871,28 @@
         setActiveBlock("plaster");
       }
 
+      function applyFloorRegressionFixtures() {
+        floorLengthManual = false;
+        floorWidthManual = false;
+        setRegressionField("length", "10");
+        setRegressionField("width", "8");
+        setRegressionField("floor-length", "10");
+        setRegressionField("floor-width", "8");
+        floorTypeEl.value = "wood";
+        document.getElementById("floor-beam-section").value = "100x200";
+        setRegressionField("floor-beam-step", "0.6");
+        setRegressionField("floor-insulation-mm", "150");
+        document.getElementById("floor-board-clad").checked = true;
+        setRegressionField("floor-wood-beam-price", "450.00");
+        setRegressionField("floor-insulation-price", "95.00");
+        setRegressionField("floor-membrane-price", "1.80");
+        setRegressionField("floor-board-price", "380.00");
+        setRegressionField("floor-work-wood-price", "25.00");
+        syncFloorTypeUi();
+        floorNeedsCalc = false;
+        setActiveBlock("floor");
+      }
+
       function computeRegressionSummaryTotal() {
         const includeFound = summaryIncludeFoundEl.checked;
         const includeWalls = summaryIncludeWallsEl.checked;
@@ -5836,7 +5950,8 @@
         stripPilesExpected,
         roofExpected,
         wallsExpected,
-        plasterExpected
+        plasterExpected,
+        floorExpected
       ) {
         const badge = document.getElementById("regression-badge");
         badge.hidden = false;
@@ -5854,6 +5969,8 @@
             formatMoney(wallsExpected) +
             ") | Штукатурка (" +
             formatMoney(plasterExpected) +
+            ") | Перекрытия (" +
+            formatMoney(floorExpected) +
             ")";
           badge.removeAttribute("title");
         } else {
@@ -5868,6 +5985,9 @@
         applyRegressionFixtures();
 
         const failures = [];
+        if (barCount(8.1, 0.2) !== 42) {
+          failures.push("Арматура: для пролёта 8,1 м с шагом 200 мм должно быть 42 стержня.");
+        }
         const cases = [
           {
             name: "Плита",
@@ -5985,6 +6105,24 @@
           }
         }
 
+        applyFloorRegressionFixtures();
+        const floorInput = readFloorForm();
+        const floorMessage = validateFloor(floorInput);
+        let floorTotal = NaN;
+        if (floorMessage) {
+          failures.push("Перекрытия: " + floorMessage);
+        } else {
+          floorTotal = calculateFloor(floorInput).total;
+          if (!moneyEqual(floorTotal, REGRESSION_EXPECT.floor)) {
+            failures.push(
+              "Перекрытия: " +
+                formatMoney(floorTotal) +
+                " ≠ " +
+                formatMoney(REGRESSION_EXPECT.floor)
+            );
+          }
+        }
+
         applyRegressionFixtures();
         summaryIncludeWallsEl.checked = false;
         summaryIncludePlasterEl.checked = false;
@@ -5998,7 +6136,8 @@
           REGRESSION_EXPECT.stripPiles,
           REGRESSION_EXPECT.roof,
           REGRESSION_EXPECT.walls,
-          REGRESSION_EXPECT.plaster
+          REGRESSION_EXPECT.plaster,
+          REGRESSION_EXPECT.floor
         );
         persistSuspended = previousPersist;
         return passed;
@@ -6719,6 +6858,9 @@
       });
       document.getElementById("summary-jump-roof").addEventListener("click", function () {
         setActiveBlock("roof");
+      });
+      document.getElementById("summary-jump-floor").addEventListener("click", function () {
+        setActiveBlock("floor");
       });
 
       syncWallsUi();
