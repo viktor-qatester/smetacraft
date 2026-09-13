@@ -202,6 +202,20 @@
         color: var(--muted);
       }
 
+      .bill-scope,
+      .bill-excluded {
+        margin: 0 0 8px;
+        font-size: 13px;
+      }
+
+      .bill-scope {
+        font-weight: 650;
+      }
+
+      .bill-excluded {
+        color: var(--muted);
+      }
+
       .bill-wrap {
         overflow-x: auto;
       }
@@ -638,6 +652,7 @@
         header,
         .params,
         .btn-print,
+        #bill-next,
         .bill > .note {
           display: none !important;
         }
@@ -737,10 +752,11 @@
           <section class="panel" id="panel-intake" hidden>
             <h2>Анкета вашего дома</h2>
             <p class="intake-intro">
-              Ответьте на несколько вопросов простым языком — без JSON и без инженерных терминов.
-              Нажмите «Посчитать смету» — справа появится ведомость материалов. Цены можно поправить
-              позже на вкладке «Прайс-лист».
+              Укажите размеры и отметьте части строительства. Справа появится стоимость только выбранных
+              частей по строкам ведомости — не стоимость всего дома. Стартовые значения служат примером:
+              замените их своими или начните с пустого проекта. Цены можно изменить в «Прайс-листе».
             </p>
+            <button type="button" class="btn-text" id="intake-new-project">Начать с пустого проекта</button>
             <form id="intake-form">
               <fieldset>
                 <legend>Размеры дома</legend>
@@ -815,7 +831,7 @@
                 </div>
               </fieldset>
 
-              <button type="submit" class="btn-action">Посчитать смету моего дома</button>
+              <button type="submit" class="btn-action">Посчитать выбранные части</button>
               <p id="intake-error" class="error"></p>
               <p id="intake-status" class="intake-status"></p>
               <p class="note">Это предварительная ведомость закупки, не проектная документация. Перед стройкой цифры проверяет специалист.</p>
@@ -883,8 +899,15 @@
                     Шаг сетки, мм
                     <input id="bar-step" name="bar-step" type="text" inputmode="decimal" value="200" autocomplete="off" />
                   </label>
+                  <label>
+                    Количество сеток
+                    <select id="slab-mesh-count" name="slab-mesh-count">
+                      <option value="1">1</option>
+                      <option value="2" selected>2</option>
+                    </select>
+                  </label>
                 </div>
-                <p class="note">Две сетки, нахлёст 40d, хлыст 11.7 м. Проволока — 1% от массы арматуры.</p>
+                <p class="note">Нахлёст 40d, хлыст 11.7 м. Проволока — 1% от массы арматуры.</p>
               </fieldset>
 
               <fieldset>
@@ -2012,6 +2035,8 @@
             <h2>Ведомость закупки</h2>
             <button type="button" class="link-btn js-goto-price">изменить цену ↗</button>
           </div>
+          <p id="bill-scope" class="bill-scope" hidden></p>
+          <p id="bill-excluded" class="bill-excluded" hidden></p>
           <p id="bill-meta" class="bill-meta"></p>
           <p id="bill-empty" class="empty">Заполните размеры и цены слева.</p>
           <div id="bill-wrap" class="bill-wrap" hidden>
@@ -2028,14 +2053,15 @@
               <tbody id="bill-body"></tbody>
               <tfoot>
                 <tr>
-                  <td colspan="3">Итого</td>
+                  <td colspan="3">Итого по рассчитанным частям</td>
                   <td class="num" colspan="2" id="bill-total"></td>
                 </tr>
               </tfoot>
             </table>
           </div>
+          <button type="button" class="btn-text" id="bill-next" hidden>Добавить части → Сводная смета</button>
           <button type="button" class="btn-print" id="bill-print" hidden>Распечатать смету / PDF</button>
-          <p class="note">Цифры для закупки, не замена проекту. Остатки хлыстов 11.7 м входят в заказ целиком.</p>
+          <p class="note">Стоимость ориентировочная, по ценам прайс-листа в Br. Это не полная стоимость дома и не замена проекту. Остатки хлыстов 11.7 м входят в заказ целиком.</p>
         </aside>
       </div>
     </div>
@@ -2046,7 +2072,6 @@
       // MODULE: CONSTANTS
       // ==========================================
       const CONCRETE_RESERVE = 0.05;
-      const MESHES = 2;
       const ROD_LENGTH = 11.7;
       const OVERLAP_DIAMETERS = 40;
       const WIRE_RATE = 0.01;
@@ -2108,8 +2133,8 @@
       const PROJECT_FILENAME = "smetacraft_project.json";
       const STORAGE_KEY = "smetacraft_project";
 
-      const BILL_PRINT_SUB = "Ведомость закупки материалов";
-      const SUMMARY_PRINT_SUB = "Сводный акт / ведомость закупки";
+      const BILL_PRINT_SUB = "Предварительная ведомость выбранных материалов";
+      const SUMMARY_PRINT_SUB = "Предварительная ведомость выбранных частей";
 
       const CAT_ORDER = [
         { id: "concrete", title: "Бетон и растворы" },
@@ -2277,6 +2302,9 @@
       const pilesBodyEl = document.getElementById("strip-piles-body");
       let pileSeq = 1;
       const billMetaEl = document.getElementById("bill-meta");
+      const billScopeEl = document.getElementById("bill-scope");
+      const billExcludedEl = document.getElementById("bill-excluded");
+      const billNextEl = document.getElementById("bill-next");
       const billEmptyEl = document.getElementById("bill-empty");
       const billWrapEl = document.getElementById("bill-wrap");
       const billBodyEl = document.getElementById("bill-body");
@@ -2440,6 +2468,39 @@
         });
       }
 
+      const BILL_SECTIONS = [
+        { id: "foundation", label: "фундамент" },
+        { id: "walls", label: "стены и перегородки" },
+        { id: "floor", label: "перекрытия" },
+        { id: "plaster", label: "штукатурка" },
+        { id: "roof", label: "кровля" },
+      ];
+
+      function updateBillScope(rows, options) {
+        const single = {
+          slab: { id: "foundation", label: "плитный фундамент" },
+          strip: { id: "foundation", label: "ленточный фундамент" },
+          walls: { id: "walls", label: "стены и перегородки" },
+          floor: { id: "floor", label: "перекрытия" },
+          plaster: { id: "plaster", label: "штукатурка" },
+          roof: { id: "roof", label: "кровля" },
+        };
+        const sections = rows.length
+          ? (options && options.sections) || [single[billBlock]].filter(Boolean)
+          : [];
+        const included = new Set(sections.map(function (section) { return section.id; }));
+        const missing = BILL_SECTIONS.filter(function (section) { return !included.has(section.id); });
+        billScopeEl.textContent = sections.length
+          ? "Рассчитано: " + sections.map(function (section) { return section.label; }).join(", ") + "."
+          : "Пока ничего не рассчитано.";
+        billExcludedEl.textContent = missing.length
+          ? "Не рассчитано: " + missing.map(function (section) { return section.label; }).join(", ") + "."
+          : "Все доступные разделы включены. Другие работы и инженерные системы в ведомость не входят.";
+        billScopeEl.hidden = false;
+        billExcludedEl.hidden = false;
+        billNextEl.hidden = billBlock === "summary" || !rows.length;
+      }
+
       function showBill(rows, total, meta, options) {
         errorEl.classList.remove("visible");
         stripErrorEl.classList.remove("visible");
@@ -2452,6 +2513,7 @@
         billWrapEl.hidden = false;
         billPrintEl.hidden = false;
         billMetaEl.textContent = meta;
+        updateBillScope(rows, options);
         billBodyEl.innerHTML =
           options && options.grouped ? groupedBillHtml(rows) : rows.map(rowHtml).join("");
         billTotalEl.textContent = formatMoney(total);
@@ -2470,6 +2532,9 @@
         billEmptyEl.hidden = false;
         billEmptyEl.textContent = "Заполните размеры и цены слева.";
         billMetaEl.textContent = "";
+        billScopeEl.hidden = true;
+        billExcludedEl.hidden = true;
+        billNextEl.hidden = true;
         setPrintHead(BILL_PRINT_SUB, "");
       }
 
@@ -2516,8 +2581,8 @@
         const overlap = OVERLAP_DIAMETERS * (input.diameterMm / 1000);
         const stepM = input.stepMm / 1000;
 
-        const nAlongLength = barCount(input.width, stepM) * MESHES;
-        const nAlongWidth = barCount(input.length, stepM) * MESHES;
+        const nAlongLength = barCount(input.width, stepM) * input.meshCount;
+        const nAlongWidth = barCount(input.length, stepM) * input.meshCount;
         const netMeters =
           nAlongLength * input.length + nAlongWidth * input.width;
         const metersWithLap =
@@ -2987,6 +3052,7 @@
           concretePrice: parseNumber(concretePriceEl.value),
           diameterMm: parseNumber(document.getElementById("bar-diameter").value),
           stepMm: parseNumber(document.getElementById("bar-step").value),
+          meshCount: parseNumber(document.getElementById("slab-mesh-count").value),
           rebarPrice: parseNumber(document.getElementById("rebar-price").value),
           wirePrice: parseNumber(document.getElementById("wire-price").value),
           boardPrice: parseNumber(document.getElementById("board-price").value),
@@ -3031,6 +3097,9 @@
         }
         if (!(input.stepMm > 0 && input.diameterMm > 0)) {
           return "Введите шаг сетки и диаметр арматуры больше нуля.";
+        }
+        if (input.meshCount !== 1 && input.meshCount !== 2) {
+          return "Выберите одну или две арматурные сетки.";
         }
         if (
           !(
@@ -5201,6 +5270,9 @@
         billEmptyEl.textContent =
           "Параметры изменены. Нажмите «Рассчитать смету» для получения результатов.";
         billMetaEl.textContent = "";
+        billScopeEl.hidden = true;
+        billExcludedEl.hidden = true;
+        billNextEl.hidden = true;
         setPrintHead(BILL_PRINT_SUB, "");
       }
 
@@ -5289,6 +5361,9 @@
         billEmptyEl.textContent =
           "Параметры изменены. Нажмите «Рассчитать смету» для получения результатов.";
         billMetaEl.textContent = "";
+        billScopeEl.hidden = true;
+        billExcludedEl.hidden = true;
+        billNextEl.hidden = true;
         setPrintHead(BILL_PRINT_SUB, "");
       }
 
@@ -5557,6 +5632,7 @@
         const errors = [];
         const rows = [];
         const nodes = [];
+        const calculatedSections = [];
         let total = 0;
 
         if (includeFound && foundType === "slab") {
@@ -5568,6 +5644,7 @@
               const bill = calculateSlab(slabInput);
               rows.push.apply(rows, bill.rows);
               total += bill.total;
+              calculatedSections.push({ id: "foundation", label: "плитный фундамент" });
               nodes.push(
                 "плита " +
                   formatQty(slabInput.length, 2) +
@@ -5588,6 +5665,7 @@
               const bill = calculateStrip(stripInput);
               rows.push.apply(rows, bill.rows);
               total += bill.total;
+              calculatedSections.push({ id: "foundation", label: "ленточный фундамент" });
               nodes.push(
                 "лента " +
                   formatQty(stripInput.length, 2) +
@@ -5609,6 +5687,7 @@
             const bill = calculateWalls(wallsInput);
             rows.push.apply(rows, wallsSummaryRows(bill, wallsInput));
             total += bill.total;
+            calculatedSections.push({ id: "walls", label: "стены и перегородки" });
             nodes.push(
               "стены " +
                 formatQty(wallsInput.perimeter, 1) +
@@ -5630,6 +5709,7 @@
             const bill = calculatePlaster(plasterInput);
             rows.push.apply(rows, plasterSummaryRows(bill, plasterInput));
             total += bill.total;
+            calculatedSections.push({ id: "plaster", label: "штукатурка" });
             nodes.push("штукатурка " + formatQty(bill.area, 2) + " м²");
           }
         }
@@ -5642,6 +5722,7 @@
             const bill = calculateRoof(roofInput);
             rows.push.apply(rows, roofSummaryRows(bill, roofInput));
             total += bill.total;
+            calculatedSections.push({ id: "roof", label: "кровля" });
             nodes.push(
               "кровля " +
                 roofTypeLabel(roofInput.type) +
@@ -5664,6 +5745,7 @@
             const bill = calculateFloor(floorInput);
             rows.push.apply(rows, floorSummaryRows(bill, floorInput));
             total += bill.total;
+            calculatedSections.push({ id: "floor", label: "перекрытия" });
             nodes.push(
               "перекрытия " +
                 formatQty(floorInput.length, 2) +
@@ -5682,6 +5764,7 @@
         if (!nodes.length) {
           showZeroBill("Объект: параметры не заданы — новый проект.", {
             grouped: true,
+            sections: [],
             printTitle: SUMMARY_PRINT_SUB,
             printNodes: "Узлы: не заданы",
           });
@@ -5690,6 +5773,7 @@
 
         showBill(rows, total, "Объект: " + nodes.join(" · "), {
           grouped: true,
+          sections: calculatedSections,
           printTitle: SUMMARY_PRINT_SUB,
           printNodes: "Узлы: " + nodes.join(" · "),
         });
@@ -5733,8 +5817,11 @@
         billPrintEl.hidden = true;
         billEmptyEl.hidden = false;
         billEmptyEl.textContent =
-          "Заполните анкету слева и нажмите «Посчитать смету моего дома» — здесь появится ведомость.";
+          "Заполните анкету слева и нажмите «Посчитать выбранные части» — здесь появится ведомость.";
         billMetaEl.textContent = "";
+        billScopeEl.hidden = true;
+        billExcludedEl.hidden = true;
+        billNextEl.hidden = true;
         setPrintHead(BILL_PRINT_SUB, "");
       }
 
@@ -5760,10 +5847,10 @@
         if (!(input.length > 0 && input.width > 0)) {
           return "Укажите длину и ширину дома больше нуля.";
         }
-        if (!(input.slabThick > 0)) {
+        if (input.includeFound && !(input.slabThick > 0)) {
           return "Укажите толщину фундаментной плиты больше нуля.";
         }
-        if (!(input.wallHeight > 0)) {
+        if ((input.includeWalls || input.includePlaster) && !(input.wallHeight > 0)) {
           return "Укажите высоту стен больше нуля.";
         }
         if (!(input.windows >= 0 && Number.isInteger(input.windows))) {
@@ -5955,7 +6042,6 @@
         panelIntake.hidden = block !== "intake";
         if (block === "intake") {
           syncIntakeFromProject();
-          showIntakeBillHint();
         }
         if (block === "roof") {
           syncRoofFootprintFromFoundation();
@@ -5980,6 +6066,9 @@
           }
         });
         render();
+        if (block === "intake") {
+          showIntakeBillHint();
+        }
       }
 
       // ==========================================
@@ -5987,6 +6076,7 @@
       // ==========================================
       const REGRESSION_EXPECT = {
         slab: 12099.19,
+        slabOneMesh: 9741.19,
         walls: 7821.96,
         // Штукатурка: 40 × 3 м, одна сторона, автовычет 13.5 м² проёмов → 106.5 м².
         // 48 меш. × 16.50 + 2 кан. × 28 + 35 маяков × 3.20 + 106.5 м² × 10.00 работ.
@@ -6021,6 +6111,7 @@
         concretePriceEl.value = "210";
         document.getElementById("bar-diameter").value = "12";
         setRegressionField("bar-step", "200");
+        document.getElementById("slab-mesh-count").value = "2";
         setRegressionField("rebar-price", "3.20");
         setRegressionField("wire-price", "4.50");
         setRegressionField("board-price", "14");
@@ -6362,6 +6453,23 @@
             );
           }
         }
+
+        document.getElementById("slab-mesh-count").value = "1";
+        const oneMeshInput = readForm();
+        const oneMeshError = validate(oneMeshInput);
+        if (oneMeshError) {
+          failures.push("Плита, одна сетка: " + oneMeshError);
+        } else {
+          const oneMeshBill = calculateSlab(oneMeshInput);
+          const rebarRow = oneMeshBill.rows.find(function (row) {
+            return row.name.indexOf("Арматура Ø") === 0;
+          });
+          if (!rebarRow || rebarRow.name.indexOf("70 шт.") === -1 ||
+              !moneyEqual(oneMeshBill.total, REGRESSION_EXPECT.slabOneMesh)) {
+            failures.push("Плита, одна сетка: ожидается 70 хлыстов и 9 741,19 Br.");
+          }
+        }
+        document.getElementById("slab-mesh-count").value = "2";
 
         const summary = computeRegressionSummaryTotal();
         if (summary.errors.length) {
@@ -7208,6 +7316,29 @@
       });
 
       document.getElementById("intake-include-roof").addEventListener("change", syncIntakeRoofUi);
+      billNextEl.addEventListener("click", function () {
+        setActiveBlock("summary");
+      });
+      document.getElementById("intake-new-project").addEventListener("click", function () {
+        if (!window.confirm("Очистить параметры проекта и начать новый расчёт? Цены прайс-листа сохранятся.")) {
+          return;
+        }
+        resetProjectToZero();
+        summaryIncludeFoundEl.checked = true;
+        summaryIncludeWallsEl.checked = false;
+        summaryIncludePlasterEl.checked = false;
+        summaryIncludeFloorEl.checked = false;
+        summaryIncludeRoofEl.checked = false;
+        document.getElementById("intake-include-found").checked = true;
+        document.getElementById("intake-include-walls").checked = false;
+        document.getElementById("intake-include-plaster").checked = false;
+        document.getElementById("intake-include-floor").checked = false;
+        document.getElementById("intake-include-roof").checked = false;
+        syncIntakeRoofUi();
+        syncIntakeFromProject();
+        setIntakeStatus("Новый проект: укажите размеры и выберите нужные части строительства.", false);
+        setActiveBlock("intake");
+      });
       intakeForm.addEventListener("submit", function (event) {
         event.preventDefault();
         applyIntakeQuestionnaire();
