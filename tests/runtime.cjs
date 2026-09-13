@@ -17,7 +17,8 @@ function between(start, end) {
 
 const appSource =
   between('const CONCRETE_RESERVE =', '// MODULE: STATE & DOM REFS') + '\n' +
-  between('function parseNumber(value)', '// MODULE: DOM EVENTS & BOOT');
+  between('function parseNumber(value)', '// MODULE: DOM EVENTS & BOOT') + '\n' +
+  between('function handleProjectFileChange()', 'projectFileEl.addEventListener("change", handleProjectFileChange)');
 
 function element(value = '') {
   return {
@@ -44,25 +45,22 @@ function tableBody() {
 
 function templateRow(tag) {
   const attrs = {};
-  const children = new Map();
+  const children = [];
   return {
-    className: '', id: '', parent: null,
+    tagName: tag.toUpperCase(), className: '', id: '', value: '', textContent: '', parent: null,
     setAttribute(name, value) { attrs[name] = String(value); },
     getAttribute(name) { return attrs[name] || null; },
     remove() { const at = this.parent.indexOf(this); if (at !== -1) this.parent.splice(at, 1); },
-    set innerHTML(markup) {
-      children.clear();
-      const tags = markup.match(/<select\b[^>]*>[\s\S]*?<\/select>|<input\b[^>]*>/g) || [];
-      for (const htmlTag of tags) {
-        const cls = /class="([^"]+)"/.exec(htmlTag)?.[1];
-        if (!cls) continue;
-        const selected = /<option value="([^"]+)" selected/.exec(htmlTag)?.[1];
-        const firstOption = /<option value="([^"]+)"/.exec(htmlTag)?.[1];
-        const raw = selected || firstOption || /\bvalue="([^"]*)"/.exec(htmlTag)?.[1] || '';
-        children.set(cls, { value: raw.replace(/&quot;/g, '"') });
+    appendChild(child) { child.parent = children; children.push(child); return child; },
+    querySelector(selector) {
+      const cls = selector.slice(1);
+      for (const child of children) {
+        if (child.className.split(' ').includes(cls)) return child;
+        const nested = child.querySelector(selector);
+        if (nested) return nested;
       }
+      return null;
     },
-    querySelector(selector) { return children.get(selector.slice(1)) || null; },
   };
 }
 
@@ -518,4 +516,4 @@ function runExistingRegression(fixtures) {
   return { passed, badge: get('regression-badge').textContent };
 }
 
-module.exports = { html, sourceHash, createApp, runScenario, runJsonRoundTrip, runLocalStorageRoundTrip, runIntakeSlabSmoke, runLegacyControl, runExistingRegression, plain };
+module.exports = { html, sourceHash, createApp, projectFixture, runScenario, runJsonRoundTrip, runLocalStorageRoundTrip, runIntakeSlabSmoke, runLegacyControl, runExistingRegression, plain };

@@ -2011,7 +2011,7 @@
                 <legend>Загрузить проект</legend>
                 <div class="project-actions">
                   <label class="btn-action file-btn">
-                    Выбрать файл .json
+                    Загрузить свой проект
                     <input id="project-file" type="file" accept=".json,application/json" />
                   </label>
                   <span id="project-file-name" class="file-name">Файл не выбран</span>
@@ -2132,6 +2132,22 @@
       const PROJECT_VERSION = 1;
       const PROJECT_FILENAME = "smetacraft_project.json";
       const STORAGE_KEY = "smetacraft_project";
+      const PROJECT_MAX_FILE_BYTES = 1024 * 1024;
+      const PROJECT_MAX_ROWS = 500;
+      const PROJECT_FIELD_IDS = new Set((
+        "length width height grade concrete-price bar-diameter bar-step slab-mesh-count rebar-price wire-price board-price timber-price sand-height sand-price stone-height stone-price hydro-price " +
+        "strip-length strip-width strip-height strip-grade strip-concrete-price strip-bar-diameter strip-bar-count strip-rebar-price strip-stirrup-diameter strip-stirrup-step strip-wire-price strip-board-price strip-timber-price strip-sand-height strip-sand-price strip-hydro-price pile-concrete-price pile-work-drilling-price pile-hydro-price " +
+        "walls-perimeter walls-load-bearing-material walls-height walls-joint-mm wall-armopoyas-width wall-armopoyas-height walls-armopoyas-rebar walls-partition-material walls-partition-length walls-partition-height wall-block-price wall-adhesive-price wall-mesh-price partition-block-price wall-concrete-price wall-work-masonry-price wall-work-partition-price wall-work-armopoyas-price " +
+        "plaster-length plaster-height plaster-sides plaster-mix plaster-thick plaster-mix-price plaster-primer-layers plaster-primer-price plaster-beacon-step plaster-beacon-price plaster-mesh-price plaster-work-price " +
+        "floor-type floor-length floor-width floor-beam-section floor-beam-step floor-insulation-mm floor-slab-width floor-wood-beam-price floor-insulation-price floor-membrane-price floor-board-price floor-concrete-slab-price floor-work-wood-price floor-work-concrete-price " +
+        "roof-type roof-width roof-length roof-ridge-height roof-eave roof-rafter-section roof-rafter-step roof-mauerlat-section roof-batten-step roof-batten-section roof-insulation-mm roof-covering roof-timber-price roof-board-price roof-metal-price roof-insulation-price roof-membrane-price roof-vapor-price roof-work-price"
+      ).split(" "));
+      const PROJECT_CHECK_IDS = new Set((
+        "summary-include-found summary-include-walls summary-include-plaster summary-include-roof summary-include-floor strip-piles-enabled walls-reinforce-mesh walls-armopoyas walls-lintels walls-partitions-enabled plaster-exclude-openings plaster-mesh floor-board-clad floor-monolith roof-warm"
+      ).split(" "));
+      const PROJECT_FLAG_IDS = new Set((
+        "roofWidthManual roofLengthManual floorLengthManual floorWidthManual wallsPerimeterManual plasterLengthManual plasterHeightManual lastFoundationBlock roofNeedsCalc floorNeedsCalc"
+      ).split(" "));
 
       const BILL_PRINT_SUB = "Предварительная ведомость выбранных материалов";
       const SUMMARY_PRINT_SUB = "Предварительная ведомость выбранных частей";
@@ -3253,26 +3269,6 @@
         return { material: "block", blockSize: "600x300x200", glueType: "bag" };
       }
 
-      function openingTypeOptions(selected) {
-        const items = [
-          { value: "window", label: "Окно" },
-          { value: "entry-door", label: "Входная дверь" },
-          { value: "interior-door", label: "Межкомнатная дверь" },
-        ];
-        let html = "";
-        for (let i = 0; i < items.length; i++) {
-          html +=
-            '<option value="' +
-            items[i].value +
-            '"' +
-            (items[i].value === selected ? " selected" : "") +
-            ">" +
-            items[i].label +
-            "</option>";
-        }
-        return html;
-      }
-
       function nextOpeningId() {
         openingSeq += 1;
         return openingSeq;
@@ -3308,33 +3304,48 @@
         if (locked) {
           tr.setAttribute("data-opening-locked", "true");
         }
-        const action = locked
-          ? '<span class="pile-locked">—</span>'
-          : '<button type="button" class="btn-text js-opening-del" aria-label="Удалить проём">Удалить 🗑️</button>';
-        tr.innerHTML =
-          '<td><select id="opening-type-' +
-          id +
-          '" class="js-opening-type">' +
-          openingTypeOptions(type) +
-          "</select></td>" +
-          '<td><input id="opening-width-' +
-          id +
-          '" class="js-opening-width" type="number" inputmode="decimal" step="0.1" min="0.1" value="' +
-          width +
-          '" autocomplete="off" /></td>' +
-          '<td><input id="opening-height-' +
-          id +
-          '" class="js-opening-height" type="number" inputmode="decimal" step="0.1" min="0.1" value="' +
-          height +
-          '" autocomplete="off" /></td>' +
-          '<td><input id="opening-count-' +
-          id +
-          '" class="js-opening-count" type="number" inputmode="numeric" step="1" min="1" value="' +
-          count +
-          '" autocomplete="off" /></td>' +
-          '<td class="pile-action">' +
-          action +
-          "</td>";
+        const typeCell = document.createElement("td");
+        const select = document.createElement("select");
+        select.id = "opening-type-" + id;
+        select.className = "js-opening-type";
+        [
+          ["window", "Окно"],
+          ["entry-door", "Входная дверь"],
+          ["interior-door", "Межкомнатная дверь"],
+        ].forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item[0];
+          option.textContent = item[1];
+          select.appendChild(option);
+        });
+        select.value = type;
+        typeCell.appendChild(select);
+        tr.appendChild(typeCell);
+        [["width", width, "decimal", "0.1", "0.1"], ["height", height, "decimal", "0.1", "0.1"], ["count", count, "numeric", "1", "1"]].forEach(function (item) {
+          const td = document.createElement("td");
+          const input = document.createElement("input");
+          input.id = "opening-" + item[0] + "-" + id;
+          input.className = "js-opening-" + item[0];
+          input.type = "number";
+          input.setAttribute("inputmode", item[2]);
+          input.setAttribute("step", item[3]);
+          input.setAttribute("min", item[4]);
+          input.setAttribute("autocomplete", "off");
+          input.value = item[1];
+          td.appendChild(input);
+          tr.appendChild(td);
+        });
+        const actionCell = document.createElement("td");
+        actionCell.className = "pile-action";
+        const action = document.createElement(locked ? "span" : "button");
+        action.className = locked ? "pile-locked" : "btn-text js-opening-del";
+        if (!locked) {
+          action.type = "button";
+          action.setAttribute("aria-label", "Удалить проём");
+        }
+        action.textContent = locked ? "—" : "Удалить 🗑️";
+        actionCell.appendChild(action);
+        tr.appendChild(actionCell);
         return tr;
       }
 
@@ -3417,16 +3428,6 @@
         pileSeq = max;
       }
 
-      function pileDiameterOptions(selected) {
-        const sel = Number(selected) || 300;
-        let html = "";
-        for (let i = 0; i < PILE_DIAMETERS.length; i++) {
-          const d = PILE_DIAMETERS[i];
-          html += '<option value="' + d + '"' + (d === sel ? " selected" : "") + ">" + d + "</option>";
-        }
-        return html;
-      }
-
       function pileRowTemplate(opts) {
         const options = opts || {};
         const id = options.id != null ? Number(options.id) : nextPileId();
@@ -3445,33 +3446,54 @@
         if (locked) {
           tr.setAttribute("data-pile-locked", "true");
         }
-        const action = locked
-          ? '<span class="pile-locked">—</span>'
-          : '<button type="button" class="btn-text js-pile-del" aria-label="Удалить группу свай">Удалить 🗑️</button>';
-        tr.innerHTML =
-          "<td><input id=\"pile-name-" +
-          id +
-          '" class="js-pile-name" type="text" value="' +
-          name.replace(/"/g, "&quot;") +
-          '" placeholder="Под террасу" autocomplete="off" /></td>' +
-          '<td><select id="pile-diameter-' +
-          id +
-          '" class="js-pile-diameter">' +
-          pileDiameterOptions(diameterMm) +
-          "</select></td>" +
-          '<td><input id="pile-depth-' +
-          id +
-          '" class="js-pile-depth" type="number" inputmode="decimal" step="0.1" min="0.1" value="' +
-          depthM +
-          '" autocomplete="off" /></td>' +
-          '<td><input id="pile-count-' +
-          id +
-          '" class="js-pile-count" type="number" inputmode="numeric" step="1" min="1" value="' +
-          count +
-          '" autocomplete="off" /></td>' +
-          '<td class="pile-action">' +
-          action +
-          "</td>";
+        const nameCell = document.createElement("td");
+        const nameInput = document.createElement("input");
+        nameInput.id = "pile-name-" + id;
+        nameInput.className = "js-pile-name";
+        nameInput.type = "text";
+        nameInput.setAttribute("placeholder", "Под террасу");
+        nameInput.setAttribute("autocomplete", "off");
+        nameInput.value = name;
+        nameCell.appendChild(nameInput);
+        tr.appendChild(nameCell);
+        const diameterCell = document.createElement("td");
+        const select = document.createElement("select");
+        select.id = "pile-diameter-" + id;
+        select.className = "js-pile-diameter";
+        PILE_DIAMETERS.forEach(function (diameter) {
+          const option = document.createElement("option");
+          option.value = String(diameter);
+          option.textContent = String(diameter);
+          select.appendChild(option);
+        });
+        select.value = String(diameterMm);
+        diameterCell.appendChild(select);
+        tr.appendChild(diameterCell);
+        [["depth", depthM, "decimal", "0.1", "0.1"], ["count", count, "numeric", "1", "1"]].forEach(function (item) {
+          const td = document.createElement("td");
+          const input = document.createElement("input");
+          input.id = "pile-" + item[0] + "-" + id;
+          input.className = "js-pile-" + item[0];
+          input.type = "number";
+          input.setAttribute("inputmode", item[2]);
+          input.setAttribute("step", item[3]);
+          input.setAttribute("min", item[4]);
+          input.setAttribute("autocomplete", "off");
+          input.value = item[1];
+          td.appendChild(input);
+          tr.appendChild(td);
+        });
+        const actionCell = document.createElement("td");
+        actionCell.className = "pile-action";
+        const action = document.createElement(locked ? "span" : "button");
+        action.className = locked ? "pile-locked" : "btn-text js-pile-del";
+        if (!locked) {
+          action.type = "button";
+          action.setAttribute("aria-label", "Удалить группу свай");
+        }
+        action.textContent = locked ? "—" : "Удалить 🗑️";
+        actionCell.appendChild(action);
+        tr.appendChild(actionCell);
         return tr;
       }
 
@@ -6690,10 +6712,139 @@
           throw new Error("файл пустой.");
         }
         try {
-          return JSON.parse(raw);
+          return validateProjectV1(JSON.parse(raw));
         } catch (jsonError) {
+          if (jsonError && jsonError.projectValidation) {
+            throw jsonError;
+          }
           throw new Error("файл не содержит корректный JSON.");
         }
+      }
+
+      function projectError(message) {
+        const error = new Error(message);
+        error.projectValidation = true;
+        return error;
+      }
+
+      function validateProjectFileSize(file) {
+        if (file.size > PROJECT_MAX_FILE_BYTES) {
+          throw projectError("файл больше 1 MiB.");
+        }
+      }
+
+      function plainProjectObject(value, label) {
+        if (!value || typeof value !== "object" || Array.isArray(value)) {
+          throw projectError(label + ": ожидался объект.");
+        }
+        return value;
+      }
+
+      function projectNumber(value, label, integer) {
+        const numericString = typeof value === "string" && /^\s*[+-]?(?:\d+(?:[.,]\d*)?|[.,]\d+)(?:[eE][+-]?\d+)?\s*$/.test(value);
+        const number = typeof value === "number" ? value : numericString ? Number(value.trim().replace(",", ".")) : NaN;
+        if (!Number.isFinite(number) || (integer && (!Number.isSafeInteger(number) || number <= 0))) {
+          throw projectError(label + ": ожидалось " + (integer ? "положительное целое число" : "число") + ".");
+        }
+        return value;
+      }
+
+      function validateProjectV1(raw) {
+        const source = plainProjectObject(raw, "Проект");
+        if (source.format !== PROJECT_FORMAT) {
+          throw projectError("неверный format: нужен smetacraft-project.");
+        }
+        if (source.version !== PROJECT_VERSION) {
+          throw projectError("неверная version: нужна числовая версия 1.");
+        }
+        const state = { format: PROJECT_FORMAT, version: PROJECT_VERSION };
+        ["fields", "checks", "radios", "flags"].forEach(function (section) {
+          const input = source[section] === undefined ? {} : plainProjectObject(source[section], section);
+          const output = {};
+          Object.keys(input).forEach(function (key) {
+            if (section === "fields" && PROJECT_FIELD_IDS.has(key)) {
+              const value = input[key];
+              if (typeof value !== "string" && !(typeof value === "number" && Number.isFinite(value))) {
+                throw projectError("fields." + key + ": ожидалась строка или конечное число.");
+              }
+              output[key] = value;
+            } else if (section === "checks" && PROJECT_CHECK_IDS.has(key)) {
+              if (typeof input[key] !== "boolean") {
+                throw projectError("checks." + key + ": ожидался boolean.");
+              }
+              output[key] = input[key];
+            } else if (section === "radios" && key === "summary-found-type") {
+              if (input[key] !== "slab" && input[key] !== "strip") {
+                throw projectError("radios.summary-found-type: нужны slab или strip.");
+              }
+              output[key] = input[key];
+            } else if (section === "flags" && PROJECT_FLAG_IDS.has(key)) {
+              if (key === "lastFoundationBlock") {
+                if (input[key] !== "slab" && input[key] !== "strip") {
+                  throw projectError("flags.lastFoundationBlock: нужны slab или strip.");
+                }
+              } else if (typeof input[key] !== "boolean") {
+                throw projectError("flags." + key + ": ожидался boolean.");
+              }
+              output[key] = input[key];
+            }
+          });
+          state[section] = output;
+        });
+        ["block", "billBlock"].forEach(function (key) {
+          if (source[key] === undefined) return;
+          if (key === "block" ? !Object.prototype.hasOwnProperty.call(BLOCK_LEADS, source[key]) : BILL_BLOCKS.indexOf(source[key]) === -1) {
+            throw projectError(key + ": неизвестный раздел.");
+          }
+          state[key] = source[key];
+        });
+        ["openings", "piles"].forEach(function (key) {
+          const list = source[key] === undefined ? [] : source[key];
+          if (!Array.isArray(list)) {
+            throw projectError(key + ": ожидался массив.");
+          }
+          if (list.length > PROJECT_MAX_ROWS) {
+            throw projectError(key + ": максимум 500 строк.");
+          }
+          state[key] = list.map(function (rawRow, index) {
+            const row = plainProjectObject(rawRow, key + "[" + index + "]");
+            const label = key + "[" + index + "]";
+            const id = row.id === undefined ? index + 1 : projectNumber(row.id, label + ".id", true);
+            if (typeof id !== "number" || !Number.isSafeInteger(id) || id <= 0) {
+              throw projectError(label + ".id: ожидалось положительное целое число.");
+            }
+            if (row.locked !== undefined && typeof row.locked !== "boolean") {
+              throw projectError(label + ".locked: ожидался boolean.");
+            }
+            if (key === "openings") {
+              const type = row.type === undefined ? "window" : row.type;
+              if (type !== "window" && type !== "entry-door" && type !== "interior-door") {
+                throw projectError(label + ".type: неизвестный тип проёма.");
+              }
+              const output = { id: id, locked: row.locked === undefined ? index === 0 : row.locked, type: type };
+              [["width", "w", "1.5"], ["height", "h", "1.5"], ["count", "n", "1"]].forEach(function (item) {
+                const value = row[item[0]] !== undefined ? row[item[0]] : row[item[1]] !== undefined ? row[item[1]] : item[2];
+                output[item[0]] = projectNumber(value, label + "." + item[0], false);
+              });
+              return output;
+            }
+            if (typeof row.name !== "string" && row.name !== undefined) {
+              throw projectError(label + ".name: ожидался текст.");
+            }
+            const name = row.name === undefined ? "" : row.name;
+            if (name.length > 256) {
+              throw projectError(label + ".name: максимум 256 символов.");
+            }
+            const diameterMm = row.diameterMm === undefined ? 300 : row.diameterMm;
+            if (typeof diameterMm !== "number" || PILE_DIAMETERS.indexOf(diameterMm) === -1) {
+              throw projectError(label + ".diameterMm: неверный диаметр.");
+            }
+            const depthM = projectNumber(row.depthM === undefined ? "2.5" : row.depthM, label + ".depthM", false);
+            const count = projectNumber(row.count === undefined ? "10" : row.count, label + ".count", true);
+            return { id: id, locked: index === 0, name: name, diameterMm: diameterMm, depthM: depthM, count: count };
+          });
+        });
+        return state;
       }
 
       function downloadProjectFile(text) {
@@ -6711,12 +6862,7 @@
       }
 
       function applyProject(state) {
-        if (!state || typeof state !== "object" || Array.isArray(state)) {
-          throw new Error("ожидался объект проекта.");
-        }
-        if (state.format && state.format !== PROJECT_FORMAT) {
-          throw new Error("код не от Smetacraft.");
-        }
+        state = validateProjectV1(state);
         let applied = 0;
 
         if (Array.isArray(state.openings)) {
@@ -6725,6 +6871,7 @@
 
         const fields = state.fields && typeof state.fields === "object" ? state.fields : {};
         Object.keys(fields).forEach(function (id) {
+          if (!PROJECT_FIELD_IDS.has(id)) return;
           const el = document.getElementById(id);
           if (!el || el.type === "checkbox" || el.type === "radio" || el.type === "file") {
             return;
@@ -6735,11 +6882,12 @@
 
         const checks = state.checks && typeof state.checks === "object" ? state.checks : {};
         Object.keys(checks).forEach(function (id) {
+          if (!PROJECT_CHECK_IDS.has(id)) return;
           const el = document.getElementById(id);
           if (!el || el.type !== "checkbox") {
             return;
           }
-          el.checked = Boolean(checks[id]);
+          el.checked = checks[id];
           applied++;
         });
 
@@ -6840,6 +6988,14 @@
           return parseProjectText(raw);
         } catch (error) {
           return null;
+        }
+      }
+
+      function hasStoredProjectValue() {
+        try {
+          return window.localStorage.getItem(STORAGE_KEY) !== null;
+        } catch (error) {
+          return false;
         }
       }
 
@@ -7258,12 +7414,19 @@
         setProjectStatus("Проект сохранён в файл " + PROJECT_FILENAME + " (" + text.length + " символов).", false);
       });
 
-      projectFileEl.addEventListener("change", function () {
+      function handleProjectFileChange() {
         const file = projectFileEl.files && projectFileEl.files[0];
         if (!file) {
           return;
         }
         projectFileNameEl.textContent = file.name;
+        try {
+          validateProjectFileSize(file);
+        } catch (error) {
+          setProjectStatus("Импорт не выполнен: " + error.message, true);
+          projectFileEl.value = "";
+          return;
+        }
         const reader = new FileReader();
         reader.onload = function () {
           try {
@@ -7282,7 +7445,9 @@
           projectFileEl.value = "";
         };
         reader.readAsText(file, "utf-8");
-      });
+      }
+
+      projectFileEl.addEventListener("change", handleProjectFileChange);
 
       document.getElementById("project-form").addEventListener("submit", function (event) {
         event.preventDefault();
@@ -7353,12 +7518,15 @@
       syncPilesUi();
       demoProjectSnapshot = collectProject();
       runRegressionTests();
+      const storedProjectPresent = hasStoredProjectValue();
       const hadStoredProject = loadFromLocalStorage();
       if (!hadStoredProject) {
         applyDemoTemplate();
         syncIntakeFromProject();
         applyIntakeCustomerDefaults();
-        saveToLocalStorage();
+        if (!storedProjectPresent) {
+          saveToLocalStorage();
+        }
         setActiveBlock("intake");
       }
     </script>
