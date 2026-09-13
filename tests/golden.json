@@ -1,0 +1,5339 @@
+{
+  "description": "Observed outputs from the unchanged index.html calculation and render functions",
+  "sourceSha256": "46098095060352192c5dbbc381d0f1b215426d68803fb2a7f6ca958c6730a249",
+  "projectSchemaVersion": 1,
+  "cases": [
+    {
+      "id": "slab-one-mesh",
+      "title": "Плита, одна сетка",
+      "purpose": "Выбор одной сетки и закупка целых хлыстов",
+      "projectSchemaVersion": 1,
+      "section": "slab",
+      "input": {
+        "length": 10,
+        "width": 8,
+        "height": 0.3,
+        "grade": "М250",
+        "concretePrice": 210,
+        "diameterMm": 12,
+        "stepMm": 200,
+        "meshCount": 1,
+        "rebarPrice": 3.2,
+        "wirePrice": 4.5,
+        "boardPrice": 14,
+        "timberPrice": 8,
+        "sandHeight": 0.2,
+        "sandPrice": 32,
+        "stoneHeight": 0.2,
+        "stonePrice": 55,
+        "hydroPrice": 28
+      },
+      "prices": {
+        "concretePrice": 210,
+        "rebarPrice": 3.2,
+        "wirePrice": 4.5,
+        "boardPrice": 14,
+        "timberPrice": 8,
+        "sandPrice": 32,
+        "stonePrice": 55,
+        "hydroPrice": 28
+      },
+      "selection": null,
+      "openings": null,
+      "rows": [
+        {
+          "category": "concrete",
+          "name": "Бетон М250",
+          "netLabel": "24,00 м³",
+          "net": {
+            "displayed": "24,00",
+            "unit": "м³"
+          },
+          "coefficient": 1.05,
+          "orderLabel": "25,20 м³",
+          "order": {
+            "displayed": "25,20",
+            "unit": "м³"
+          },
+          "cost": 5292.000000000001
+        },
+        {
+          "category": "metal",
+          "name": "Арматура Ø12 мм, 70 шт. × 11.7 м",
+          "netLabel": "725,8 кг",
+          "net": {
+            "displayed": "725,8",
+            "unit": "кг"
+          },
+          "coefficient": 1.0012224938875305,
+          "orderLabel": "726,7 кг",
+          "order": {
+            "displayed": "726,7",
+            "unit": "кг"
+          },
+          "cost": 2325.2939001848426
+        },
+        {
+          "category": "metal",
+          "name": "Вязальная проволока",
+          "netLabel": "7,27 кг",
+          "net": {
+            "displayed": "7,27",
+            "unit": "кг"
+          },
+          "coefficient": 1,
+          "orderLabel": "7,27 кг",
+          "order": {
+            "displayed": "7,27",
+            "unit": "кг"
+          },
+          "cost": 32.69944547134935
+        },
+        {
+          "category": "timber",
+          "name": "Доска 25×150×6000 (0,270 м³)",
+          "netLabel": "12 шт",
+          "net": {
+            "displayed": "12",
+            "unit": "шт"
+          },
+          "coefficient": 1,
+          "orderLabel": "12 шт",
+          "order": {
+            "displayed": "12",
+            "unit": "шт"
+          },
+          "cost": 168
+        },
+        {
+          "category": "timber",
+          "name": "Брус упоров 50×50×3000 (0,105 м³)",
+          "netLabel": "14 шт",
+          "net": {
+            "displayed": "14",
+            "unit": "шт"
+          },
+          "coefficient": 1,
+          "orderLabel": "14 шт",
+          "order": {
+            "displayed": "14",
+            "unit": "шт"
+          },
+          "cost": 112
+        },
+        {
+          "category": "concrete",
+          "name": "Песок",
+          "netLabel": "16,00 м³",
+          "net": {
+            "displayed": "16,00",
+            "unit": "м³"
+          },
+          "coefficient": 1.1,
+          "orderLabel": "17,60 м³",
+          "order": {
+            "displayed": "17,60",
+            "unit": "м³"
+          },
+          "cost": 563.2
+        },
+        {
+          "category": "concrete",
+          "name": "Щебень",
+          "netLabel": "16,00 м³",
+          "net": {
+            "displayed": "16,00",
+            "unit": "м³"
+          },
+          "coefficient": 1.1,
+          "orderLabel": "17,60 м³",
+          "order": {
+            "displayed": "17,60",
+            "unit": "м³"
+          },
+          "cost": 968.0000000000001
+        },
+        {
+          "category": "isol",
+          "name": "Гидроизоляция, рулон 1×10 м",
+          "netLabel": "80,00 м²",
+          "net": {
+            "displayed": "80,00",
+            "unit": "м²"
+          },
+          "coefficient": 1.15,
+          "orderLabel": "10 рул.",
+          "order": {
+            "displayed": "10",
+            "unit": "рул."
+          },
+          "cost": 280
+        }
+      ],
+      "intermediate": {
+        "meta": "Плита 10,00 × 8,00 × 0,30 м · периметр 36,00 м",
+        "categorySubtotals": {
+          "concrete": 6823.200000000001,
+          "metal": 2357.993345656192,
+          "timber": 280,
+          "isol": 280
+        },
+        "sectionSubtotals": null,
+        "calculationDetails": {
+          "perimeter": 36,
+          "area": 80
+        }
+      },
+      "total": 9741.193345656193,
+      "displayedTotal": "9 741,19 Br",
+      "display": {
+        "tableHtml": "<tr><td>Бетон М250</td><td class=\"num\">24,00 м³</td><td class=\"num\">1,05</td><td class=\"num\">25,20 м³</td><td class=\"num\">5 292,00 Br</td></tr><tr><td>Арматура Ø12 мм, 70 шт. × 11.7 м</td><td class=\"num\">725,8 кг</td><td class=\"num\">1,00</td><td class=\"num\">726,7 кг</td><td class=\"num\">2 325,29 Br</td></tr><tr><td>Вязальная проволока</td><td class=\"num\">7,27 кг</td><td class=\"num\">1,00</td><td class=\"num\">7,27 кг</td><td class=\"num\">32,70 Br</td></tr><tr><td>Доска 25×150×6000 (0,270 м³)</td><td class=\"num\">12 шт</td><td class=\"num\">1,00</td><td class=\"num\">12 шт</td><td class=\"num\">168,00 Br</td></tr><tr><td>Брус упоров 50×50×3000 (0,105 м³)</td><td class=\"num\">14 шт</td><td class=\"num\">1,00</td><td class=\"num\">14 шт</td><td class=\"num\">112,00 Br</td></tr><tr><td>Песок</td><td class=\"num\">16,00 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,60 м³</td><td class=\"num\">563,20 Br</td></tr><tr><td>Щебень</td><td class=\"num\">16,00 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,60 м³</td><td class=\"num\">968,00 Br</td></tr><tr><td>Гидроизоляция, рулон 1×10 м</td><td class=\"num\">80,00 м²</td><td class=\"num\">1,15</td><td class=\"num\">10 рул.</td><td class=\"num\">280,00 Br</td></tr>",
+        "scope": "Рассчитано: плитный фундамент.",
+        "excluded": "Не рассчитано: стены и перегородки, перекрытия, штукатурка, кровля.",
+        "meta": "Плита 10,00 × 8,00 × 0,30 м · периметр 36,00 м",
+        "empty": "",
+        "error": "",
+        "printTitle": "Предварительная ведомость выбранных материалов",
+        "printNodes": ""
+      }
+    },
+    {
+      "id": "slab-two-meshes",
+      "title": "Плита, две сетки",
+      "purpose": "Текущий основной расчёт плиты",
+      "projectSchemaVersion": 1,
+      "section": "slab",
+      "input": {
+        "length": 10,
+        "width": 8,
+        "height": 0.3,
+        "grade": "М250",
+        "concretePrice": 210,
+        "diameterMm": 12,
+        "stepMm": 200,
+        "meshCount": 2,
+        "rebarPrice": 3.2,
+        "wirePrice": 4.5,
+        "boardPrice": 14,
+        "timberPrice": 8,
+        "sandHeight": 0.2,
+        "sandPrice": 32,
+        "stoneHeight": 0.2,
+        "stonePrice": 55,
+        "hydroPrice": 28
+      },
+      "prices": {
+        "concretePrice": 210,
+        "rebarPrice": 3.2,
+        "wirePrice": 4.5,
+        "boardPrice": 14,
+        "timberPrice": 8,
+        "sandPrice": 32,
+        "stonePrice": 55,
+        "hydroPrice": 28
+      },
+      "selection": null,
+      "openings": null,
+      "rows": [
+        {
+          "category": "concrete",
+          "name": "Бетон М250",
+          "netLabel": "24,00 м³",
+          "net": {
+            "displayed": "24,00",
+            "unit": "м³"
+          },
+          "coefficient": 1.05,
+          "orderLabel": "25,20 м³",
+          "order": {
+            "displayed": "25,20",
+            "unit": "м³"
+          },
+          "cost": 5292.000000000001
+        },
+        {
+          "category": "metal",
+          "name": "Арматура Ø12 мм, 140 шт. × 11.7 м",
+          "netLabel": "1 451,5 кг",
+          "net": {
+            "displayed": "1 451,5",
+            "unit": "кг"
+          },
+          "coefficient": 1.0012224938875305,
+          "orderLabel": "1 453,3 кг",
+          "order": {
+            "displayed": "1 453,3",
+            "unit": "кг"
+          },
+          "cost": 4650.587800369685
+        },
+        {
+          "category": "metal",
+          "name": "Вязальная проволока",
+          "netLabel": "14,53 кг",
+          "net": {
+            "displayed": "14,53",
+            "unit": "кг"
+          },
+          "coefficient": 1,
+          "orderLabel": "14,53 кг",
+          "order": {
+            "displayed": "14,53",
+            "unit": "кг"
+          },
+          "cost": 65.3988909426987
+        },
+        {
+          "category": "timber",
+          "name": "Доска 25×150×6000 (0,270 м³)",
+          "netLabel": "12 шт",
+          "net": {
+            "displayed": "12",
+            "unit": "шт"
+          },
+          "coefficient": 1,
+          "orderLabel": "12 шт",
+          "order": {
+            "displayed": "12",
+            "unit": "шт"
+          },
+          "cost": 168
+        },
+        {
+          "category": "timber",
+          "name": "Брус упоров 50×50×3000 (0,105 м³)",
+          "netLabel": "14 шт",
+          "net": {
+            "displayed": "14",
+            "unit": "шт"
+          },
+          "coefficient": 1,
+          "orderLabel": "14 шт",
+          "order": {
+            "displayed": "14",
+            "unit": "шт"
+          },
+          "cost": 112
+        },
+        {
+          "category": "concrete",
+          "name": "Песок",
+          "netLabel": "16,00 м³",
+          "net": {
+            "displayed": "16,00",
+            "unit": "м³"
+          },
+          "coefficient": 1.1,
+          "orderLabel": "17,60 м³",
+          "order": {
+            "displayed": "17,60",
+            "unit": "м³"
+          },
+          "cost": 563.2
+        },
+        {
+          "category": "concrete",
+          "name": "Щебень",
+          "netLabel": "16,00 м³",
+          "net": {
+            "displayed": "16,00",
+            "unit": "м³"
+          },
+          "coefficient": 1.1,
+          "orderLabel": "17,60 м³",
+          "order": {
+            "displayed": "17,60",
+            "unit": "м³"
+          },
+          "cost": 968.0000000000001
+        },
+        {
+          "category": "isol",
+          "name": "Гидроизоляция, рулон 1×10 м",
+          "netLabel": "80,00 м²",
+          "net": {
+            "displayed": "80,00",
+            "unit": "м²"
+          },
+          "coefficient": 1.15,
+          "orderLabel": "10 рул.",
+          "order": {
+            "displayed": "10",
+            "unit": "рул."
+          },
+          "cost": 280
+        }
+      ],
+      "intermediate": {
+        "meta": "Плита 10,00 × 8,00 × 0,30 м · периметр 36,00 м",
+        "categorySubtotals": {
+          "concrete": 6823.200000000001,
+          "metal": 4715.986691312384,
+          "timber": 280,
+          "isol": 280
+        },
+        "sectionSubtotals": null,
+        "calculationDetails": {
+          "perimeter": 36,
+          "area": 80
+        }
+      },
+      "total": 12099.186691312385,
+      "displayedTotal": "12 099,19 Br",
+      "display": {
+        "tableHtml": "<tr><td>Бетон М250</td><td class=\"num\">24,00 м³</td><td class=\"num\">1,05</td><td class=\"num\">25,20 м³</td><td class=\"num\">5 292,00 Br</td></tr><tr><td>Арматура Ø12 мм, 140 шт. × 11.7 м</td><td class=\"num\">1 451,5 кг</td><td class=\"num\">1,00</td><td class=\"num\">1 453,3 кг</td><td class=\"num\">4 650,59 Br</td></tr><tr><td>Вязальная проволока</td><td class=\"num\">14,53 кг</td><td class=\"num\">1,00</td><td class=\"num\">14,53 кг</td><td class=\"num\">65,40 Br</td></tr><tr><td>Доска 25×150×6000 (0,270 м³)</td><td class=\"num\">12 шт</td><td class=\"num\">1,00</td><td class=\"num\">12 шт</td><td class=\"num\">168,00 Br</td></tr><tr><td>Брус упоров 50×50×3000 (0,105 м³)</td><td class=\"num\">14 шт</td><td class=\"num\">1,00</td><td class=\"num\">14 шт</td><td class=\"num\">112,00 Br</td></tr><tr><td>Песок</td><td class=\"num\">16,00 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,60 м³</td><td class=\"num\">563,20 Br</td></tr><tr><td>Щебень</td><td class=\"num\">16,00 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,60 м³</td><td class=\"num\">968,00 Br</td></tr><tr><td>Гидроизоляция, рулон 1×10 м</td><td class=\"num\">80,00 м²</td><td class=\"num\">1,15</td><td class=\"num\">10 рул.</td><td class=\"num\">280,00 Br</td></tr>",
+        "scope": "Рассчитано: плитный фундамент.",
+        "excluded": "Не рассчитано: стены и перегородки, перекрытия, штукатурка, кровля.",
+        "meta": "Плита 10,00 × 8,00 × 0,30 м · периметр 36,00 м",
+        "empty": "",
+        "error": "",
+        "printTitle": "Предварительная ведомость выбранных материалов",
+        "printNodes": ""
+      }
+    },
+    {
+      "id": "strip",
+      "title": "Лента",
+      "purpose": "Лента без свай",
+      "projectSchemaVersion": 1,
+      "section": "strip",
+      "input": {
+        "length": 40,
+        "width": 0.4,
+        "height": 1,
+        "grade": "М250",
+        "concretePrice": 210,
+        "diameterMm": 12,
+        "barCount": 4,
+        "rebarPrice": 3.2,
+        "stirrupMm": 8,
+        "stirrupStepMm": 300,
+        "wirePrice": 4.5,
+        "boardPrice": 14,
+        "timberPrice": 8,
+        "sandHeight": 0.2,
+        "sandPrice": 32,
+        "hydroPrice": 28,
+        "pilesEnabled": false,
+        "pileConcretePrice": 185,
+        "pileDrillingPrice": 45,
+        "pileHydroPrice": 2.8,
+        "piles": []
+      },
+      "prices": {
+        "concretePrice": 210,
+        "rebarPrice": 3.2,
+        "wirePrice": 4.5,
+        "boardPrice": 14,
+        "timberPrice": 8,
+        "sandPrice": 32,
+        "hydroPrice": 28,
+        "pileConcretePrice": 185,
+        "pileDrillingPrice": 45,
+        "pileHydroPrice": 2.8
+      },
+      "selection": null,
+      "openings": null,
+      "rows": [
+        {
+          "category": "concrete",
+          "name": "Бетон М250",
+          "netLabel": "16,00 м³",
+          "net": {
+            "displayed": "16,00",
+            "unit": "м³"
+          },
+          "coefficient": 1.05,
+          "orderLabel": "16,80 м³",
+          "order": {
+            "displayed": "16,80",
+            "unit": "м³"
+          },
+          "cost": 3528
+        },
+        {
+          "category": "metal",
+          "name": "Арматура рабочая Ø12 мм, 15 шт. × 11.7 м",
+          "netLabel": "142,0 кг",
+          "net": {
+            "displayed": "142,0",
+            "unit": "кг"
+          },
+          "coefficient": 1.096875,
+          "orderLabel": "155,7 кг",
+          "order": {
+            "displayed": "155,7",
+            "unit": "кг"
+          },
+          "cost": 498.2772643253235
+        },
+        {
+          "category": "metal",
+          "name": "Хомуты Ø8 мм, 135 шт., гибы 2×80 мм",
+          "netLabel": "140,5 кг",
+          "net": {
+            "displayed": "140,5",
+            "unit": "кг"
+          },
+          "coefficient": 1.1161616161616157,
+          "orderLabel": "156,9 кг",
+          "order": {
+            "displayed": "156,9",
+            "unit": "кг"
+          },
+          "cost": 501.9682070240295
+        },
+        {
+          "category": "metal",
+          "name": "Вязальная проволока",
+          "netLabel": "3,13 кг",
+          "net": {
+            "displayed": "3,13",
+            "unit": "кг"
+          },
+          "coefficient": 1,
+          "orderLabel": "3,13 кг",
+          "order": {
+            "displayed": "3,13",
+            "unit": "кг"
+          },
+          "cost": 14.065951940850276
+        },
+        {
+          "category": "timber",
+          "name": "Доска 25×150×6000 (2,205 м³)",
+          "netLabel": "98 шт",
+          "net": {
+            "displayed": "98",
+            "unit": "шт"
+          },
+          "coefficient": 1,
+          "orderLabel": "98 шт",
+          "order": {
+            "displayed": "98",
+            "unit": "шт"
+          },
+          "cost": 1372
+        },
+        {
+          "category": "timber",
+          "name": "Брус упоров 50×50×3000 (0,473 м³)",
+          "netLabel": "63 шт",
+          "net": {
+            "displayed": "63",
+            "unit": "шт"
+          },
+          "coefficient": 1,
+          "orderLabel": "63 шт",
+          "order": {
+            "displayed": "63",
+            "unit": "шт"
+          },
+          "cost": 504
+        },
+        {
+          "category": "concrete",
+          "name": "Песок",
+          "netLabel": "3,20 м³",
+          "net": {
+            "displayed": "3,20",
+            "unit": "м³"
+          },
+          "coefficient": 1.1,
+          "orderLabel": "3,52 м³",
+          "order": {
+            "displayed": "3,52",
+            "unit": "м³"
+          },
+          "cost": 112.64000000000001
+        },
+        {
+          "category": "isol",
+          "name": "Гидроизоляция, рулон 1×10 м",
+          "netLabel": "96,00 м²",
+          "net": {
+            "displayed": "96,00",
+            "unit": "м²"
+          },
+          "coefficient": 1.15,
+          "orderLabel": "12 рул.",
+          "order": {
+            "displayed": "12",
+            "unit": "рул."
+          },
+          "cost": 336
+        }
+      ],
+      "intermediate": {
+        "meta": "Лента 40,00 × 0,40 × 1,00 м · объём 16,00 м³ · опалубка 80,00 м",
+        "categorySubtotals": {
+          "concrete": 3640.64,
+          "metal": 1014.3114232902033,
+          "timber": 1876,
+          "isol": 336
+        },
+        "sectionSubtotals": null,
+        "calculationDetails": {
+          "volume": 16,
+          "formLength": 80,
+          "stirrupN": 135,
+          "pileTotals": null
+        }
+      },
+      "total": 6866.951423290203,
+      "displayedTotal": "6 866,95 Br",
+      "display": {
+        "tableHtml": "<tr><td>Бетон М250</td><td class=\"num\">16,00 м³</td><td class=\"num\">1,05</td><td class=\"num\">16,80 м³</td><td class=\"num\">3 528,00 Br</td></tr><tr><td>Арматура рабочая Ø12 мм, 15 шт. × 11.7 м</td><td class=\"num\">142,0 кг</td><td class=\"num\">1,10</td><td class=\"num\">155,7 кг</td><td class=\"num\">498,28 Br</td></tr><tr><td>Хомуты Ø8 мм, 135 шт., гибы 2×80 мм</td><td class=\"num\">140,5 кг</td><td class=\"num\">1,12</td><td class=\"num\">156,9 кг</td><td class=\"num\">501,97 Br</td></tr><tr><td>Вязальная проволока</td><td class=\"num\">3,13 кг</td><td class=\"num\">1,00</td><td class=\"num\">3,13 кг</td><td class=\"num\">14,07 Br</td></tr><tr><td>Доска 25×150×6000 (2,205 м³)</td><td class=\"num\">98 шт</td><td class=\"num\">1,00</td><td class=\"num\">98 шт</td><td class=\"num\">1 372,00 Br</td></tr><tr><td>Брус упоров 50×50×3000 (0,473 м³)</td><td class=\"num\">63 шт</td><td class=\"num\">1,00</td><td class=\"num\">63 шт</td><td class=\"num\">504,00 Br</td></tr><tr><td>Песок</td><td class=\"num\">3,20 м³</td><td class=\"num\">1,10</td><td class=\"num\">3,52 м³</td><td class=\"num\">112,64 Br</td></tr><tr><td>Гидроизоляция, рулон 1×10 м</td><td class=\"num\">96,00 м²</td><td class=\"num\">1,15</td><td class=\"num\">12 рул.</td><td class=\"num\">336,00 Br</td></tr>",
+        "scope": "Рассчитано: ленточный фундамент.",
+        "excluded": "Не рассчитано: стены и перегородки, перекрытия, штукатурка, кровля.",
+        "meta": "Лента 40,00 × 0,40 × 1,00 м · объём 16,00 м³ · опалубка 80,00 м",
+        "empty": "",
+        "error": "",
+        "printTitle": "Предварительная ведомость выбранных материалов",
+        "printNodes": ""
+      }
+    },
+    {
+      "id": "strip-piles",
+      "title": "Лента со сваями",
+      "purpose": "Одна группа свай и лента",
+      "projectSchemaVersion": 1,
+      "section": "strip",
+      "input": {
+        "length": 40,
+        "width": 0.4,
+        "height": 1,
+        "grade": "М250",
+        "concretePrice": 210,
+        "diameterMm": 12,
+        "barCount": 4,
+        "rebarPrice": 3.2,
+        "stirrupMm": 8,
+        "stirrupStepMm": 300,
+        "wirePrice": 4.5,
+        "boardPrice": 14,
+        "timberPrice": 8,
+        "sandHeight": 0.2,
+        "sandPrice": 32,
+        "hydroPrice": 28,
+        "pilesEnabled": true,
+        "pileConcretePrice": 185,
+        "pileDrillingPrice": 45,
+        "pileHydroPrice": 2.8,
+        "piles": [
+          {
+            "id": 1,
+            "name": "Основная группа",
+            "diameterMm": 300,
+            "depthM": 2.5,
+            "count": 20
+          }
+        ]
+      },
+      "prices": {
+        "concretePrice": 210,
+        "rebarPrice": 3.2,
+        "wirePrice": 4.5,
+        "boardPrice": 14,
+        "timberPrice": 8,
+        "sandPrice": 32,
+        "hydroPrice": 28,
+        "pileConcretePrice": 185,
+        "pileDrillingPrice": 45,
+        "pileHydroPrice": 2.8
+      },
+      "selection": null,
+      "openings": null,
+      "rows": [
+        {
+          "category": "concrete",
+          "name": "Бетон М250 (лента 16,80 м³ + сваи 3,89 м³): 20,69 м³",
+          "netLabel": "19,53 м³",
+          "net": {
+            "displayed": "19,53",
+            "unit": "м³"
+          },
+          "coefficient": 1.0590463779879562,
+          "orderLabel": "20,69 м³",
+          "order": {
+            "displayed": "20,69",
+            "unit": "м³"
+          },
+          "cost": 4247.228368131213
+        },
+        {
+          "category": "metal",
+          "name": "Арматура рабочая А3 Ø12 (лента 155,7 кг + сваи 216,3 кг): 372,0 кг",
+          "netLabel": "348,0 кг",
+          "net": {
+            "displayed": "348,0",
+            "unit": "кг"
+          },
+          "coefficient": 1.0691230330048254,
+          "orderLabel": "372,0 кг",
+          "order": {
+            "displayed": "372,0",
+            "unit": "кг"
+          },
+          "cost": 1190.4910243253235
+        },
+        {
+          "category": "metal",
+          "name": "Хомуты Ø8 мм + кольца свай Ø6 (лента 156,9 кг + сваи 32,2 кг): 189,1 кг",
+          "netLabel": "171,2 кг",
+          "net": {
+            "displayed": "171,2",
+            "unit": "кг"
+          },
+          "coefficient": 1.1043042060147177,
+          "orderLabel": "189,1 кг",
+          "order": {
+            "displayed": "189,1",
+            "unit": "кг"
+          },
+          "cost": 605.0767858793203
+        },
+        {
+          "category": "metal",
+          "name": "Вязальная проволока (лента 3,13 кг + сваи 1,76 кг): 4,89 кг",
+          "netLabel": "4,89 кг",
+          "net": {
+            "displayed": "4,89",
+            "unit": "кг"
+          },
+          "coefficient": 1,
+          "orderLabel": "4,89 кг",
+          "order": {
+            "displayed": "4,89",
+            "unit": "кг"
+          },
+          "cost": 21.985951940850278
+        },
+        {
+          "category": "timber",
+          "name": "Доска 25×150×6000 (2,205 м³)",
+          "netLabel": "98 шт",
+          "net": {
+            "displayed": "98",
+            "unit": "шт"
+          },
+          "coefficient": 1,
+          "orderLabel": "98 шт",
+          "order": {
+            "displayed": "98",
+            "unit": "шт"
+          },
+          "cost": 1372
+        },
+        {
+          "category": "timber",
+          "name": "Брус упоров 50×50×3000 (0,473 м³)",
+          "netLabel": "63 шт",
+          "net": {
+            "displayed": "63",
+            "unit": "шт"
+          },
+          "coefficient": 1,
+          "orderLabel": "63 шт",
+          "order": {
+            "displayed": "63",
+            "unit": "шт"
+          },
+          "cost": 504
+        },
+        {
+          "category": "concrete",
+          "name": "Песок",
+          "netLabel": "3,20 м³",
+          "net": {
+            "displayed": "3,20",
+            "unit": "м³"
+          },
+          "coefficient": 1.1,
+          "orderLabel": "3,52 м³",
+          "order": {
+            "displayed": "3,52",
+            "unit": "м³"
+          },
+          "cost": 112.64000000000001
+        },
+        {
+          "category": "isol",
+          "name": "Гидроизоляция / Рубероид (лента 96,00 м² + гильзы свай 47,12 м²): 143,12 м²",
+          "netLabel": "143,12 м²",
+          "net": {
+            "displayed": "143,12",
+            "unit": "м²"
+          },
+          "coefficient": 1.15,
+          "orderLabel": "17 рул.",
+          "order": {
+            "displayed": "17",
+            "unit": "рул."
+          },
+          "cost": 487.73892516838697
+        },
+        {
+          "category": "concrete",
+          "name": "Бурение и заливка свай",
+          "netLabel": "50,00 м.п.",
+          "net": {
+            "displayed": "50,00",
+            "unit": "м.п."
+          },
+          "coefficient": 1,
+          "orderLabel": "50,00 м.п.",
+          "order": {
+            "displayed": "50,00",
+            "unit": "м.п."
+          },
+          "cost": 2250
+        }
+      ],
+      "intermediate": {
+        "meta": "Лента 40,00 × 0,40 × 1,00 м · объём 16,00 м³ · опалубка 80,00 м · сваи 20 шт",
+        "categorySubtotals": {
+          "concrete": 6609.868368131213,
+          "metal": 1817.553762145494,
+          "timber": 1876,
+          "isol": 487.73892516838697
+        },
+        "sectionSubtotals": null,
+        "calculationDetails": {
+          "volume": 16,
+          "formLength": 80,
+          "stirrupN": 135,
+          "pileTotals": {
+            "concreteNet": 3.5342917352885173,
+            "concreteOrder": 3.887720908817369,
+            "longNetM": 232,
+            "longOrderM": 243.60000000000002,
+            "longNetKg": 206.016,
+            "longOrderKg": 216.31680000000003,
+            "stirrupNetM": 138.23007675795088,
+            "stirrupOrderM": 145.14158059584844,
+            "stirrupNetKg": 30.687077040265095,
+            "stirrupOrderKg": 32.221430892278356,
+            "wireKg": 1.76,
+            "ruberoidNet": 47.12388980384689,
+            "ruberoidOrder": 54.192473274423925,
+            "drillingM": 50,
+            "pileCount": 20
+          }
+        }
+      },
+      "total": 10791.161055445094,
+      "displayedTotal": "10 791,16 Br",
+      "display": {
+        "tableHtml": "<tr><td>Бетон М250 (лента 16,80 м³ + сваи 3,89 м³): 20,69 м³</td><td class=\"num\">19,53 м³</td><td class=\"num\">1,06</td><td class=\"num\">20,69 м³</td><td class=\"num\">4 247,23 Br</td></tr><tr><td>Арматура рабочая А3 Ø12 (лента 155,7 кг + сваи 216,3 кг): 372,0 кг</td><td class=\"num\">348,0 кг</td><td class=\"num\">1,07</td><td class=\"num\">372,0 кг</td><td class=\"num\">1 190,49 Br</td></tr><tr><td>Хомуты Ø8 мм + кольца свай Ø6 (лента 156,9 кг + сваи 32,2 кг): 189,1 кг</td><td class=\"num\">171,2 кг</td><td class=\"num\">1,10</td><td class=\"num\">189,1 кг</td><td class=\"num\">605,08 Br</td></tr><tr><td>Вязальная проволока (лента 3,13 кг + сваи 1,76 кг): 4,89 кг</td><td class=\"num\">4,89 кг</td><td class=\"num\">1,00</td><td class=\"num\">4,89 кг</td><td class=\"num\">21,99 Br</td></tr><tr><td>Доска 25×150×6000 (2,205 м³)</td><td class=\"num\">98 шт</td><td class=\"num\">1,00</td><td class=\"num\">98 шт</td><td class=\"num\">1 372,00 Br</td></tr><tr><td>Брус упоров 50×50×3000 (0,473 м³)</td><td class=\"num\">63 шт</td><td class=\"num\">1,00</td><td class=\"num\">63 шт</td><td class=\"num\">504,00 Br</td></tr><tr><td>Песок</td><td class=\"num\">3,20 м³</td><td class=\"num\">1,10</td><td class=\"num\">3,52 м³</td><td class=\"num\">112,64 Br</td></tr><tr><td>Гидроизоляция / Рубероид (лента 96,00 м² + гильзы свай 47,12 м²): 143,12 м²</td><td class=\"num\">143,12 м²</td><td class=\"num\">1,15</td><td class=\"num\">17 рул.</td><td class=\"num\">487,74 Br</td></tr><tr><td>Бурение и заливка свай</td><td class=\"num\">50,00 м.п.</td><td class=\"num\">1,00</td><td class=\"num\">50,00 м.п.</td><td class=\"num\">2 250,00 Br</td></tr>",
+        "scope": "Рассчитано: ленточный фундамент.",
+        "excluded": "Не рассчитано: стены и перегородки, перекрытия, штукатурка, кровля.",
+        "meta": "Лента 40,00 × 0,40 × 1,00 м · объём 16,00 м³ · опалубка 80,00 м · сваи 20 шт",
+        "empty": "",
+        "error": "",
+        "printTitle": "Предварительная ведомость выбранных материалов",
+        "printNodes": ""
+      }
+    },
+    {
+      "id": "walls-no-openings",
+      "title": "Стены без проёмов",
+      "purpose": "Чистая кладка без вычета окон и дверей",
+      "projectSchemaVersion": 1,
+      "section": "walls",
+      "input": {
+        "perimeter": 40,
+        "loadMaterial": "gas-silicate-300",
+        "height": 3,
+        "jointMm": 2,
+        "reinforceMesh": true,
+        "openings": [],
+        "armopoyas": true,
+        "armopoyasWidthMm": 250,
+        "armopoyasHeightMm": 250,
+        "armopoyasRebarMm": 12,
+        "lintels": true,
+        "partitionsEnabled": false,
+        "partitionMaterial": "block-100",
+        "partitionLength": 0,
+        "partitionHeight": 0,
+        "stripRebarPrice": 3.2,
+        "prices": {
+          "blockPrice": 140,
+          "adhesivePrice": 9.5,
+          "meshPrice": 3.2,
+          "partitionBlockPrice": 150,
+          "concretePrice": 185,
+          "workMasonryPrice": 45,
+          "workPartitionPrice": 18,
+          "workArmopoyasPrice": 15
+        }
+      },
+      "prices": {
+        "stripRebarPrice": 3.2,
+        "prices.blockPrice": 140,
+        "prices.adhesivePrice": 9.5,
+        "prices.meshPrice": 3.2,
+        "prices.partitionBlockPrice": 150,
+        "prices.concretePrice": 185,
+        "prices.workMasonryPrice": 45,
+        "prices.workPartitionPrice": 18,
+        "prices.workArmopoyasPrice": 15
+      },
+      "selection": null,
+      "openings": null,
+      "rows": [
+        {
+          "category": "isol",
+          "name": "Стеновые блоки газосиликатные 300 мм (грязный объём 36,00 м³ − проёмы 0,00 м³ − армопояс 2,50 м³): 33,50 м³",
+          "netLabel": "33,50 м³",
+          "net": {
+            "displayed": "33,50",
+            "unit": "м³"
+          },
+          "coefficient": 1.05,
+          "orderLabel": "35,18 м³",
+          "order": {
+            "displayed": "35,18",
+            "unit": "м³"
+          },
+          "cost": 4924.500000000001
+        },
+        {
+          "category": "dry",
+          "name": "Клей для блоков (расход 1,2 мешка/м³): 41 меш.",
+          "netLabel": "40,2 меш.",
+          "net": {
+            "displayed": "40,2",
+            "unit": "меш."
+          },
+          "coefficient": 1,
+          "orderLabel": "41 меш.",
+          "order": {
+            "displayed": "41",
+            "unit": "меш."
+          },
+          "cost": 389.5
+        },
+        {
+          "category": "isol",
+          "name": "Армирующая сетка (2 полосы × 3 рядов): 252,0 м.п.",
+          "netLabel": "240,0 м.п.",
+          "net": {
+            "displayed": "240,0",
+            "unit": "м.п."
+          },
+          "coefficient": 1.05,
+          "orderLabel": "252,0 м.п.",
+          "order": {
+            "displayed": "252,0",
+            "unit": "м.п."
+          },
+          "cost": 806.4000000000001
+        },
+        {
+          "category": "concrete",
+          "name": "Бетон М250 (армопояс 2,50 м³): 2,63 м³",
+          "netLabel": "2,50 м³",
+          "net": {
+            "displayed": "2,50",
+            "unit": "м³"
+          },
+          "coefficient": 1.05,
+          "orderLabel": "2,63 м³",
+          "order": {
+            "displayed": "2,63",
+            "unit": "м³"
+          },
+          "cost": 485.625
+        },
+        {
+          "category": "metal",
+          "name": "Арматура А3 Ø12 мм (армопояс 149 кг): 0,149 т",
+          "netLabel": "149,2 кг",
+          "net": {
+            "displayed": "149,2",
+            "unit": "кг"
+          },
+          "coefficient": 1.05,
+          "orderLabel": "0,149 т",
+          "order": {
+            "displayed": "0,149",
+            "unit": "т"
+          },
+          "cost": 477.3888
+        },
+        {
+          "category": "metal",
+          "name": "Арматура А1 Ø6 мм (хомуты армопояса): 0,026 т",
+          "netLabel": "26,1 кг",
+          "net": {
+            "displayed": "26,1",
+            "unit": "кг"
+          },
+          "coefficient": 1.05,
+          "orderLabel": "0,026 т",
+          "order": {
+            "displayed": "0,026",
+            "unit": "т"
+          },
+          "cost": 83.54304000000002
+        },
+        {
+          "category": "isol",
+          "name": "Кладка несущих стен: 33,50 м³",
+          "netLabel": "33,50 м³",
+          "net": {
+            "displayed": "33,50",
+            "unit": "м³"
+          },
+          "coefficient": 1,
+          "orderLabel": "33,50 м³",
+          "order": {
+            "displayed": "33,50",
+            "unit": "м³"
+          },
+          "cost": 1507.5
+        },
+        {
+          "category": "isol",
+          "name": "Устройство армопояса и перемычек (армопояс 40,0 м.п.)",
+          "netLabel": "40,0 м.п.",
+          "net": {
+            "displayed": "40,0",
+            "unit": "м.п."
+          },
+          "coefficient": 1,
+          "orderLabel": "40,0 м.п.",
+          "order": {
+            "displayed": "40,0",
+            "unit": "м.п."
+          },
+          "cost": 600
+        }
+      ],
+      "intermediate": {
+        "meta": "Стены 40,0 × 3,0 м · газосиликатные 300 мм · чистая кладка 33,50 м³ · проёмы 0,00 м²",
+        "categorySubtotals": {
+          "isol": 7838.4000000000015,
+          "dry": 389.5,
+          "concrete": 485.625,
+          "metal": 560.93184
+        },
+        "sectionSubtotals": null,
+        "calculationDetails": {
+          "meta": "Стены 40,0 × 3,0 м · газосиликатные 300 мм · чистая кладка 33,50 м³ · проёмы 0,00 м²",
+          "vGross": 36,
+          "vNet": 33.5,
+          "sOpTotal": 0,
+          "vOpTotal": 0
+        }
+      },
+      "total": 9274.45684,
+      "displayedTotal": "9 274,46 Br",
+      "display": {
+        "tableHtml": "<tr><td>Стеновые блоки газосиликатные 300 мм (грязный объём 36,00 м³ − проёмы 0,00 м³ − армопояс 2,50 м³): 33,50 м³</td><td class=\"num\">33,50 м³</td><td class=\"num\">1,05</td><td class=\"num\">35,18 м³</td><td class=\"num\">4 924,50 Br</td></tr><tr><td>Клей для блоков (расход 1,2 мешка/м³): 41 меш.</td><td class=\"num\">40,2 меш.</td><td class=\"num\">1,00</td><td class=\"num\">41 меш.</td><td class=\"num\">389,50 Br</td></tr><tr><td>Армирующая сетка (2 полосы × 3 рядов): 252,0 м.п.</td><td class=\"num\">240,0 м.п.</td><td class=\"num\">1,05</td><td class=\"num\">252,0 м.п.</td><td class=\"num\">806,40 Br</td></tr><tr><td>Бетон М250 (армопояс 2,50 м³): 2,63 м³</td><td class=\"num\">2,50 м³</td><td class=\"num\">1,05</td><td class=\"num\">2,63 м³</td><td class=\"num\">485,63 Br</td></tr><tr><td>Арматура А3 Ø12 мм (армопояс 149 кг): 0,149 т</td><td class=\"num\">149,2 кг</td><td class=\"num\">1,05</td><td class=\"num\">0,149 т</td><td class=\"num\">477,39 Br</td></tr><tr><td>Арматура А1 Ø6 мм (хомуты армопояса): 0,026 т</td><td class=\"num\">26,1 кг</td><td class=\"num\">1,05</td><td class=\"num\">0,026 т</td><td class=\"num\">83,54 Br</td></tr><tr><td>Кладка несущих стен: 33,50 м³</td><td class=\"num\">33,50 м³</td><td class=\"num\">1,00</td><td class=\"num\">33,50 м³</td><td class=\"num\">1 507,50 Br</td></tr><tr><td>Устройство армопояса и перемычек (армопояс 40,0 м.п.)</td><td class=\"num\">40,0 м.п.</td><td class=\"num\">1,00</td><td class=\"num\">40,0 м.п.</td><td class=\"num\">600,00 Br</td></tr>",
+        "scope": "Рассчитано: стены и перегородки.",
+        "excluded": "Не рассчитано: фундамент, перекрытия, штукатурка, кровля.",
+        "meta": "Стены 40,0 × 3,0 м · газосиликатные 300 мм · чистая кладка 33,50 м³ · проёмы 0,00 м²",
+        "empty": "",
+        "error": "",
+        "printTitle": "Предварительная ведомость выбранных материалов",
+        "printNodes": ""
+      }
+    },
+    {
+      "id": "walls-openings",
+      "title": "Стены с окнами и дверью",
+      "purpose": "Вычет нескольких проёмов",
+      "projectSchemaVersion": 1,
+      "section": "walls",
+      "input": {
+        "perimeter": 40,
+        "loadMaterial": "gas-silicate-300",
+        "height": 3,
+        "jointMm": 2,
+        "reinforceMesh": true,
+        "openings": [
+          {
+            "id": 1,
+            "type": "window",
+            "width": 1.5,
+            "height": 1.4,
+            "count": 4
+          },
+          {
+            "id": 2,
+            "type": "entry-door",
+            "width": 1,
+            "height": 2.1,
+            "count": 1
+          }
+        ],
+        "armopoyas": true,
+        "armopoyasWidthMm": 250,
+        "armopoyasHeightMm": 250,
+        "armopoyasRebarMm": 12,
+        "lintels": true,
+        "partitionsEnabled": false,
+        "partitionMaterial": "block-100",
+        "partitionLength": 0,
+        "partitionHeight": 0,
+        "stripRebarPrice": 3.2,
+        "prices": {
+          "blockPrice": 140,
+          "adhesivePrice": 9.5,
+          "meshPrice": 3.2,
+          "partitionBlockPrice": 150,
+          "concretePrice": 185,
+          "workMasonryPrice": 45,
+          "workPartitionPrice": 18,
+          "workArmopoyasPrice": 15
+        }
+      },
+      "prices": {
+        "stripRebarPrice": 3.2,
+        "prices.blockPrice": 140,
+        "prices.adhesivePrice": 9.5,
+        "prices.meshPrice": 3.2,
+        "prices.partitionBlockPrice": 150,
+        "prices.concretePrice": 185,
+        "prices.workMasonryPrice": 45,
+        "prices.workPartitionPrice": 18,
+        "prices.workArmopoyasPrice": 15
+      },
+      "selection": null,
+      "openings": null,
+      "rows": [
+        {
+          "category": "isol",
+          "name": "Стеновые блоки газосиликатные 300 мм (грязный объём 36,00 м³ − проёмы 3,15 м³ − армопояс 2,50 м³ − перемычки 0,54 м³): 29,81 м³",
+          "netLabel": "29,81 м³",
+          "net": {
+            "displayed": "29,81",
+            "unit": "м³"
+          },
+          "coefficient": 1.05,
+          "orderLabel": "31,30 м³",
+          "order": {
+            "displayed": "31,30",
+            "unit": "м³"
+          },
+          "cost": 4382.070000000001
+        },
+        {
+          "category": "dry",
+          "name": "Клей для блоков (расход 1,2 мешка/м³): 36 меш.",
+          "netLabel": "35,8 меш.",
+          "net": {
+            "displayed": "35,8",
+            "unit": "меш."
+          },
+          "coefficient": 1,
+          "orderLabel": "36 меш.",
+          "order": {
+            "displayed": "36",
+            "unit": "меш."
+          },
+          "cost": 342
+        },
+        {
+          "category": "isol",
+          "name": "Армирующая сетка (2 полосы × 3 рядов): 252,0 м.п.",
+          "netLabel": "240,0 м.п.",
+          "net": {
+            "displayed": "240,0",
+            "unit": "м.п."
+          },
+          "coefficient": 1.05,
+          "orderLabel": "252,0 м.п.",
+          "order": {
+            "displayed": "252,0",
+            "unit": "м.п."
+          },
+          "cost": 806.4000000000001
+        },
+        {
+          "category": "concrete",
+          "name": "Бетон М250 (армопояс 2,50 м³ + перемычки 0,54 м³): 3,19 м³",
+          "netLabel": "3,04 м³",
+          "net": {
+            "displayed": "3,04",
+            "unit": "м³"
+          },
+          "coefficient": 1.05,
+          "orderLabel": "3,19 м³",
+          "order": {
+            "displayed": "3,19",
+            "unit": "м³"
+          },
+          "cost": 590.52
+        },
+        {
+          "category": "metal",
+          "name": "Арматура А3 Ø12 мм (армопояс 149 кг + перемычки 34 кг): 0,183 т",
+          "netLabel": "182,8 кг",
+          "net": {
+            "displayed": "182,8",
+            "unit": "кг"
+          },
+          "coefficient": 1.05,
+          "orderLabel": "0,183 т",
+          "order": {
+            "displayed": "0,183",
+            "unit": "т"
+          },
+          "cost": 584.80128
+        },
+        {
+          "category": "metal",
+          "name": "Арматура А1 Ø6 мм (хомуты армопояса): 0,026 т",
+          "netLabel": "26,1 кг",
+          "net": {
+            "displayed": "26,1",
+            "unit": "кг"
+          },
+          "coefficient": 1.05,
+          "orderLabel": "0,026 т",
+          "order": {
+            "displayed": "0,026",
+            "unit": "т"
+          },
+          "cost": 83.54304000000002
+        },
+        {
+          "category": "isol",
+          "name": "Кладка несущих стен: 29,81 м³",
+          "netLabel": "29,81 м³",
+          "net": {
+            "displayed": "29,81",
+            "unit": "м³"
+          },
+          "coefficient": 1,
+          "orderLabel": "29,81 м³",
+          "order": {
+            "displayed": "29,81",
+            "unit": "м³"
+          },
+          "cost": 1341.45
+        },
+        {
+          "category": "isol",
+          "name": "Устройство армопояса и перемычек (армопояс 40,0 м.п. + перемычки 9,0 м.п.)",
+          "netLabel": "49,0 м.п.",
+          "net": {
+            "displayed": "49,0",
+            "unit": "м.п."
+          },
+          "coefficient": 1,
+          "orderLabel": "49,0 м.п.",
+          "order": {
+            "displayed": "49,0",
+            "unit": "м.п."
+          },
+          "cost": 735
+        }
+      ],
+      "intermediate": {
+        "meta": "Стены 40,0 × 3,0 м · газосиликатные 300 мм · чистая кладка 29,81 м³ · проёмы 10,50 м²",
+        "categorySubtotals": {
+          "isol": 7264.920000000001,
+          "dry": 342,
+          "concrete": 590.52,
+          "metal": 668.34432
+        },
+        "sectionSubtotals": null,
+        "calculationDetails": {
+          "meta": "Стены 40,0 × 3,0 м · газосиликатные 300 мм · чистая кладка 29,81 м³ · проёмы 10,50 м²",
+          "vGross": 36,
+          "vNet": 29.810000000000002,
+          "sOpTotal": 10.499999999999998,
+          "vOpTotal": 3.1499999999999995
+        }
+      },
+      "total": 8865.784320000002,
+      "displayedTotal": "8 865,78 Br",
+      "display": {
+        "tableHtml": "<tr><td>Стеновые блоки газосиликатные 300 мм (грязный объём 36,00 м³ − проёмы 3,15 м³ − армопояс 2,50 м³ − перемычки 0,54 м³): 29,81 м³</td><td class=\"num\">29,81 м³</td><td class=\"num\">1,05</td><td class=\"num\">31,30 м³</td><td class=\"num\">4 382,07 Br</td></tr><tr><td>Клей для блоков (расход 1,2 мешка/м³): 36 меш.</td><td class=\"num\">35,8 меш.</td><td class=\"num\">1,00</td><td class=\"num\">36 меш.</td><td class=\"num\">342,00 Br</td></tr><tr><td>Армирующая сетка (2 полосы × 3 рядов): 252,0 м.п.</td><td class=\"num\">240,0 м.п.</td><td class=\"num\">1,05</td><td class=\"num\">252,0 м.п.</td><td class=\"num\">806,40 Br</td></tr><tr><td>Бетон М250 (армопояс 2,50 м³ + перемычки 0,54 м³): 3,19 м³</td><td class=\"num\">3,04 м³</td><td class=\"num\">1,05</td><td class=\"num\">3,19 м³</td><td class=\"num\">590,52 Br</td></tr><tr><td>Арматура А3 Ø12 мм (армопояс 149 кг + перемычки 34 кг): 0,183 т</td><td class=\"num\">182,8 кг</td><td class=\"num\">1,05</td><td class=\"num\">0,183 т</td><td class=\"num\">584,80 Br</td></tr><tr><td>Арматура А1 Ø6 мм (хомуты армопояса): 0,026 т</td><td class=\"num\">26,1 кг</td><td class=\"num\">1,05</td><td class=\"num\">0,026 т</td><td class=\"num\">83,54 Br</td></tr><tr><td>Кладка несущих стен: 29,81 м³</td><td class=\"num\">29,81 м³</td><td class=\"num\">1,00</td><td class=\"num\">29,81 м³</td><td class=\"num\">1 341,45 Br</td></tr><tr><td>Устройство армопояса и перемычек (армопояс 40,0 м.п. + перемычки 9,0 м.п.)</td><td class=\"num\">49,0 м.п.</td><td class=\"num\">1,00</td><td class=\"num\">49,0 м.п.</td><td class=\"num\">735,00 Br</td></tr>",
+        "scope": "Рассчитано: стены и перегородки.",
+        "excluded": "Не рассчитано: фундамент, перекрытия, штукатурка, кровля.",
+        "meta": "Стены 40,0 × 3,0 м · газосиликатные 300 мм · чистая кладка 29,81 м³ · проёмы 10,50 м²",
+        "empty": "",
+        "error": "",
+        "printTitle": "Предварительная ведомость выбранных материалов",
+        "printNodes": ""
+      }
+    },
+    {
+      "id": "floor-wood",
+      "title": "Деревянное перекрытие",
+      "purpose": "Балки, утеплитель и накат",
+      "projectSchemaVersion": 1,
+      "section": "floor",
+      "input": {
+        "type": "wood",
+        "length": 10,
+        "width": 8,
+        "beamSection": "100x200",
+        "beamStep": 0.6,
+        "insulationMm": 150,
+        "boardClad": true,
+        "slabWidth": 1.2,
+        "monolith": false,
+        "concreteGrade": "М250",
+        "woodBeamPrice": 450,
+        "insulationPrice": 95,
+        "membranePrice": 1.8,
+        "boardPrice": 380,
+        "concreteSlabPrice": 500,
+        "workWoodPrice": 25,
+        "workConcretePrice": 80,
+        "wallConcretePrice": 185,
+        "stripRebarPrice": 3.2
+      },
+      "prices": {
+        "woodBeamPrice": 450,
+        "insulationPrice": 95,
+        "membranePrice": 1.8,
+        "boardPrice": 380,
+        "concreteSlabPrice": 500,
+        "workWoodPrice": 25,
+        "workConcretePrice": 80,
+        "wallConcretePrice": 185,
+        "stripRebarPrice": 3.2
+      },
+      "selection": null,
+      "openings": null,
+      "rows": [
+        {
+          "category": "timber",
+          "name": "Брус несущий деревянный 100×200 мм (длина пролёта 8,0 м, шаг 0,6 м): 3,02 м³",
+          "netLabel": "2,88 м³",
+          "net": {
+            "displayed": "2,88",
+            "unit": "м³"
+          },
+          "coefficient": 1.05,
+          "orderLabel": "3,02 м³",
+          "order": {
+            "displayed": "3,02",
+            "unit": "м³"
+          },
+          "cost": 1360.8000000000002
+        },
+        {
+          "category": "isol",
+          "name": "Минеральный утеплитель (толщина 150 мм с запасом 5%): 10,33 м³",
+          "netLabel": "9,84 м³",
+          "net": {
+            "displayed": "9,84",
+            "unit": "м³"
+          },
+          "coefficient": 1.05,
+          "orderLabel": "10,33 м³",
+          "order": {
+            "displayed": "10,33",
+            "unit": "м³"
+          },
+          "cost": 981.5399999999998
+        },
+        {
+          "category": "isol",
+          "name": "Пароизоляция и ветрозащита (2 слоя с нахлёстом 10%): 176,0 м²",
+          "netLabel": "80,00 м²",
+          "net": {
+            "displayed": "80,00",
+            "unit": "м²"
+          },
+          "coefficient": 2.2,
+          "orderLabel": "176,0 м²",
+          "order": {
+            "displayed": "176,0",
+            "unit": "м²"
+          },
+          "cost": 316.8
+        },
+        {
+          "category": "isol",
+          "name": "Черновая доска наката 25 мм (запас 10%): 2,20 м³",
+          "netLabel": "2,00 м³",
+          "net": {
+            "displayed": "2,00",
+            "unit": "м³"
+          },
+          "coefficient": 1.1,
+          "orderLabel": "2,20 м³",
+          "order": {
+            "displayed": "2,20",
+            "unit": "м³"
+          },
+          "cost": 836.0000000000001
+        },
+        {
+          "category": "isol",
+          "name": "Монтаж деревянного перекрытия (80,00 м²): 80,00 м²",
+          "netLabel": "80,00 м²",
+          "net": {
+            "displayed": "80,00",
+            "unit": "м²"
+          },
+          "coefficient": 1,
+          "orderLabel": "80,00 м²",
+          "order": {
+            "displayed": "80,00",
+            "unit": "м²"
+          },
+          "cost": 2000
+        }
+      ],
+      "intermediate": {
+        "printNodes": "Перекрытия 10,00 × 8,00 м · деревянные балки",
+        "meta": "Перекрытия · деревянные балки · 10,00 × 8,00 м · площадь 80,00 м²",
+        "categorySubtotals": {
+          "timber": 1360.8000000000002,
+          "isol": 4134.34
+        },
+        "sectionSubtotals": null,
+        "calculationDetails": {
+          "area": 80,
+          "type": "wood"
+        }
+      },
+      "total": 5495.14,
+      "displayedTotal": "5 495,14 Br",
+      "display": {
+        "tableHtml": "<tr><td>Брус несущий деревянный 100×200 мм (длина пролёта 8,0 м, шаг 0,6 м): 3,02 м³</td><td class=\"num\">2,88 м³</td><td class=\"num\">1,05</td><td class=\"num\">3,02 м³</td><td class=\"num\">1 360,80 Br</td></tr><tr><td>Минеральный утеплитель (толщина 150 мм с запасом 5%): 10,33 м³</td><td class=\"num\">9,84 м³</td><td class=\"num\">1,05</td><td class=\"num\">10,33 м³</td><td class=\"num\">981,54 Br</td></tr><tr><td>Пароизоляция и ветрозащита (2 слоя с нахлёстом 10%): 176,0 м²</td><td class=\"num\">80,00 м²</td><td class=\"num\">2,20</td><td class=\"num\">176,0 м²</td><td class=\"num\">316,80 Br</td></tr><tr><td>Черновая доска наката 25 мм (запас 10%): 2,20 м³</td><td class=\"num\">2,00 м³</td><td class=\"num\">1,10</td><td class=\"num\">2,20 м³</td><td class=\"num\">836,00 Br</td></tr><tr><td>Монтаж деревянного перекрытия (80,00 м²): 80,00 м²</td><td class=\"num\">80,00 м²</td><td class=\"num\">1,00</td><td class=\"num\">80,00 м²</td><td class=\"num\">2 000,00 Br</td></tr>",
+        "scope": "Рассчитано: перекрытия.",
+        "excluded": "Не рассчитано: фундамент, стены и перегородки, штукатурка, кровля.",
+        "meta": "Перекрытия · деревянные балки · 10,00 × 8,00 м · площадь 80,00 м²",
+        "empty": "",
+        "error": "",
+        "printTitle": "Предварительная ведомость выбранных материалов",
+        "printNodes": "Перекрытия 10,00 × 8,00 м · деревянные балки"
+      }
+    },
+    {
+      "id": "floor-concrete",
+      "title": "ЖБ перекрытие",
+      "purpose": "Плиты, швы, монолитный остаток и монтаж",
+      "projectSchemaVersion": 1,
+      "section": "floor",
+      "input": {
+        "type": "concrete",
+        "length": 10,
+        "width": 8,
+        "beamSection": "100x200",
+        "beamStep": 0.6,
+        "insulationMm": 150,
+        "boardClad": true,
+        "slabWidth": 1.2,
+        "monolith": true,
+        "concreteGrade": "М250",
+        "woodBeamPrice": 450,
+        "insulationPrice": 95,
+        "membranePrice": 1.8,
+        "boardPrice": 380,
+        "concreteSlabPrice": 500,
+        "workWoodPrice": 25,
+        "workConcretePrice": 80,
+        "wallConcretePrice": 185,
+        "stripRebarPrice": 3.2
+      },
+      "prices": {
+        "woodBeamPrice": 450,
+        "insulationPrice": 95,
+        "membranePrice": 1.8,
+        "boardPrice": 380,
+        "concreteSlabPrice": 500,
+        "workWoodPrice": 25,
+        "workConcretePrice": 80,
+        "wallConcretePrice": 185,
+        "stripRebarPrice": 3.2
+      },
+      "selection": null,
+      "openings": null,
+      "rows": [
+        {
+          "category": "isol",
+          "name": "Плита перекрытия ЖБ шириной 1,2 м: 8 шт.",
+          "netLabel": "8 шт",
+          "net": {
+            "displayed": "8",
+            "unit": "шт"
+          },
+          "coefficient": 1,
+          "orderLabel": "8 шт",
+          "order": {
+            "displayed": "8",
+            "unit": "шт"
+          },
+          "cost": 4000
+        },
+        {
+          "category": "concrete",
+          "name": "Бетон М250 (заделка швов 0,42 м³ + монолитный участок 0,74 м³): 1,16 м³",
+          "netLabel": "1,10 м³",
+          "net": {
+            "displayed": "1,10",
+            "unit": "м³"
+          },
+          "coefficient": 1.05,
+          "orderLabel": "1,16 м³",
+          "order": {
+            "displayed": "1,16",
+            "unit": "м³"
+          },
+          "cost": 214.4520000000001
+        },
+        {
+          "category": "metal",
+          "name": "Арматура для монолитного участка (59 кг, 80 кг/м³): 0,059 т",
+          "netLabel": "0,056 т",
+          "net": {
+            "displayed": "0,056",
+            "unit": "т"
+          },
+          "coefficient": 1,
+          "orderLabel": "0,059 т",
+          "order": {
+            "displayed": "0,059",
+            "unit": "т"
+          },
+          "cost": 189.2352000000002
+        },
+        {
+          "category": "isol",
+          "name": "Монтаж плит перекрытия краном (8 шт.): 8 шт.",
+          "netLabel": "8 шт",
+          "net": {
+            "displayed": "8",
+            "unit": "шт"
+          },
+          "coefficient": 1,
+          "orderLabel": "8 шт",
+          "order": {
+            "displayed": "8",
+            "unit": "шт"
+          },
+          "cost": 640
+        }
+      ],
+      "intermediate": {
+        "printNodes": "Перекрытия 10,00 × 8,00 м · ЖБ плиты",
+        "meta": "Перекрытия · ЖБ плиты · 10,00 × 8,00 м · площадь 80,00 м²",
+        "categorySubtotals": {
+          "isol": 4640,
+          "concrete": 214.4520000000001,
+          "metal": 189.2352000000002
+        },
+        "sectionSubtotals": null,
+        "calculationDetails": {
+          "area": 80,
+          "type": "concrete"
+        }
+      },
+      "total": 5043.6872,
+      "displayedTotal": "5 043,69 Br",
+      "display": {
+        "tableHtml": "<tr><td>Плита перекрытия ЖБ шириной 1,2 м: 8 шт.</td><td class=\"num\">8 шт</td><td class=\"num\">1,00</td><td class=\"num\">8 шт</td><td class=\"num\">4 000,00 Br</td></tr><tr><td>Бетон М250 (заделка швов 0,42 м³ + монолитный участок 0,74 м³): 1,16 м³</td><td class=\"num\">1,10 м³</td><td class=\"num\">1,05</td><td class=\"num\">1,16 м³</td><td class=\"num\">214,45 Br</td></tr><tr><td>Арматура для монолитного участка (59 кг, 80 кг/м³): 0,059 т</td><td class=\"num\">0,056 т</td><td class=\"num\">1,00</td><td class=\"num\">0,059 т</td><td class=\"num\">189,24 Br</td></tr><tr><td>Монтаж плит перекрытия краном (8 шт.): 8 шт.</td><td class=\"num\">8 шт</td><td class=\"num\">1,00</td><td class=\"num\">8 шт</td><td class=\"num\">640,00 Br</td></tr>",
+        "scope": "Рассчитано: перекрытия.",
+        "excluded": "Не рассчитано: фундамент, стены и перегородки, штукатурка, кровля.",
+        "meta": "Перекрытия · ЖБ плиты · 10,00 × 8,00 м · площадь 80,00 м²",
+        "empty": "",
+        "error": "",
+        "printTitle": "Предварительная ведомость выбранных материалов",
+        "printNodes": "Перекрытия 10,00 × 8,00 м · ЖБ плиты"
+      }
+    },
+    {
+      "id": "plaster-gross",
+      "title": "Штукатурка без вычета",
+      "purpose": "Полная площадь стен",
+      "projectSchemaVersion": 1,
+      "section": "plaster",
+      "input": {
+        "length": 40,
+        "wallHeight": 3,
+        "sides": "1",
+        "excludeOpenings": false,
+        "mix": "gypsum",
+        "thicknessMm": 15,
+        "mixPrice": 16.5,
+        "primerLayers": 1,
+        "primerPrice": 28,
+        "beaconStep": 1.2,
+        "beaconPrice": 3.2,
+        "useMesh": false,
+        "meshPrice": 60,
+        "workPrice": 10
+      },
+      "prices": {
+        "mixPrice": 16.5,
+        "primerPrice": 28,
+        "beaconPrice": 3.2,
+        "meshPrice": 60,
+        "workPrice": 10
+      },
+      "selection": null,
+      "openings": [
+        {
+          "id": 1,
+          "type": "window",
+          "width": 1.5,
+          "height": 1.4,
+          "count": 4
+        },
+        {
+          "id": 2,
+          "type": "entry-door",
+          "width": 1,
+          "height": 2.1,
+          "count": 1
+        }
+      ],
+      "rows": [
+        {
+          "category": "dry",
+          "name": "Гипсовая штукатурка, мешок 30 кг",
+          "netLabel": "1 530,0 кг",
+          "net": {
+            "displayed": "1 530,0",
+            "unit": "кг"
+          },
+          "coefficient": 1.05,
+          "orderLabel": "54 меш.",
+          "order": {
+            "displayed": "54",
+            "unit": "меш."
+          },
+          "cost": 891
+        },
+        {
+          "category": "isol",
+          "name": "Грунтовка глубокого проникновения, 1 слой, канистра 10 л",
+          "netLabel": "18,00 л",
+          "net": {
+            "displayed": "18,00",
+            "unit": "л"
+          },
+          "coefficient": 1.1,
+          "orderLabel": "2 кан.",
+          "order": {
+            "displayed": "2",
+            "unit": "кан."
+          },
+          "cost": 56
+        },
+        {
+          "category": "metal",
+          "name": "Маячковый профиль 6 мм × 3.0 м, шаг 1,20 м",
+          "netLabel": "35 шт",
+          "net": {
+            "displayed": "35",
+            "unit": "шт"
+          },
+          "coefficient": 1,
+          "orderLabel": "35 шт",
+          "order": {
+            "displayed": "35",
+            "unit": "шт"
+          },
+          "cost": 112
+        },
+        {
+          "category": "isol",
+          "name": "Штукатурные работы по маякам, 120,00 м² × 10,00 Br/м²",
+          "netLabel": "120,00 м²",
+          "net": {
+            "displayed": "120,00",
+            "unit": "м²"
+          },
+          "coefficient": 1,
+          "orderLabel": "120,00 м²",
+          "order": {
+            "displayed": "120,00",
+            "unit": "м²"
+          },
+          "cost": 1200
+        }
+      ],
+      "intermediate": {
+        "meta": "Штукатурка 120,00 м² · гипс · слой 15 мм · грунтовка 1 сл. · длина стен 40,00 м",
+        "categorySubtotals": {
+          "dry": 891,
+          "isol": 1256,
+          "metal": 112
+        },
+        "sectionSubtotals": null,
+        "calculationDetails": {
+          "area": 120,
+          "netKg": 1530,
+          "orderKg": 1606.5,
+          "bags": 54,
+          "primerNet": 18,
+          "primerOrder": 19.8,
+          "cans": 2,
+          "wallLength": 40,
+          "beacons": 35,
+          "materialsCost": 1059,
+          "workCost": 1200
+        }
+      },
+      "total": 2259,
+      "displayedTotal": "2 259,00 Br",
+      "display": {
+        "tableHtml": "<tr><td>Гипсовая штукатурка, мешок 30 кг</td><td class=\"num\">1 530,0 кг</td><td class=\"num\">1,05</td><td class=\"num\">54 меш.</td><td class=\"num\">891,00 Br</td></tr><tr><td>Грунтовка глубокого проникновения, 1 слой, канистра 10 л</td><td class=\"num\">18,00 л</td><td class=\"num\">1,10</td><td class=\"num\">2 кан.</td><td class=\"num\">56,00 Br</td></tr><tr><td>Маячковый профиль 6 мм × 3.0 м, шаг 1,20 м</td><td class=\"num\">35 шт</td><td class=\"num\">1,00</td><td class=\"num\">35 шт</td><td class=\"num\">112,00 Br</td></tr><tr><td>Штукатурные работы по маякам, 120,00 м² × 10,00 Br/м²</td><td class=\"num\">120,00 м²</td><td class=\"num\">1,00</td><td class=\"num\">120,00 м²</td><td class=\"num\">1 200,00 Br</td></tr>",
+        "scope": "Рассчитано: штукатурка.",
+        "excluded": "Не рассчитано: фундамент, стены и перегородки, перекрытия, кровля.",
+        "meta": "Штукатурка 120,00 м² · гипс · слой 15 мм · грунтовка 1 сл. · длина стен 40,00 м",
+        "empty": "",
+        "error": "",
+        "printTitle": "Предварительная ведомость выбранных материалов",
+        "printNodes": ""
+      }
+    },
+    {
+      "id": "plaster-openings",
+      "title": "Штукатурка с вычетом",
+      "purpose": "Вычет тех же окон и двери",
+      "projectSchemaVersion": 1,
+      "section": "plaster",
+      "input": {
+        "length": 40,
+        "wallHeight": 3,
+        "sides": "1",
+        "excludeOpenings": true,
+        "mix": "gypsum",
+        "thicknessMm": 15,
+        "mixPrice": 16.5,
+        "primerLayers": 1,
+        "primerPrice": 28,
+        "beaconStep": 1.2,
+        "beaconPrice": 3.2,
+        "useMesh": false,
+        "meshPrice": 60,
+        "workPrice": 10
+      },
+      "prices": {
+        "mixPrice": 16.5,
+        "primerPrice": 28,
+        "beaconPrice": 3.2,
+        "meshPrice": 60,
+        "workPrice": 10
+      },
+      "selection": null,
+      "openings": [
+        {
+          "id": 1,
+          "type": "window",
+          "width": 1.5,
+          "height": 1.4,
+          "count": 4
+        },
+        {
+          "id": 2,
+          "type": "entry-door",
+          "width": 1,
+          "height": 2.1,
+          "count": 1
+        }
+      ],
+      "rows": [
+        {
+          "category": "dry",
+          "name": "Гипсовая штукатурка, мешок 30 кг",
+          "netLabel": "1 396,1 кг",
+          "net": {
+            "displayed": "1 396,1",
+            "unit": "кг"
+          },
+          "coefficient": 1.05,
+          "orderLabel": "49 меш.",
+          "order": {
+            "displayed": "49",
+            "unit": "меш."
+          },
+          "cost": 808.5
+        },
+        {
+          "category": "isol",
+          "name": "Грунтовка глубокого проникновения, 1 слой, канистра 10 л",
+          "netLabel": "16,43 л",
+          "net": {
+            "displayed": "16,43",
+            "unit": "л"
+          },
+          "coefficient": 1.1,
+          "orderLabel": "2 кан.",
+          "order": {
+            "displayed": "2",
+            "unit": "кан."
+          },
+          "cost": 56
+        },
+        {
+          "category": "metal",
+          "name": "Маячковый профиль 6 мм × 3.0 м, шаг 1,20 м",
+          "netLabel": "35 шт",
+          "net": {
+            "displayed": "35",
+            "unit": "шт"
+          },
+          "coefficient": 1,
+          "orderLabel": "35 шт",
+          "order": {
+            "displayed": "35",
+            "unit": "шт"
+          },
+          "cost": 112
+        },
+        {
+          "category": "isol",
+          "name": "Штукатурные работы по маякам, 109,50 м² × 10,00 Br/м²",
+          "netLabel": "109,50 м²",
+          "net": {
+            "displayed": "109,50",
+            "unit": "м²"
+          },
+          "coefficient": 1,
+          "orderLabel": "109,50 м²",
+          "order": {
+            "displayed": "109,50",
+            "unit": "м²"
+          },
+          "cost": 1095
+        }
+      ],
+      "intermediate": {
+        "meta": "Штукатурка 109,50 м² · гипс · слой 15 мм · грунтовка 1 сл. · длина стен 40,00 м",
+        "categorySubtotals": {
+          "dry": 808.5,
+          "isol": 1151,
+          "metal": 112
+        },
+        "sectionSubtotals": null,
+        "calculationDetails": {
+          "area": 109.5,
+          "netKg": 1396.125,
+          "orderKg": 1465.93125,
+          "bags": 49,
+          "primerNet": 16.425,
+          "primerOrder": 18.067500000000003,
+          "cans": 2,
+          "wallLength": 40,
+          "beacons": 35,
+          "materialsCost": 976.5,
+          "workCost": 1095
+        }
+      },
+      "total": 2071.5,
+      "displayedTotal": "2 071,50 Br",
+      "display": {
+        "tableHtml": "<tr><td>Гипсовая штукатурка, мешок 30 кг</td><td class=\"num\">1 396,1 кг</td><td class=\"num\">1,05</td><td class=\"num\">49 меш.</td><td class=\"num\">808,50 Br</td></tr><tr><td>Грунтовка глубокого проникновения, 1 слой, канистра 10 л</td><td class=\"num\">16,43 л</td><td class=\"num\">1,10</td><td class=\"num\">2 кан.</td><td class=\"num\">56,00 Br</td></tr><tr><td>Маячковый профиль 6 мм × 3.0 м, шаг 1,20 м</td><td class=\"num\">35 шт</td><td class=\"num\">1,00</td><td class=\"num\">35 шт</td><td class=\"num\">112,00 Br</td></tr><tr><td>Штукатурные работы по маякам, 109,50 м² × 10,00 Br/м²</td><td class=\"num\">109,50 м²</td><td class=\"num\">1,00</td><td class=\"num\">109,50 м²</td><td class=\"num\">1 095,00 Br</td></tr>",
+        "scope": "Рассчитано: штукатурка.",
+        "excluded": "Не рассчитано: фундамент, стены и перегородки, перекрытия, кровля.",
+        "meta": "Штукатурка 109,50 м² · гипс · слой 15 мм · грунтовка 1 сл. · длина стен 40,00 м",
+        "empty": "",
+        "error": "",
+        "printTitle": "Предварительная ведомость выбранных материалов",
+        "printNodes": ""
+      }
+    },
+    {
+      "id": "roof-gable",
+      "title": "Двускатная кровля",
+      "purpose": "Утеплённая кровля с металлочерепицей",
+      "projectSchemaVersion": 1,
+      "section": "roof",
+      "input": {
+        "type": "gable",
+        "width": 8,
+        "length": 10,
+        "ridgeHeight": 2.5,
+        "eave": 0.5,
+        "rafterSection": "50x200",
+        "rafterStepMm": 600,
+        "mauerlatSection": "150x150",
+        "battenStepMm": 350,
+        "battenSection": "25x100",
+        "warmRoof": true,
+        "insulationMm": 150,
+        "covering": "metal-tile",
+        "timberPrice": 450,
+        "boardPrice": 380,
+        "metalPrice": 28,
+        "insulationPrice": 95,
+        "membranePrice": 110,
+        "vaporPrice": 85,
+        "workPrice": 65
+      },
+      "prices": {
+        "timberPrice": 450,
+        "boardPrice": 380,
+        "metalPrice": 28,
+        "insulationPrice": 95,
+        "membranePrice": 110,
+        "vaporPrice": 85,
+        "workPrice": 65
+      },
+      "selection": null,
+      "openings": null,
+      "rows": [
+        {
+          "category": "timber",
+          "name": "Брус стропил и мауэрлат 50×200/150×150 (стропила 2,01 м³ + мауэрлат 0,85 м³ + контр-обр. 0,50 м³): 3,36 м³",
+          "netLabel": "3,20 м³",
+          "net": {
+            "displayed": "3,20",
+            "unit": "м³"
+          },
+          "coefficient": 1.05,
+          "orderLabel": "3,36 м³",
+          "order": {
+            "displayed": "3,36",
+            "unit": "м³"
+          },
+          "cost": 1511.0438839894887
+        },
+        {
+          "category": "timber",
+          "name": "Доска обрешётки 25×100 (рядов 17 × 11,00 м × 2 скат.): 0,98 м³",
+          "netLabel": "0,94 м³",
+          "net": {
+            "displayed": "0,94",
+            "unit": "м³"
+          },
+          "coefficient": 1.05,
+          "orderLabel": "0,98 м³",
+          "order": {
+            "displayed": "0,98",
+            "unit": "м³"
+          },
+          "cost": 373.06500000000005
+        },
+        {
+          "category": "isol",
+          "name": "Утеплитель минвата 150 мм (с учётом каркаса 90%): 15,76 м³",
+          "netLabel": "15,76 м³",
+          "net": {
+            "displayed": "15,76",
+            "unit": "м³"
+          },
+          "coefficient": 0.9,
+          "orderLabel": "15,76 м³",
+          "order": {
+            "displayed": "15,76",
+            "unit": "м³"
+          },
+          "cost": 1497.2612492304957
+        },
+        {
+          "category": "isol",
+          "name": "Гидро-ветрозащитная мембрана (с нахлёстом 15%): 2 рул. (134,26 м²)",
+          "netLabel": "116,75 м²",
+          "net": {
+            "displayed": "116,75",
+            "unit": "м²"
+          },
+          "coefficient": 1.15,
+          "orderLabel": "2 рул.",
+          "order": {
+            "displayed": "2",
+            "unit": "рул."
+          },
+          "cost": 220
+        },
+        {
+          "category": "isol",
+          "name": "Пароизоляция (с нахлёстом 15%): 2 рул. (134,26 м²)",
+          "netLabel": "116,75 м²",
+          "net": {
+            "displayed": "116,75",
+            "unit": "м²"
+          },
+          "coefficient": 1.15,
+          "orderLabel": "2 рул.",
+          "order": {
+            "displayed": "2",
+            "unit": "рул."
+          },
+          "cost": 170
+        },
+        {
+          "category": "isol",
+          "name": "металлочерепица (площадь скатов 116,75 м², запас +10%): 128,42 м²",
+          "netLabel": "116,75 м²",
+          "net": {
+            "displayed": "116,75",
+            "unit": "м²"
+          },
+          "coefficient": 1.1,
+          "orderLabel": "128,42 м²",
+          "order": {
+            "displayed": "128,42",
+            "unit": "м²"
+          },
+          "cost": 3595.761908483374
+        },
+        {
+          "category": "isol",
+          "name": "Монтаж кровли «под ключ» (116,75 м² скатов)",
+          "netLabel": "116,75 м²",
+          "net": {
+            "displayed": "116,75",
+            "unit": "м²"
+          },
+          "coefficient": 1,
+          "orderLabel": "116,75 м²",
+          "order": {
+            "displayed": "116,75",
+            "unit": "м²"
+          },
+          "cost": 7588.45857309803
+        }
+      ],
+      "intermediate": {
+        "printNodes": "Кровля 9,00 × 11,00 м в плане · 36 стропил",
+        "meta": "Кровля · двухскатная · 8,00 × 10,00 м + свес 0,50 м · скаты 116,75 м² · угол 32,0° · стропило 5,31 м",
+        "categorySubtotals": {
+          "timber": 1884.1088839894887,
+          "isol": 13071.481730811898
+        },
+        "sectionSubtotals": null,
+        "calculationDetails": {
+          "area": 116.74551650920046,
+          "Lraf": 5.306614386781839,
+          "alpha": 0.5585993153435624,
+          "Wtotal": 9,
+          "Ltotal": 11,
+          "rafterCount": 36
+        }
+      },
+      "total": 14955.59061480139,
+      "displayedTotal": "14 955,59 Br",
+      "display": {
+        "tableHtml": "<tr><td>Брус стропил и мауэрлат 50×200/150×150 (стропила 2,01 м³ + мауэрлат 0,85 м³ + контр-обр. 0,50 м³): 3,36 м³</td><td class=\"num\">3,20 м³</td><td class=\"num\">1,05</td><td class=\"num\">3,36 м³</td><td class=\"num\">1 511,04 Br</td></tr><tr><td>Доска обрешётки 25×100 (рядов 17 × 11,00 м × 2 скат.): 0,98 м³</td><td class=\"num\">0,94 м³</td><td class=\"num\">1,05</td><td class=\"num\">0,98 м³</td><td class=\"num\">373,07 Br</td></tr><tr><td>Утеплитель минвата 150 мм (с учётом каркаса 90%): 15,76 м³</td><td class=\"num\">15,76 м³</td><td class=\"num\">0,90</td><td class=\"num\">15,76 м³</td><td class=\"num\">1 497,26 Br</td></tr><tr><td>Гидро-ветрозащитная мембрана (с нахлёстом 15%): 2 рул. (134,26 м²)</td><td class=\"num\">116,75 м²</td><td class=\"num\">1,15</td><td class=\"num\">2 рул.</td><td class=\"num\">220,00 Br</td></tr><tr><td>Пароизоляция (с нахлёстом 15%): 2 рул. (134,26 м²)</td><td class=\"num\">116,75 м²</td><td class=\"num\">1,15</td><td class=\"num\">2 рул.</td><td class=\"num\">170,00 Br</td></tr><tr><td>металлочерепица (площадь скатов 116,75 м², запас +10%): 128,42 м²</td><td class=\"num\">116,75 м²</td><td class=\"num\">1,10</td><td class=\"num\">128,42 м²</td><td class=\"num\">3 595,76 Br</td></tr><tr><td>Монтаж кровли «под ключ» (116,75 м² скатов)</td><td class=\"num\">116,75 м²</td><td class=\"num\">1,00</td><td class=\"num\">116,75 м²</td><td class=\"num\">7 588,46 Br</td></tr>",
+        "scope": "Рассчитано: кровля.",
+        "excluded": "Не рассчитано: фундамент, стены и перегородки, перекрытия, штукатурка.",
+        "meta": "Кровля · двухскатная · 8,00 × 10,00 м + свес 0,50 м · скаты 116,75 м² · угол 32,0° · стропило 5,31 м",
+        "empty": "",
+        "error": "",
+        "printTitle": "Предварительная ведомость выбранных материалов",
+        "printNodes": "Кровля 9,00 × 11,00 м в плане · 36 стропил"
+      }
+    },
+    {
+      "id": "summary-current",
+      "title": "Пользовательская сводная",
+      "purpose": "Фактический renderSummary: плита, стены, штукатурка",
+      "projectSchemaVersion": 1,
+      "section": "summary",
+      "input": {
+        "slab": {
+          "length": 10,
+          "width": 8,
+          "height": 0.3,
+          "grade": "М250",
+          "concretePrice": 210,
+          "diameterMm": 12,
+          "stepMm": 200,
+          "meshCount": 2,
+          "rebarPrice": 3.2,
+          "wirePrice": 4.5,
+          "boardPrice": 14,
+          "timberPrice": 8,
+          "sandHeight": 0.2,
+          "sandPrice": 32,
+          "stoneHeight": 0.2,
+          "stonePrice": 55,
+          "hydroPrice": 28
+        },
+        "strip": {
+          "length": 40,
+          "width": 0.4,
+          "height": 1,
+          "grade": "М250",
+          "concretePrice": 210,
+          "diameterMm": 12,
+          "barCount": 4,
+          "rebarPrice": 3.2,
+          "stirrupMm": 8,
+          "stirrupStepMm": 300,
+          "wirePrice": 4.5,
+          "boardPrice": 14,
+          "timberPrice": 8,
+          "sandHeight": 0.2,
+          "sandPrice": 32,
+          "hydroPrice": 28,
+          "pilesEnabled": false,
+          "pileConcretePrice": 185,
+          "pileDrillingPrice": 45,
+          "pileHydroPrice": 2.8,
+          "piles": []
+        },
+        "walls": {
+          "perimeter": 40,
+          "loadMaterial": "gas-silicate-300",
+          "height": 3,
+          "jointMm": 2,
+          "reinforceMesh": true,
+          "openings": [
+            {
+              "id": 1,
+              "type": "window",
+              "width": 1.5,
+              "height": 1.4,
+              "count": 4
+            },
+            {
+              "id": 2,
+              "type": "entry-door",
+              "width": 1,
+              "height": 2.1,
+              "count": 1
+            }
+          ],
+          "armopoyas": true,
+          "armopoyasWidthMm": 250,
+          "armopoyasHeightMm": 250,
+          "armopoyasRebarMm": 12,
+          "lintels": true,
+          "partitionsEnabled": false,
+          "partitionMaterial": "block-100",
+          "partitionLength": 0,
+          "partitionHeight": 0,
+          "stripRebarPrice": 3.2,
+          "prices": {
+            "blockPrice": 140,
+            "adhesivePrice": 9.5,
+            "meshPrice": 3.2,
+            "partitionBlockPrice": 150,
+            "concretePrice": 185,
+            "workMasonryPrice": 45,
+            "workPartitionPrice": 18,
+            "workArmopoyasPrice": 15
+          }
+        },
+        "floor": {
+          "type": "wood",
+          "length": 10,
+          "width": 8,
+          "beamSection": "100x200",
+          "beamStep": 0.6,
+          "insulationMm": 150,
+          "boardClad": true,
+          "slabWidth": 1.2,
+          "monolith": false,
+          "concreteGrade": "М250",
+          "woodBeamPrice": 450,
+          "insulationPrice": 95,
+          "membranePrice": 1.8,
+          "boardPrice": 380,
+          "concreteSlabPrice": 500,
+          "workWoodPrice": 25,
+          "workConcretePrice": 80,
+          "wallConcretePrice": 185,
+          "stripRebarPrice": 3.2
+        },
+        "plaster": {
+          "length": 40,
+          "wallHeight": 3,
+          "sides": "1",
+          "excludeOpenings": true,
+          "mix": "gypsum",
+          "thicknessMm": 15,
+          "mixPrice": 16.5,
+          "primerLayers": 1,
+          "primerPrice": 28,
+          "beaconStep": 1.2,
+          "beaconPrice": 3.2,
+          "useMesh": false,
+          "meshPrice": 60,
+          "workPrice": 10
+        },
+        "roof": {
+          "type": "gable",
+          "width": 8,
+          "length": 10,
+          "ridgeHeight": 2.5,
+          "eave": 0.5,
+          "rafterSection": "50x200",
+          "rafterStepMm": 600,
+          "mauerlatSection": "150x150",
+          "battenStepMm": 350,
+          "battenSection": "25x100",
+          "warmRoof": true,
+          "insulationMm": 150,
+          "covering": "metal-tile",
+          "timberPrice": 450,
+          "boardPrice": 380,
+          "metalPrice": 28,
+          "insulationPrice": 95,
+          "membranePrice": 110,
+          "vaporPrice": 85,
+          "workPrice": 65
+        }
+      },
+      "prices": {
+        "slab.concretePrice": 210,
+        "slab.rebarPrice": 3.2,
+        "slab.wirePrice": 4.5,
+        "slab.boardPrice": 14,
+        "slab.timberPrice": 8,
+        "slab.sandPrice": 32,
+        "slab.stonePrice": 55,
+        "slab.hydroPrice": 28,
+        "strip.concretePrice": 210,
+        "strip.rebarPrice": 3.2,
+        "strip.wirePrice": 4.5,
+        "strip.boardPrice": 14,
+        "strip.timberPrice": 8,
+        "strip.sandPrice": 32,
+        "strip.hydroPrice": 28,
+        "strip.pileConcretePrice": 185,
+        "strip.pileDrillingPrice": 45,
+        "strip.pileHydroPrice": 2.8,
+        "walls.stripRebarPrice": 3.2,
+        "walls.prices.blockPrice": 140,
+        "walls.prices.adhesivePrice": 9.5,
+        "walls.prices.meshPrice": 3.2,
+        "walls.prices.partitionBlockPrice": 150,
+        "walls.prices.concretePrice": 185,
+        "walls.prices.workMasonryPrice": 45,
+        "walls.prices.workPartitionPrice": 18,
+        "walls.prices.workArmopoyasPrice": 15,
+        "floor.woodBeamPrice": 450,
+        "floor.insulationPrice": 95,
+        "floor.membranePrice": 1.8,
+        "floor.boardPrice": 380,
+        "floor.concreteSlabPrice": 500,
+        "floor.workWoodPrice": 25,
+        "floor.workConcretePrice": 80,
+        "floor.wallConcretePrice": 185,
+        "floor.stripRebarPrice": 3.2,
+        "plaster.mixPrice": 16.5,
+        "plaster.primerPrice": 28,
+        "plaster.beaconPrice": 3.2,
+        "plaster.meshPrice": 60,
+        "plaster.workPrice": 10,
+        "roof.timberPrice": 450,
+        "roof.boardPrice": 380,
+        "roof.metalPrice": 28,
+        "roof.insulationPrice": 95,
+        "roof.membranePrice": 110,
+        "roof.vaporPrice": 85,
+        "roof.workPrice": 65
+      },
+      "selection": {
+        "found": true,
+        "walls": true,
+        "plaster": true,
+        "floor": false,
+        "roof": false
+      },
+      "openings": [
+        {
+          "id": 1,
+          "type": "window",
+          "width": 1.5,
+          "height": 1.4,
+          "count": 4
+        },
+        {
+          "id": 2,
+          "type": "entry-door",
+          "width": 1,
+          "height": 2.1,
+          "count": 1
+        }
+      ],
+      "rows": [
+        {
+          "category": "concrete",
+          "name": "Бетон М250",
+          "netLabel": "24,00 м³",
+          "net": {
+            "displayed": "24,00",
+            "unit": "м³"
+          },
+          "coefficient": 1.05,
+          "orderLabel": "25,20 м³",
+          "order": {
+            "displayed": "25,20",
+            "unit": "м³"
+          },
+          "cost": 5292.000000000001
+        },
+        {
+          "category": "metal",
+          "name": "Арматура Ø12 мм, 140 шт. × 11.7 м",
+          "netLabel": "1 451,5 кг",
+          "net": {
+            "displayed": "1 451,5",
+            "unit": "кг"
+          },
+          "coefficient": 1.0012224938875305,
+          "orderLabel": "1 453,3 кг",
+          "order": {
+            "displayed": "1 453,3",
+            "unit": "кг"
+          },
+          "cost": 4650.587800369685
+        },
+        {
+          "category": "metal",
+          "name": "Вязальная проволока",
+          "netLabel": "14,53 кг",
+          "net": {
+            "displayed": "14,53",
+            "unit": "кг"
+          },
+          "coefficient": 1,
+          "orderLabel": "14,53 кг",
+          "order": {
+            "displayed": "14,53",
+            "unit": "кг"
+          },
+          "cost": 65.3988909426987
+        },
+        {
+          "category": "timber",
+          "name": "Доска 25×150×6000 (0,270 м³)",
+          "netLabel": "12 шт",
+          "net": {
+            "displayed": "12",
+            "unit": "шт"
+          },
+          "coefficient": 1,
+          "orderLabel": "12 шт",
+          "order": {
+            "displayed": "12",
+            "unit": "шт"
+          },
+          "cost": 168
+        },
+        {
+          "category": "timber",
+          "name": "Брус упоров 50×50×3000 (0,105 м³)",
+          "netLabel": "14 шт",
+          "net": {
+            "displayed": "14",
+            "unit": "шт"
+          },
+          "coefficient": 1,
+          "orderLabel": "14 шт",
+          "order": {
+            "displayed": "14",
+            "unit": "шт"
+          },
+          "cost": 112
+        },
+        {
+          "category": "concrete",
+          "name": "Песок",
+          "netLabel": "16,00 м³",
+          "net": {
+            "displayed": "16,00",
+            "unit": "м³"
+          },
+          "coefficient": 1.1,
+          "orderLabel": "17,60 м³",
+          "order": {
+            "displayed": "17,60",
+            "unit": "м³"
+          },
+          "cost": 563.2
+        },
+        {
+          "category": "concrete",
+          "name": "Щебень",
+          "netLabel": "16,00 м³",
+          "net": {
+            "displayed": "16,00",
+            "unit": "м³"
+          },
+          "coefficient": 1.1,
+          "orderLabel": "17,60 м³",
+          "order": {
+            "displayed": "17,60",
+            "unit": "м³"
+          },
+          "cost": 968.0000000000001
+        },
+        {
+          "category": "isol",
+          "name": "Гидроизоляция, рулон 1×10 м",
+          "netLabel": "80,00 м²",
+          "net": {
+            "displayed": "80,00",
+            "unit": "м²"
+          },
+          "coefficient": 1.15,
+          "orderLabel": "10 рул.",
+          "order": {
+            "displayed": "10",
+            "unit": "рул."
+          },
+          "cost": 280
+        },
+        {
+          "category": "isol",
+          "name": "Стены и перегородки — материалы (газосиликатные 300 мм, чистая кладка 29,81 м³)",
+          "netLabel": "29,81 м³",
+          "net": {
+            "displayed": "29,81",
+            "unit": "м³"
+          },
+          "coefficient": 1,
+          "orderLabel": "6 789,33",
+          "order": {
+            "displayed": "6 789,33",
+            "unit": ""
+          },
+          "cost": 6789.334320000002
+        },
+        {
+          "category": "isol",
+          "name": "Стены и перегородки — работы (кладка, армопояс, перемычки)",
+          "netLabel": "40,0 м перим.",
+          "net": {
+            "displayed": "40,0",
+            "unit": "м перим."
+          },
+          "coefficient": 1,
+          "orderLabel": "2 076,45",
+          "order": {
+            "displayed": "2 076,45",
+            "unit": ""
+          },
+          "cost": 2076.45
+        },
+        {
+          "category": "isol",
+          "name": "Штукатурка — материалы (гипс, слой 15 мм, 109,50 м²)",
+          "netLabel": "109,50 м²",
+          "net": {
+            "displayed": "109,50",
+            "unit": "м²"
+          },
+          "coefficient": 1,
+          "orderLabel": "976,50",
+          "order": {
+            "displayed": "976,50",
+            "unit": ""
+          },
+          "cost": 976.5
+        },
+        {
+          "category": "isol",
+          "name": "Штукатурка — работы (по маякам, 109,50 м²)",
+          "netLabel": "109,50 м²",
+          "net": {
+            "displayed": "109,50",
+            "unit": "м²"
+          },
+          "coefficient": 1,
+          "orderLabel": "109,50 м²",
+          "order": {
+            "displayed": "109,50",
+            "unit": "м²"
+          },
+          "cost": 1095
+        }
+      ],
+      "intermediate": {
+        "grouped": true,
+        "sections": [
+          {
+            "id": "foundation",
+            "label": "плитный фундамент"
+          },
+          {
+            "id": "walls",
+            "label": "стены и перегородки"
+          },
+          {
+            "id": "plaster",
+            "label": "штукатурка"
+          }
+        ],
+        "printTitle": "Предварительная ведомость выбранных частей",
+        "printNodes": "Узлы: плита 10,00 × 8,00 × 0,30 м · стены 40,0 × 3,0 м, проёмы 10,50 м² · штукатурка 109,50 м²",
+        "meta": "Объект: плита 10,00 × 8,00 × 0,30 м · стены 40,0 × 3,0 м, проёмы 10,50 м² · штукатурка 109,50 м²",
+        "categorySubtotals": {
+          "concrete": 6823.200000000001,
+          "metal": 4715.986691312384,
+          "timber": 280,
+          "isol": 11217.284320000002
+        },
+        "sectionSubtotals": {
+          "foundation": 12099.186691312385,
+          "walls": 8865.784320000002,
+          "plaster": 2071.5
+        },
+        "calculationDetails": null
+      },
+      "total": 23036.471011312387,
+      "displayedTotal": "23 036,47 Br",
+      "display": {
+        "tableHtml": "<tr class=\"cat-row\"><td colspan=\"5\">Бетон и растворы</td></tr><tr><td>Бетон М250</td><td class=\"num\">24,00 м³</td><td class=\"num\">1,05</td><td class=\"num\">25,20 м³</td><td class=\"num\">5 292,00 Br</td></tr><tr><td>Песок</td><td class=\"num\">16,00 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,60 м³</td><td class=\"num\">563,20 Br</td></tr><tr><td>Щебень</td><td class=\"num\">16,00 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,60 м³</td><td class=\"num\">968,00 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Арматура и металл</td></tr><tr><td>Арматура Ø12 мм, 140 шт. × 11.7 м</td><td class=\"num\">1 451,5 кг</td><td class=\"num\">1,00</td><td class=\"num\">1 453,3 кг</td><td class=\"num\">4 650,59 Br</td></tr><tr><td>Вязальная проволока</td><td class=\"num\">14,53 кг</td><td class=\"num\">1,00</td><td class=\"num\">14,53 кг</td><td class=\"num\">65,40 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Пиломатериалы</td></tr><tr><td>Доска 25×150×6000 (0,270 м³)</td><td class=\"num\">12 шт</td><td class=\"num\">1,00</td><td class=\"num\">12 шт</td><td class=\"num\">168,00 Br</td></tr><tr><td>Брус упоров 50×50×3000 (0,105 м³)</td><td class=\"num\">14 шт</td><td class=\"num\">1,00</td><td class=\"num\">14 шт</td><td class=\"num\">112,00 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Изоляция и расходники</td></tr><tr><td>Гидроизоляция, рулон 1×10 м</td><td class=\"num\">80,00 м²</td><td class=\"num\">1,15</td><td class=\"num\">10 рул.</td><td class=\"num\">280,00 Br</td></tr><tr><td>Стены и перегородки — материалы (газосиликатные 300 мм, чистая кладка 29,81 м³)</td><td class=\"num\">29,81 м³</td><td class=\"num\">1,00</td><td class=\"num\">6 789,33</td><td class=\"num\">6 789,33 Br</td></tr><tr><td>Стены и перегородки — работы (кладка, армопояс, перемычки)</td><td class=\"num\">40,0 м перим.</td><td class=\"num\">1,00</td><td class=\"num\">2 076,45</td><td class=\"num\">2 076,45 Br</td></tr><tr><td>Штукатурка — материалы (гипс, слой 15 мм, 109,50 м²)</td><td class=\"num\">109,50 м²</td><td class=\"num\">1,00</td><td class=\"num\">976,50</td><td class=\"num\">976,50 Br</td></tr><tr><td>Штукатурка — работы (по маякам, 109,50 м²)</td><td class=\"num\">109,50 м²</td><td class=\"num\">1,00</td><td class=\"num\">109,50 м²</td><td class=\"num\">1 095,00 Br</td></tr>",
+        "scope": "Рассчитано: плитный фундамент, стены и перегородки, штукатурка.",
+        "excluded": "Не рассчитано: перекрытия, кровля.",
+        "meta": "Объект: плита 10,00 × 8,00 × 0,30 м · стены 40,0 × 3,0 м, проёмы 10,50 м² · штукатурка 109,50 м²",
+        "empty": "",
+        "error": "",
+        "printTitle": "Предварительная ведомость выбранных частей",
+        "printNodes": "Узлы: плита 10,00 × 8,00 × 0,30 м · стены 40,0 × 3,0 м, проёмы 10,50 м² · штукатурка 109,50 м²"
+      }
+    },
+    {
+      "id": "summary-all-sections",
+      "title": "Полная сводная",
+      "purpose": "Все пять разделов: плита, стены, штукатурка, кровля и перекрытие",
+      "projectSchemaVersion": 1,
+      "section": "summary",
+      "input": {
+        "slab": {
+          "length": 10,
+          "width": 8,
+          "height": 0.3,
+          "grade": "М250",
+          "concretePrice": 210,
+          "diameterMm": 12,
+          "stepMm": 200,
+          "meshCount": 2,
+          "rebarPrice": 3.2,
+          "wirePrice": 4.5,
+          "boardPrice": 14,
+          "timberPrice": 8,
+          "sandHeight": 0.2,
+          "sandPrice": 32,
+          "stoneHeight": 0.2,
+          "stonePrice": 55,
+          "hydroPrice": 28
+        },
+        "strip": {
+          "length": 40,
+          "width": 0.4,
+          "height": 1,
+          "grade": "М250",
+          "concretePrice": 210,
+          "diameterMm": 12,
+          "barCount": 4,
+          "rebarPrice": 3.2,
+          "stirrupMm": 8,
+          "stirrupStepMm": 300,
+          "wirePrice": 4.5,
+          "boardPrice": 14,
+          "timberPrice": 8,
+          "sandHeight": 0.2,
+          "sandPrice": 32,
+          "hydroPrice": 28,
+          "pilesEnabled": false,
+          "pileConcretePrice": 185,
+          "pileDrillingPrice": 45,
+          "pileHydroPrice": 2.8,
+          "piles": []
+        },
+        "walls": {
+          "perimeter": 40,
+          "loadMaterial": "gas-silicate-300",
+          "height": 3,
+          "jointMm": 2,
+          "reinforceMesh": true,
+          "openings": [
+            {
+              "id": 1,
+              "type": "window",
+              "width": 1.5,
+              "height": 1.4,
+              "count": 4
+            },
+            {
+              "id": 2,
+              "type": "entry-door",
+              "width": 1,
+              "height": 2.1,
+              "count": 1
+            }
+          ],
+          "armopoyas": true,
+          "armopoyasWidthMm": 250,
+          "armopoyasHeightMm": 250,
+          "armopoyasRebarMm": 12,
+          "lintels": true,
+          "partitionsEnabled": false,
+          "partitionMaterial": "block-100",
+          "partitionLength": 0,
+          "partitionHeight": 0,
+          "stripRebarPrice": 3.2,
+          "prices": {
+            "blockPrice": 140,
+            "adhesivePrice": 9.5,
+            "meshPrice": 3.2,
+            "partitionBlockPrice": 150,
+            "concretePrice": 185,
+            "workMasonryPrice": 45,
+            "workPartitionPrice": 18,
+            "workArmopoyasPrice": 15
+          }
+        },
+        "floor": {
+          "type": "wood",
+          "length": 10,
+          "width": 8,
+          "beamSection": "100x200",
+          "beamStep": 0.6,
+          "insulationMm": 150,
+          "boardClad": true,
+          "slabWidth": 1.2,
+          "monolith": false,
+          "concreteGrade": "М250",
+          "woodBeamPrice": 450,
+          "insulationPrice": 95,
+          "membranePrice": 1.8,
+          "boardPrice": 380,
+          "concreteSlabPrice": 500,
+          "workWoodPrice": 25,
+          "workConcretePrice": 80,
+          "wallConcretePrice": 185,
+          "stripRebarPrice": 3.2
+        },
+        "plaster": {
+          "length": 40,
+          "wallHeight": 3,
+          "sides": "1",
+          "excludeOpenings": true,
+          "mix": "gypsum",
+          "thicknessMm": 15,
+          "mixPrice": 16.5,
+          "primerLayers": 1,
+          "primerPrice": 28,
+          "beaconStep": 1.2,
+          "beaconPrice": 3.2,
+          "useMesh": false,
+          "meshPrice": 60,
+          "workPrice": 10
+        },
+        "roof": {
+          "type": "gable",
+          "width": 8,
+          "length": 10,
+          "ridgeHeight": 2.5,
+          "eave": 0.5,
+          "rafterSection": "50x200",
+          "rafterStepMm": 600,
+          "mauerlatSection": "150x150",
+          "battenStepMm": 350,
+          "battenSection": "25x100",
+          "warmRoof": true,
+          "insulationMm": 150,
+          "covering": "metal-tile",
+          "timberPrice": 450,
+          "boardPrice": 380,
+          "metalPrice": 28,
+          "insulationPrice": 95,
+          "membranePrice": 110,
+          "vaporPrice": 85,
+          "workPrice": 65
+        }
+      },
+      "prices": {
+        "slab.concretePrice": 210,
+        "slab.rebarPrice": 3.2,
+        "slab.wirePrice": 4.5,
+        "slab.boardPrice": 14,
+        "slab.timberPrice": 8,
+        "slab.sandPrice": 32,
+        "slab.stonePrice": 55,
+        "slab.hydroPrice": 28,
+        "strip.concretePrice": 210,
+        "strip.rebarPrice": 3.2,
+        "strip.wirePrice": 4.5,
+        "strip.boardPrice": 14,
+        "strip.timberPrice": 8,
+        "strip.sandPrice": 32,
+        "strip.hydroPrice": 28,
+        "strip.pileConcretePrice": 185,
+        "strip.pileDrillingPrice": 45,
+        "strip.pileHydroPrice": 2.8,
+        "walls.stripRebarPrice": 3.2,
+        "walls.prices.blockPrice": 140,
+        "walls.prices.adhesivePrice": 9.5,
+        "walls.prices.meshPrice": 3.2,
+        "walls.prices.partitionBlockPrice": 150,
+        "walls.prices.concretePrice": 185,
+        "walls.prices.workMasonryPrice": 45,
+        "walls.prices.workPartitionPrice": 18,
+        "walls.prices.workArmopoyasPrice": 15,
+        "floor.woodBeamPrice": 450,
+        "floor.insulationPrice": 95,
+        "floor.membranePrice": 1.8,
+        "floor.boardPrice": 380,
+        "floor.concreteSlabPrice": 500,
+        "floor.workWoodPrice": 25,
+        "floor.workConcretePrice": 80,
+        "floor.wallConcretePrice": 185,
+        "floor.stripRebarPrice": 3.2,
+        "plaster.mixPrice": 16.5,
+        "plaster.primerPrice": 28,
+        "plaster.beaconPrice": 3.2,
+        "plaster.meshPrice": 60,
+        "plaster.workPrice": 10,
+        "roof.timberPrice": 450,
+        "roof.boardPrice": 380,
+        "roof.metalPrice": 28,
+        "roof.insulationPrice": 95,
+        "roof.membranePrice": 110,
+        "roof.vaporPrice": 85,
+        "roof.workPrice": 65
+      },
+      "selection": {
+        "found": true,
+        "walls": true,
+        "plaster": true,
+        "roof": true,
+        "floor": true
+      },
+      "openings": [
+        {
+          "id": 1,
+          "type": "window",
+          "width": 1.5,
+          "height": 1.4,
+          "count": 4
+        },
+        {
+          "id": 2,
+          "type": "entry-door",
+          "width": 1,
+          "height": 2.1,
+          "count": 1
+        }
+      ],
+      "rows": [
+        {
+          "category": "concrete",
+          "name": "Бетон М250",
+          "netLabel": "24,00 м³",
+          "net": {
+            "displayed": "24,00",
+            "unit": "м³"
+          },
+          "coefficient": 1.05,
+          "orderLabel": "25,20 м³",
+          "order": {
+            "displayed": "25,20",
+            "unit": "м³"
+          },
+          "cost": 5292.000000000001
+        },
+        {
+          "category": "metal",
+          "name": "Арматура Ø12 мм, 140 шт. × 11.7 м",
+          "netLabel": "1 451,5 кг",
+          "net": {
+            "displayed": "1 451,5",
+            "unit": "кг"
+          },
+          "coefficient": 1.0012224938875305,
+          "orderLabel": "1 453,3 кг",
+          "order": {
+            "displayed": "1 453,3",
+            "unit": "кг"
+          },
+          "cost": 4650.587800369685
+        },
+        {
+          "category": "metal",
+          "name": "Вязальная проволока",
+          "netLabel": "14,53 кг",
+          "net": {
+            "displayed": "14,53",
+            "unit": "кг"
+          },
+          "coefficient": 1,
+          "orderLabel": "14,53 кг",
+          "order": {
+            "displayed": "14,53",
+            "unit": "кг"
+          },
+          "cost": 65.3988909426987
+        },
+        {
+          "category": "timber",
+          "name": "Доска 25×150×6000 (0,270 м³)",
+          "netLabel": "12 шт",
+          "net": {
+            "displayed": "12",
+            "unit": "шт"
+          },
+          "coefficient": 1,
+          "orderLabel": "12 шт",
+          "order": {
+            "displayed": "12",
+            "unit": "шт"
+          },
+          "cost": 168
+        },
+        {
+          "category": "timber",
+          "name": "Брус упоров 50×50×3000 (0,105 м³)",
+          "netLabel": "14 шт",
+          "net": {
+            "displayed": "14",
+            "unit": "шт"
+          },
+          "coefficient": 1,
+          "orderLabel": "14 шт",
+          "order": {
+            "displayed": "14",
+            "unit": "шт"
+          },
+          "cost": 112
+        },
+        {
+          "category": "concrete",
+          "name": "Песок",
+          "netLabel": "16,00 м³",
+          "net": {
+            "displayed": "16,00",
+            "unit": "м³"
+          },
+          "coefficient": 1.1,
+          "orderLabel": "17,60 м³",
+          "order": {
+            "displayed": "17,60",
+            "unit": "м³"
+          },
+          "cost": 563.2
+        },
+        {
+          "category": "concrete",
+          "name": "Щебень",
+          "netLabel": "16,00 м³",
+          "net": {
+            "displayed": "16,00",
+            "unit": "м³"
+          },
+          "coefficient": 1.1,
+          "orderLabel": "17,60 м³",
+          "order": {
+            "displayed": "17,60",
+            "unit": "м³"
+          },
+          "cost": 968.0000000000001
+        },
+        {
+          "category": "isol",
+          "name": "Гидроизоляция, рулон 1×10 м",
+          "netLabel": "80,00 м²",
+          "net": {
+            "displayed": "80,00",
+            "unit": "м²"
+          },
+          "coefficient": 1.15,
+          "orderLabel": "10 рул.",
+          "order": {
+            "displayed": "10",
+            "unit": "рул."
+          },
+          "cost": 280
+        },
+        {
+          "category": "isol",
+          "name": "Стены и перегородки — материалы (газосиликатные 300 мм, чистая кладка 29,81 м³)",
+          "netLabel": "29,81 м³",
+          "net": {
+            "displayed": "29,81",
+            "unit": "м³"
+          },
+          "coefficient": 1,
+          "orderLabel": "6 789,33",
+          "order": {
+            "displayed": "6 789,33",
+            "unit": ""
+          },
+          "cost": 6789.334320000002
+        },
+        {
+          "category": "isol",
+          "name": "Стены и перегородки — работы (кладка, армопояс, перемычки)",
+          "netLabel": "40,0 м перим.",
+          "net": {
+            "displayed": "40,0",
+            "unit": "м перим."
+          },
+          "coefficient": 1,
+          "orderLabel": "2 076,45",
+          "order": {
+            "displayed": "2 076,45",
+            "unit": ""
+          },
+          "cost": 2076.45
+        },
+        {
+          "category": "isol",
+          "name": "Штукатурка — материалы (гипс, слой 15 мм, 109,50 м²)",
+          "netLabel": "109,50 м²",
+          "net": {
+            "displayed": "109,50",
+            "unit": "м²"
+          },
+          "coefficient": 1,
+          "orderLabel": "976,50",
+          "order": {
+            "displayed": "976,50",
+            "unit": ""
+          },
+          "cost": 976.5
+        },
+        {
+          "category": "isol",
+          "name": "Штукатурка — работы (по маякам, 109,50 м²)",
+          "netLabel": "109,50 м²",
+          "net": {
+            "displayed": "109,50",
+            "unit": "м²"
+          },
+          "coefficient": 1,
+          "orderLabel": "109,50 м²",
+          "order": {
+            "displayed": "109,50",
+            "unit": "м²"
+          },
+          "cost": 1095
+        },
+        {
+          "category": "timber",
+          "name": "Кровля — материалы (скаты 116,75 м², двухскатная)",
+          "netLabel": "116,75 м²",
+          "net": {
+            "displayed": "116,75",
+            "unit": "м²"
+          },
+          "coefficient": 1,
+          "orderLabel": "7 367,13",
+          "order": {
+            "displayed": "7 367,13",
+            "unit": ""
+          },
+          "cost": 7367.1320417033585
+        },
+        {
+          "category": "timber",
+          "name": "Кровля — работы (монтаж под ключ, 116,75 м²)",
+          "netLabel": "116,75 м²",
+          "net": {
+            "displayed": "116,75",
+            "unit": "м²"
+          },
+          "coefficient": 1,
+          "orderLabel": "116,75 м²",
+          "order": {
+            "displayed": "116,75",
+            "unit": "м²"
+          },
+          "cost": 7588.45857309803
+        },
+        {
+          "category": "isol",
+          "name": "Перекрытия — материалы (деревянные балки, 80,00 м²)",
+          "netLabel": "80,00 м²",
+          "net": {
+            "displayed": "80,00",
+            "unit": "м²"
+          },
+          "coefficient": 1,
+          "orderLabel": "3 495,14",
+          "order": {
+            "displayed": "3 495,14",
+            "unit": ""
+          },
+          "cost": 3495.1400000000003
+        },
+        {
+          "category": "isol",
+          "name": "Перекрытия — работы (деревянные балки, 80,00 м²)",
+          "netLabel": "80,00 м²",
+          "net": {
+            "displayed": "80,00",
+            "unit": "м²"
+          },
+          "coefficient": 1,
+          "orderLabel": "2 000,00",
+          "order": {
+            "displayed": "2 000,00",
+            "unit": ""
+          },
+          "cost": 2000
+        }
+      ],
+      "intermediate": {
+        "grouped": true,
+        "sections": [
+          {
+            "id": "foundation",
+            "label": "плитный фундамент"
+          },
+          {
+            "id": "walls",
+            "label": "стены и перегородки"
+          },
+          {
+            "id": "plaster",
+            "label": "штукатурка"
+          },
+          {
+            "id": "roof",
+            "label": "кровля"
+          },
+          {
+            "id": "floor",
+            "label": "перекрытия"
+          }
+        ],
+        "printTitle": "Предварительная ведомость выбранных частей",
+        "printNodes": "Узлы: плита 10,00 × 8,00 × 0,30 м · стены 40,0 × 3,0 м, проёмы 10,50 м² · штукатурка 109,50 м² · кровля двухскатная 8,00 × 10,00 м · перекрытия 10,00 × 8,00 м",
+        "meta": "Объект: плита 10,00 × 8,00 × 0,30 м · стены 40,0 × 3,0 м, проёмы 10,50 м² · штукатурка 109,50 м² · кровля двухскатная 8,00 × 10,00 м · перекрытия 10,00 × 8,00 м",
+        "categorySubtotals": {
+          "concrete": 6823.200000000001,
+          "metal": 4715.986691312384,
+          "timber": 15235.59061480139,
+          "isol": 16712.424320000002
+        },
+        "sectionSubtotals": {
+          "foundation": 12099.186691312385,
+          "walls": 8865.784320000002,
+          "plaster": 2071.5,
+          "roof": 14955.59061480139,
+          "floor": 5495.14
+        },
+        "calculationDetails": null
+      },
+      "total": 43487.201626113776,
+      "displayedTotal": "43 487,20 Br",
+      "display": {
+        "tableHtml": "<tr class=\"cat-row\"><td colspan=\"5\">Бетон и растворы</td></tr><tr><td>Бетон М250</td><td class=\"num\">24,00 м³</td><td class=\"num\">1,05</td><td class=\"num\">25,20 м³</td><td class=\"num\">5 292,00 Br</td></tr><tr><td>Песок</td><td class=\"num\">16,00 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,60 м³</td><td class=\"num\">563,20 Br</td></tr><tr><td>Щебень</td><td class=\"num\">16,00 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,60 м³</td><td class=\"num\">968,00 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Арматура и металл</td></tr><tr><td>Арматура Ø12 мм, 140 шт. × 11.7 м</td><td class=\"num\">1 451,5 кг</td><td class=\"num\">1,00</td><td class=\"num\">1 453,3 кг</td><td class=\"num\">4 650,59 Br</td></tr><tr><td>Вязальная проволока</td><td class=\"num\">14,53 кг</td><td class=\"num\">1,00</td><td class=\"num\">14,53 кг</td><td class=\"num\">65,40 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Пиломатериалы</td></tr><tr><td>Доска 25×150×6000 (0,270 м³)</td><td class=\"num\">12 шт</td><td class=\"num\">1,00</td><td class=\"num\">12 шт</td><td class=\"num\">168,00 Br</td></tr><tr><td>Брус упоров 50×50×3000 (0,105 м³)</td><td class=\"num\">14 шт</td><td class=\"num\">1,00</td><td class=\"num\">14 шт</td><td class=\"num\">112,00 Br</td></tr><tr><td>Кровля — материалы (скаты 116,75 м², двухскатная)</td><td class=\"num\">116,75 м²</td><td class=\"num\">1,00</td><td class=\"num\">7 367,13</td><td class=\"num\">7 367,13 Br</td></tr><tr><td>Кровля — работы (монтаж под ключ, 116,75 м²)</td><td class=\"num\">116,75 м²</td><td class=\"num\">1,00</td><td class=\"num\">116,75 м²</td><td class=\"num\">7 588,46 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Изоляция и расходники</td></tr><tr><td>Гидроизоляция, рулон 1×10 м</td><td class=\"num\">80,00 м²</td><td class=\"num\">1,15</td><td class=\"num\">10 рул.</td><td class=\"num\">280,00 Br</td></tr><tr><td>Стены и перегородки — материалы (газосиликатные 300 мм, чистая кладка 29,81 м³)</td><td class=\"num\">29,81 м³</td><td class=\"num\">1,00</td><td class=\"num\">6 789,33</td><td class=\"num\">6 789,33 Br</td></tr><tr><td>Стены и перегородки — работы (кладка, армопояс, перемычки)</td><td class=\"num\">40,0 м перим.</td><td class=\"num\">1,00</td><td class=\"num\">2 076,45</td><td class=\"num\">2 076,45 Br</td></tr><tr><td>Штукатурка — материалы (гипс, слой 15 мм, 109,50 м²)</td><td class=\"num\">109,50 м²</td><td class=\"num\">1,00</td><td class=\"num\">976,50</td><td class=\"num\">976,50 Br</td></tr><tr><td>Штукатурка — работы (по маякам, 109,50 м²)</td><td class=\"num\">109,50 м²</td><td class=\"num\">1,00</td><td class=\"num\">109,50 м²</td><td class=\"num\">1 095,00 Br</td></tr><tr><td>Перекрытия — материалы (деревянные балки, 80,00 м²)</td><td class=\"num\">80,00 м²</td><td class=\"num\">1,00</td><td class=\"num\">3 495,14</td><td class=\"num\">3 495,14 Br</td></tr><tr><td>Перекрытия — работы (деревянные балки, 80,00 м²)</td><td class=\"num\">80,00 м²</td><td class=\"num\">1,00</td><td class=\"num\">2 000,00</td><td class=\"num\">2 000,00 Br</td></tr>",
+        "scope": "Рассчитано: плитный фундамент, стены и перегородки, штукатурка, кровля, перекрытия.",
+        "excluded": "Все доступные разделы включены. Другие работы и инженерные системы в ведомость не входят.",
+        "meta": "Объект: плита 10,00 × 8,00 × 0,30 м · стены 40,0 × 3,0 м, проёмы 10,50 м² · штукатурка 109,50 м² · кровля двухскатная 8,00 × 10,00 м · перекрытия 10,00 × 8,00 м",
+        "empty": "",
+        "error": "",
+        "printTitle": "Предварительная ведомость выбранных частей",
+        "printNodes": "Узлы: плита 10,00 × 8,00 × 0,30 м · стены 40,0 × 3,0 м, проёмы 10,50 м² · штукатурка 109,50 м² · кровля двухскатная 8,00 × 10,00 м · перекрытия 10,00 × 8,00 м"
+      }
+    },
+    {
+      "id": "summary-strip-piles-floor-roof",
+      "title": "Лента, сваи, перекрытие и кровля",
+      "purpose": "Альтернативный фундамент и исключённые стены со штукатуркой",
+      "projectSchemaVersion": 1,
+      "section": "summary",
+      "input": {
+        "slab": {
+          "length": 10,
+          "width": 8,
+          "height": 0.3,
+          "grade": "М250",
+          "concretePrice": 210,
+          "diameterMm": 12,
+          "stepMm": 200,
+          "meshCount": 2,
+          "rebarPrice": 3.2,
+          "wirePrice": 4.5,
+          "boardPrice": 14,
+          "timberPrice": 8,
+          "sandHeight": 0.2,
+          "sandPrice": 32,
+          "stoneHeight": 0.2,
+          "stonePrice": 55,
+          "hydroPrice": 28
+        },
+        "strip": {
+          "length": 40,
+          "width": 0.4,
+          "height": 1,
+          "grade": "М250",
+          "concretePrice": 210,
+          "diameterMm": 12,
+          "barCount": 4,
+          "rebarPrice": 3.2,
+          "stirrupMm": 8,
+          "stirrupStepMm": 300,
+          "wirePrice": 4.5,
+          "boardPrice": 14,
+          "timberPrice": 8,
+          "sandHeight": 0.2,
+          "sandPrice": 32,
+          "hydroPrice": 28,
+          "pilesEnabled": true,
+          "pileConcretePrice": 185,
+          "pileDrillingPrice": 45,
+          "pileHydroPrice": 2.8,
+          "piles": [
+            {
+              "id": 1,
+              "name": "Основная группа",
+              "diameterMm": 300,
+              "depthM": 2.5,
+              "count": 20
+            }
+          ]
+        },
+        "walls": {
+          "perimeter": 40,
+          "loadMaterial": "gas-silicate-300",
+          "height": 3,
+          "jointMm": 2,
+          "reinforceMesh": true,
+          "openings": [
+            {
+              "id": 1,
+              "type": "window",
+              "width": 1.5,
+              "height": 1.4,
+              "count": 4
+            },
+            {
+              "id": 2,
+              "type": "entry-door",
+              "width": 1,
+              "height": 2.1,
+              "count": 1
+            }
+          ],
+          "armopoyas": true,
+          "armopoyasWidthMm": 250,
+          "armopoyasHeightMm": 250,
+          "armopoyasRebarMm": 12,
+          "lintels": true,
+          "partitionsEnabled": false,
+          "partitionMaterial": "block-100",
+          "partitionLength": 0,
+          "partitionHeight": 0,
+          "stripRebarPrice": 3.2,
+          "prices": {
+            "blockPrice": 140,
+            "adhesivePrice": 9.5,
+            "meshPrice": 3.2,
+            "partitionBlockPrice": 150,
+            "concretePrice": 185,
+            "workMasonryPrice": 45,
+            "workPartitionPrice": 18,
+            "workArmopoyasPrice": 15
+          }
+        },
+        "floor": {
+          "type": "concrete",
+          "length": 10,
+          "width": 8,
+          "beamSection": "100x200",
+          "beamStep": 0.6,
+          "insulationMm": 150,
+          "boardClad": true,
+          "slabWidth": 1.2,
+          "monolith": true,
+          "concreteGrade": "М250",
+          "woodBeamPrice": 450,
+          "insulationPrice": 95,
+          "membranePrice": 1.8,
+          "boardPrice": 380,
+          "concreteSlabPrice": 500,
+          "workWoodPrice": 25,
+          "workConcretePrice": 80,
+          "wallConcretePrice": 185,
+          "stripRebarPrice": 3.2
+        },
+        "plaster": {
+          "length": 40,
+          "wallHeight": 3,
+          "sides": "1",
+          "excludeOpenings": false,
+          "mix": "gypsum",
+          "thicknessMm": 15,
+          "mixPrice": 16.5,
+          "primerLayers": 1,
+          "primerPrice": 28,
+          "beaconStep": 1.2,
+          "beaconPrice": 3.2,
+          "useMesh": false,
+          "meshPrice": 60,
+          "workPrice": 10
+        },
+        "roof": {
+          "type": "gable",
+          "width": 8,
+          "length": 10,
+          "ridgeHeight": 2.5,
+          "eave": 0.5,
+          "rafterSection": "50x200",
+          "rafterStepMm": 600,
+          "mauerlatSection": "150x150",
+          "battenStepMm": 350,
+          "battenSection": "25x100",
+          "warmRoof": true,
+          "insulationMm": 150,
+          "covering": "metal-tile",
+          "timberPrice": 450,
+          "boardPrice": 380,
+          "metalPrice": 28,
+          "insulationPrice": 95,
+          "membranePrice": 110,
+          "vaporPrice": 85,
+          "workPrice": 65
+        }
+      },
+      "prices": {
+        "slab.concretePrice": 210,
+        "slab.rebarPrice": 3.2,
+        "slab.wirePrice": 4.5,
+        "slab.boardPrice": 14,
+        "slab.timberPrice": 8,
+        "slab.sandPrice": 32,
+        "slab.stonePrice": 55,
+        "slab.hydroPrice": 28,
+        "strip.concretePrice": 210,
+        "strip.rebarPrice": 3.2,
+        "strip.wirePrice": 4.5,
+        "strip.boardPrice": 14,
+        "strip.timberPrice": 8,
+        "strip.sandPrice": 32,
+        "strip.hydroPrice": 28,
+        "strip.pileConcretePrice": 185,
+        "strip.pileDrillingPrice": 45,
+        "strip.pileHydroPrice": 2.8,
+        "walls.stripRebarPrice": 3.2,
+        "walls.prices.blockPrice": 140,
+        "walls.prices.adhesivePrice": 9.5,
+        "walls.prices.meshPrice": 3.2,
+        "walls.prices.partitionBlockPrice": 150,
+        "walls.prices.concretePrice": 185,
+        "walls.prices.workMasonryPrice": 45,
+        "walls.prices.workPartitionPrice": 18,
+        "walls.prices.workArmopoyasPrice": 15,
+        "floor.woodBeamPrice": 450,
+        "floor.insulationPrice": 95,
+        "floor.membranePrice": 1.8,
+        "floor.boardPrice": 380,
+        "floor.concreteSlabPrice": 500,
+        "floor.workWoodPrice": 25,
+        "floor.workConcretePrice": 80,
+        "floor.wallConcretePrice": 185,
+        "floor.stripRebarPrice": 3.2,
+        "plaster.mixPrice": 16.5,
+        "plaster.primerPrice": 28,
+        "plaster.beaconPrice": 3.2,
+        "plaster.meshPrice": 60,
+        "plaster.workPrice": 10,
+        "roof.timberPrice": 450,
+        "roof.boardPrice": 380,
+        "roof.metalPrice": 28,
+        "roof.insulationPrice": 95,
+        "roof.membranePrice": 110,
+        "roof.vaporPrice": 85,
+        "roof.workPrice": 65
+      },
+      "selection": {
+        "found": true,
+        "walls": false,
+        "plaster": false,
+        "roof": true,
+        "floor": true
+      },
+      "openings": [
+        {
+          "id": 1,
+          "type": "window",
+          "width": 1.5,
+          "height": 1.4,
+          "count": 4
+        },
+        {
+          "id": 2,
+          "type": "entry-door",
+          "width": 1,
+          "height": 2.1,
+          "count": 1
+        }
+      ],
+      "rows": [
+        {
+          "category": "concrete",
+          "name": "Бетон М250 (лента 16,80 м³ + сваи 3,89 м³): 20,69 м³",
+          "netLabel": "19,53 м³",
+          "net": {
+            "displayed": "19,53",
+            "unit": "м³"
+          },
+          "coefficient": 1.0590463779879562,
+          "orderLabel": "20,69 м³",
+          "order": {
+            "displayed": "20,69",
+            "unit": "м³"
+          },
+          "cost": 4247.228368131213
+        },
+        {
+          "category": "metal",
+          "name": "Арматура рабочая А3 Ø12 (лента 155,7 кг + сваи 216,3 кг): 372,0 кг",
+          "netLabel": "348,0 кг",
+          "net": {
+            "displayed": "348,0",
+            "unit": "кг"
+          },
+          "coefficient": 1.0691230330048254,
+          "orderLabel": "372,0 кг",
+          "order": {
+            "displayed": "372,0",
+            "unit": "кг"
+          },
+          "cost": 1190.4910243253235
+        },
+        {
+          "category": "metal",
+          "name": "Хомуты Ø8 мм + кольца свай Ø6 (лента 156,9 кг + сваи 32,2 кг): 189,1 кг",
+          "netLabel": "171,2 кг",
+          "net": {
+            "displayed": "171,2",
+            "unit": "кг"
+          },
+          "coefficient": 1.1043042060147177,
+          "orderLabel": "189,1 кг",
+          "order": {
+            "displayed": "189,1",
+            "unit": "кг"
+          },
+          "cost": 605.0767858793203
+        },
+        {
+          "category": "metal",
+          "name": "Вязальная проволока (лента 3,13 кг + сваи 1,76 кг): 4,89 кг",
+          "netLabel": "4,89 кг",
+          "net": {
+            "displayed": "4,89",
+            "unit": "кг"
+          },
+          "coefficient": 1,
+          "orderLabel": "4,89 кг",
+          "order": {
+            "displayed": "4,89",
+            "unit": "кг"
+          },
+          "cost": 21.985951940850278
+        },
+        {
+          "category": "timber",
+          "name": "Доска 25×150×6000 (2,205 м³)",
+          "netLabel": "98 шт",
+          "net": {
+            "displayed": "98",
+            "unit": "шт"
+          },
+          "coefficient": 1,
+          "orderLabel": "98 шт",
+          "order": {
+            "displayed": "98",
+            "unit": "шт"
+          },
+          "cost": 1372
+        },
+        {
+          "category": "timber",
+          "name": "Брус упоров 50×50×3000 (0,473 м³)",
+          "netLabel": "63 шт",
+          "net": {
+            "displayed": "63",
+            "unit": "шт"
+          },
+          "coefficient": 1,
+          "orderLabel": "63 шт",
+          "order": {
+            "displayed": "63",
+            "unit": "шт"
+          },
+          "cost": 504
+        },
+        {
+          "category": "concrete",
+          "name": "Песок",
+          "netLabel": "3,20 м³",
+          "net": {
+            "displayed": "3,20",
+            "unit": "м³"
+          },
+          "coefficient": 1.1,
+          "orderLabel": "3,52 м³",
+          "order": {
+            "displayed": "3,52",
+            "unit": "м³"
+          },
+          "cost": 112.64000000000001
+        },
+        {
+          "category": "isol",
+          "name": "Гидроизоляция / Рубероид (лента 96,00 м² + гильзы свай 47,12 м²): 143,12 м²",
+          "netLabel": "143,12 м²",
+          "net": {
+            "displayed": "143,12",
+            "unit": "м²"
+          },
+          "coefficient": 1.15,
+          "orderLabel": "17 рул.",
+          "order": {
+            "displayed": "17",
+            "unit": "рул."
+          },
+          "cost": 487.73892516838697
+        },
+        {
+          "category": "concrete",
+          "name": "Бурение и заливка свай",
+          "netLabel": "50,00 м.п.",
+          "net": {
+            "displayed": "50,00",
+            "unit": "м.п."
+          },
+          "coefficient": 1,
+          "orderLabel": "50,00 м.п.",
+          "order": {
+            "displayed": "50,00",
+            "unit": "м.п."
+          },
+          "cost": 2250
+        },
+        {
+          "category": "timber",
+          "name": "Кровля — материалы (скаты 116,75 м², двухскатная)",
+          "netLabel": "116,75 м²",
+          "net": {
+            "displayed": "116,75",
+            "unit": "м²"
+          },
+          "coefficient": 1,
+          "orderLabel": "7 367,13",
+          "order": {
+            "displayed": "7 367,13",
+            "unit": ""
+          },
+          "cost": 7367.1320417033585
+        },
+        {
+          "category": "timber",
+          "name": "Кровля — работы (монтаж под ключ, 116,75 м²)",
+          "netLabel": "116,75 м²",
+          "net": {
+            "displayed": "116,75",
+            "unit": "м²"
+          },
+          "coefficient": 1,
+          "orderLabel": "116,75 м²",
+          "order": {
+            "displayed": "116,75",
+            "unit": "м²"
+          },
+          "cost": 7588.45857309803
+        },
+        {
+          "category": "isol",
+          "name": "Перекрытия — материалы (ЖБ плиты, 80,00 м²)",
+          "netLabel": "80,00 м²",
+          "net": {
+            "displayed": "80,00",
+            "unit": "м²"
+          },
+          "coefficient": 1,
+          "orderLabel": "4 403,69",
+          "order": {
+            "displayed": "4 403,69",
+            "unit": ""
+          },
+          "cost": 4403.6872
+        },
+        {
+          "category": "isol",
+          "name": "Перекрытия — работы (ЖБ плиты, 80,00 м²)",
+          "netLabel": "80,00 м²",
+          "net": {
+            "displayed": "80,00",
+            "unit": "м²"
+          },
+          "coefficient": 1,
+          "orderLabel": "640,00",
+          "order": {
+            "displayed": "640,00",
+            "unit": ""
+          },
+          "cost": 640
+        }
+      ],
+      "intermediate": {
+        "grouped": true,
+        "sections": [
+          {
+            "id": "foundation",
+            "label": "ленточный фундамент"
+          },
+          {
+            "id": "roof",
+            "label": "кровля"
+          },
+          {
+            "id": "floor",
+            "label": "перекрытия"
+          }
+        ],
+        "printTitle": "Предварительная ведомость выбранных частей",
+        "printNodes": "Узлы: лента 40,00 × 0,40 × 1,00 м · кровля двухскатная 8,00 × 10,00 м · перекрытия 10,00 × 8,00 м",
+        "meta": "Объект: лента 40,00 × 0,40 × 1,00 м · кровля двухскатная 8,00 × 10,00 м · перекрытия 10,00 × 8,00 м",
+        "categorySubtotals": {
+          "concrete": 6609.868368131213,
+          "metal": 1817.553762145494,
+          "timber": 16831.59061480139,
+          "isol": 5531.426125168387
+        },
+        "sectionSubtotals": {
+          "foundation": 10791.161055445094,
+          "roof": 14955.59061480139,
+          "floor": 5043.6872
+        },
+        "calculationDetails": null
+      },
+      "total": 30790.438870246486,
+      "displayedTotal": "30 790,44 Br",
+      "display": {
+        "tableHtml": "<tr class=\"cat-row\"><td colspan=\"5\">Бетон и растворы</td></tr><tr><td>Бетон М250 (лента 16,80 м³ + сваи 3,89 м³): 20,69 м³</td><td class=\"num\">19,53 м³</td><td class=\"num\">1,06</td><td class=\"num\">20,69 м³</td><td class=\"num\">4 247,23 Br</td></tr><tr><td>Песок</td><td class=\"num\">3,20 м³</td><td class=\"num\">1,10</td><td class=\"num\">3,52 м³</td><td class=\"num\">112,64 Br</td></tr><tr><td>Бурение и заливка свай</td><td class=\"num\">50,00 м.п.</td><td class=\"num\">1,00</td><td class=\"num\">50,00 м.п.</td><td class=\"num\">2 250,00 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Арматура и металл</td></tr><tr><td>Арматура рабочая А3 Ø12 (лента 155,7 кг + сваи 216,3 кг): 372,0 кг</td><td class=\"num\">348,0 кг</td><td class=\"num\">1,07</td><td class=\"num\">372,0 кг</td><td class=\"num\">1 190,49 Br</td></tr><tr><td>Хомуты Ø8 мм + кольца свай Ø6 (лента 156,9 кг + сваи 32,2 кг): 189,1 кг</td><td class=\"num\">171,2 кг</td><td class=\"num\">1,10</td><td class=\"num\">189,1 кг</td><td class=\"num\">605,08 Br</td></tr><tr><td>Вязальная проволока (лента 3,13 кг + сваи 1,76 кг): 4,89 кг</td><td class=\"num\">4,89 кг</td><td class=\"num\">1,00</td><td class=\"num\">4,89 кг</td><td class=\"num\">21,99 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Пиломатериалы</td></tr><tr><td>Доска 25×150×6000 (2,205 м³)</td><td class=\"num\">98 шт</td><td class=\"num\">1,00</td><td class=\"num\">98 шт</td><td class=\"num\">1 372,00 Br</td></tr><tr><td>Брус упоров 50×50×3000 (0,473 м³)</td><td class=\"num\">63 шт</td><td class=\"num\">1,00</td><td class=\"num\">63 шт</td><td class=\"num\">504,00 Br</td></tr><tr><td>Кровля — материалы (скаты 116,75 м², двухскатная)</td><td class=\"num\">116,75 м²</td><td class=\"num\">1,00</td><td class=\"num\">7 367,13</td><td class=\"num\">7 367,13 Br</td></tr><tr><td>Кровля — работы (монтаж под ключ, 116,75 м²)</td><td class=\"num\">116,75 м²</td><td class=\"num\">1,00</td><td class=\"num\">116,75 м²</td><td class=\"num\">7 588,46 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Изоляция и расходники</td></tr><tr><td>Гидроизоляция / Рубероид (лента 96,00 м² + гильзы свай 47,12 м²): 143,12 м²</td><td class=\"num\">143,12 м²</td><td class=\"num\">1,15</td><td class=\"num\">17 рул.</td><td class=\"num\">487,74 Br</td></tr><tr><td>Перекрытия — материалы (ЖБ плиты, 80,00 м²)</td><td class=\"num\">80,00 м²</td><td class=\"num\">1,00</td><td class=\"num\">4 403,69</td><td class=\"num\">4 403,69 Br</td></tr><tr><td>Перекрытия — работы (ЖБ плиты, 80,00 м²)</td><td class=\"num\">80,00 м²</td><td class=\"num\">1,00</td><td class=\"num\">640,00</td><td class=\"num\">640,00 Br</td></tr>",
+        "scope": "Рассчитано: ленточный фундамент, кровля, перекрытия.",
+        "excluded": "Не рассчитано: стены и перегородки, штукатурка.",
+        "meta": "Объект: лента 40,00 × 0,40 × 1,00 м · кровля двухскатная 8,00 × 10,00 м · перекрытия 10,00 × 8,00 м",
+        "empty": "",
+        "error": "",
+        "printTitle": "Предварительная ведомость выбранных частей",
+        "printNodes": "Узлы: лента 40,00 × 0,40 × 1,00 м · кровля двухскатная 8,00 × 10,00 м · перекрытия 10,00 × 8,00 м"
+      }
+    },
+    {
+      "id": "summary-legacy-fixture-visible",
+      "title": "Видимая сводная на геометрии старого теста",
+      "purpose": "Сопоставление с legacy-контролем при тех же размерах и проёмах; текущие цены стен и работы отличаются по модели",
+      "projectSchemaVersion": 1,
+      "section": "summary",
+      "input": {
+        "slab": {
+          "length": 10,
+          "width": 8,
+          "height": 0.3,
+          "grade": "М250",
+          "concretePrice": 210,
+          "diameterMm": 12,
+          "stepMm": 200,
+          "meshCount": 2,
+          "rebarPrice": 3.2,
+          "wirePrice": 4.5,
+          "boardPrice": 14,
+          "timberPrice": 8,
+          "sandHeight": 0.2,
+          "sandPrice": 32,
+          "stoneHeight": 0.2,
+          "stonePrice": 55,
+          "hydroPrice": 28
+        },
+        "strip": {
+          "length": 40,
+          "width": 0.4,
+          "height": 1,
+          "grade": "М250",
+          "concretePrice": 210,
+          "diameterMm": 12,
+          "barCount": 4,
+          "rebarPrice": 3.2,
+          "stirrupMm": 8,
+          "stirrupStepMm": 300,
+          "wirePrice": 4.5,
+          "boardPrice": 14,
+          "timberPrice": 8,
+          "sandHeight": 0.2,
+          "sandPrice": 32,
+          "hydroPrice": 28,
+          "pilesEnabled": false,
+          "pileConcretePrice": 185,
+          "pileDrillingPrice": 45,
+          "pileHydroPrice": 2.8,
+          "piles": []
+        },
+        "walls": {
+          "perimeter": 40,
+          "loadMaterial": "gas-silicate-300",
+          "height": 3,
+          "jointMm": 2,
+          "reinforceMesh": true,
+          "openings": [
+            {
+              "id": 1,
+              "type": "window",
+              "width": 1.5,
+              "height": 1.4,
+              "count": 4
+            },
+            {
+              "id": 2,
+              "type": "entry-door",
+              "width": 1,
+              "height": 2.1,
+              "count": 1
+            }
+          ],
+          "armopoyas": true,
+          "armopoyasWidthMm": 250,
+          "armopoyasHeightMm": 250,
+          "armopoyasRebarMm": 12,
+          "lintels": true,
+          "partitionsEnabled": false,
+          "partitionMaterial": "block-100",
+          "partitionLength": 0,
+          "partitionHeight": 0,
+          "stripRebarPrice": 3.2,
+          "prices": {
+            "blockPrice": 140,
+            "adhesivePrice": 9.5,
+            "meshPrice": 3.2,
+            "partitionBlockPrice": 150,
+            "concretePrice": 185,
+            "workMasonryPrice": 45,
+            "workPartitionPrice": 18,
+            "workArmopoyasPrice": 15
+          }
+        },
+        "floor": {
+          "type": "wood",
+          "length": 10,
+          "width": 8,
+          "beamSection": "100x200",
+          "beamStep": 0.6,
+          "insulationMm": 150,
+          "boardClad": true,
+          "slabWidth": 1.2,
+          "monolith": false,
+          "concreteGrade": "М250",
+          "woodBeamPrice": 450,
+          "insulationPrice": 95,
+          "membranePrice": 1.8,
+          "boardPrice": 380,
+          "concreteSlabPrice": 500,
+          "workWoodPrice": 25,
+          "workConcretePrice": 80,
+          "wallConcretePrice": 185,
+          "stripRebarPrice": 3.2
+        },
+        "plaster": {
+          "length": 44.444444,
+          "wallHeight": 2.7,
+          "sides": "1",
+          "excludeOpenings": false,
+          "mix": "gypsum",
+          "thicknessMm": 15,
+          "mixPrice": 16.5,
+          "primerLayers": 1,
+          "primerPrice": 28,
+          "beaconStep": 1.2,
+          "beaconPrice": 3.2,
+          "useMesh": false,
+          "meshPrice": 60,
+          "workPrice": 10
+        },
+        "roof": {
+          "type": "gable",
+          "width": 8,
+          "length": 10,
+          "ridgeHeight": 2.5,
+          "eave": 0.5,
+          "rafterSection": "50x200",
+          "rafterStepMm": 600,
+          "mauerlatSection": "150x150",
+          "battenStepMm": 350,
+          "battenSection": "25x100",
+          "warmRoof": true,
+          "insulationMm": 150,
+          "covering": "metal-tile",
+          "timberPrice": 450,
+          "boardPrice": 380,
+          "metalPrice": 28,
+          "insulationPrice": 95,
+          "membranePrice": 110,
+          "vaporPrice": 85,
+          "workPrice": 65
+        }
+      },
+      "prices": {
+        "slab.concretePrice": 210,
+        "slab.rebarPrice": 3.2,
+        "slab.wirePrice": 4.5,
+        "slab.boardPrice": 14,
+        "slab.timberPrice": 8,
+        "slab.sandPrice": 32,
+        "slab.stonePrice": 55,
+        "slab.hydroPrice": 28,
+        "strip.concretePrice": 210,
+        "strip.rebarPrice": 3.2,
+        "strip.wirePrice": 4.5,
+        "strip.boardPrice": 14,
+        "strip.timberPrice": 8,
+        "strip.sandPrice": 32,
+        "strip.hydroPrice": 28,
+        "strip.pileConcretePrice": 185,
+        "strip.pileDrillingPrice": 45,
+        "strip.pileHydroPrice": 2.8,
+        "walls.stripRebarPrice": 3.2,
+        "walls.prices.blockPrice": 140,
+        "walls.prices.adhesivePrice": 9.5,
+        "walls.prices.meshPrice": 3.2,
+        "walls.prices.partitionBlockPrice": 150,
+        "walls.prices.concretePrice": 185,
+        "walls.prices.workMasonryPrice": 45,
+        "walls.prices.workPartitionPrice": 18,
+        "walls.prices.workArmopoyasPrice": 15,
+        "floor.woodBeamPrice": 450,
+        "floor.insulationPrice": 95,
+        "floor.membranePrice": 1.8,
+        "floor.boardPrice": 380,
+        "floor.concreteSlabPrice": 500,
+        "floor.workWoodPrice": 25,
+        "floor.workConcretePrice": 80,
+        "floor.wallConcretePrice": 185,
+        "floor.stripRebarPrice": 3.2,
+        "plaster.mixPrice": 16.5,
+        "plaster.primerPrice": 28,
+        "plaster.beaconPrice": 3.2,
+        "plaster.meshPrice": 60,
+        "plaster.workPrice": 10,
+        "roof.timberPrice": 450,
+        "roof.boardPrice": 380,
+        "roof.metalPrice": 28,
+        "roof.insulationPrice": 95,
+        "roof.membranePrice": 110,
+        "roof.vaporPrice": 85,
+        "roof.workPrice": 65
+      },
+      "selection": {
+        "found": true,
+        "walls": true,
+        "plaster": true,
+        "floor": false,
+        "roof": false
+      },
+      "openings": [
+        {
+          "id": 1,
+          "type": "window",
+          "width": 1.5,
+          "height": 1.4,
+          "count": 4
+        },
+        {
+          "id": 2,
+          "type": "entry-door",
+          "width": 1,
+          "height": 2.1,
+          "count": 1
+        }
+      ],
+      "rows": [
+        {
+          "category": "concrete",
+          "name": "Бетон М250",
+          "netLabel": "24,00 м³",
+          "net": {
+            "displayed": "24,00",
+            "unit": "м³"
+          },
+          "coefficient": 1.05,
+          "orderLabel": "25,20 м³",
+          "order": {
+            "displayed": "25,20",
+            "unit": "м³"
+          },
+          "cost": 5292.000000000001
+        },
+        {
+          "category": "metal",
+          "name": "Арматура Ø12 мм, 140 шт. × 11.7 м",
+          "netLabel": "1 451,5 кг",
+          "net": {
+            "displayed": "1 451,5",
+            "unit": "кг"
+          },
+          "coefficient": 1.0012224938875305,
+          "orderLabel": "1 453,3 кг",
+          "order": {
+            "displayed": "1 453,3",
+            "unit": "кг"
+          },
+          "cost": 4650.587800369685
+        },
+        {
+          "category": "metal",
+          "name": "Вязальная проволока",
+          "netLabel": "14,53 кг",
+          "net": {
+            "displayed": "14,53",
+            "unit": "кг"
+          },
+          "coefficient": 1,
+          "orderLabel": "14,53 кг",
+          "order": {
+            "displayed": "14,53",
+            "unit": "кг"
+          },
+          "cost": 65.3988909426987
+        },
+        {
+          "category": "timber",
+          "name": "Доска 25×150×6000 (0,270 м³)",
+          "netLabel": "12 шт",
+          "net": {
+            "displayed": "12",
+            "unit": "шт"
+          },
+          "coefficient": 1,
+          "orderLabel": "12 шт",
+          "order": {
+            "displayed": "12",
+            "unit": "шт"
+          },
+          "cost": 168
+        },
+        {
+          "category": "timber",
+          "name": "Брус упоров 50×50×3000 (0,105 м³)",
+          "netLabel": "14 шт",
+          "net": {
+            "displayed": "14",
+            "unit": "шт"
+          },
+          "coefficient": 1,
+          "orderLabel": "14 шт",
+          "order": {
+            "displayed": "14",
+            "unit": "шт"
+          },
+          "cost": 112
+        },
+        {
+          "category": "concrete",
+          "name": "Песок",
+          "netLabel": "16,00 м³",
+          "net": {
+            "displayed": "16,00",
+            "unit": "м³"
+          },
+          "coefficient": 1.1,
+          "orderLabel": "17,60 м³",
+          "order": {
+            "displayed": "17,60",
+            "unit": "м³"
+          },
+          "cost": 563.2
+        },
+        {
+          "category": "concrete",
+          "name": "Щебень",
+          "netLabel": "16,00 м³",
+          "net": {
+            "displayed": "16,00",
+            "unit": "м³"
+          },
+          "coefficient": 1.1,
+          "orderLabel": "17,60 м³",
+          "order": {
+            "displayed": "17,60",
+            "unit": "м³"
+          },
+          "cost": 968.0000000000001
+        },
+        {
+          "category": "isol",
+          "name": "Гидроизоляция, рулон 1×10 м",
+          "netLabel": "80,00 м²",
+          "net": {
+            "displayed": "80,00",
+            "unit": "м²"
+          },
+          "coefficient": 1.15,
+          "orderLabel": "10 рул.",
+          "order": {
+            "displayed": "10",
+            "unit": "рул."
+          },
+          "cost": 280
+        },
+        {
+          "category": "isol",
+          "name": "Стены и перегородки — материалы (газосиликатные 300 мм, чистая кладка 29,81 м³)",
+          "netLabel": "29,81 м³",
+          "net": {
+            "displayed": "29,81",
+            "unit": "м³"
+          },
+          "coefficient": 1,
+          "orderLabel": "6 789,33",
+          "order": {
+            "displayed": "6 789,33",
+            "unit": ""
+          },
+          "cost": 6789.334320000002
+        },
+        {
+          "category": "isol",
+          "name": "Стены и перегородки — работы (кладка, армопояс, перемычки)",
+          "netLabel": "40,0 м перим.",
+          "net": {
+            "displayed": "40,0",
+            "unit": "м перим."
+          },
+          "coefficient": 1,
+          "orderLabel": "2 076,45",
+          "order": {
+            "displayed": "2 076,45",
+            "unit": ""
+          },
+          "cost": 2076.45
+        },
+        {
+          "category": "isol",
+          "name": "Штукатурка — материалы (гипс, слой 15 мм, 120,00 м²)",
+          "netLabel": "120,00 м²",
+          "net": {
+            "displayed": "120,00",
+            "unit": "м²"
+          },
+          "coefficient": 1,
+          "orderLabel": "1 071,80",
+          "order": {
+            "displayed": "1 071,80",
+            "unit": ""
+          },
+          "cost": 1071.8
+        },
+        {
+          "category": "isol",
+          "name": "Штукатурка — работы (по маякам, 120,00 м²)",
+          "netLabel": "120,00 м²",
+          "net": {
+            "displayed": "120,00",
+            "unit": "м²"
+          },
+          "coefficient": 1,
+          "orderLabel": "120,00 м²",
+          "order": {
+            "displayed": "120,00",
+            "unit": "м²"
+          },
+          "cost": 1199.999988
+        }
+      ],
+      "intermediate": {
+        "grouped": true,
+        "sections": [
+          {
+            "id": "foundation",
+            "label": "плитный фундамент"
+          },
+          {
+            "id": "walls",
+            "label": "стены и перегородки"
+          },
+          {
+            "id": "plaster",
+            "label": "штукатурка"
+          }
+        ],
+        "printTitle": "Предварительная ведомость выбранных частей",
+        "printNodes": "Узлы: плита 10,00 × 8,00 × 0,30 м · стены 40,0 × 3,0 м, проёмы 10,50 м² · штукатурка 120,00 м²",
+        "meta": "Объект: плита 10,00 × 8,00 × 0,30 м · стены 40,0 × 3,0 м, проёмы 10,50 м² · штукатурка 120,00 м²",
+        "categorySubtotals": {
+          "concrete": 6823.200000000001,
+          "metal": 4715.986691312384,
+          "timber": 280,
+          "isol": 11417.584308000001
+        },
+        "sectionSubtotals": {
+          "foundation": 12099.186691312385,
+          "walls": 8865.784320000002,
+          "plaster": 2271.7999879999998
+        },
+        "calculationDetails": null
+      },
+      "total": 23236.770999312386,
+      "displayedTotal": "23 236,77 Br",
+      "display": {
+        "tableHtml": "<tr class=\"cat-row\"><td colspan=\"5\">Бетон и растворы</td></tr><tr><td>Бетон М250</td><td class=\"num\">24,00 м³</td><td class=\"num\">1,05</td><td class=\"num\">25,20 м³</td><td class=\"num\">5 292,00 Br</td></tr><tr><td>Песок</td><td class=\"num\">16,00 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,60 м³</td><td class=\"num\">563,20 Br</td></tr><tr><td>Щебень</td><td class=\"num\">16,00 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,60 м³</td><td class=\"num\">968,00 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Арматура и металл</td></tr><tr><td>Арматура Ø12 мм, 140 шт. × 11.7 м</td><td class=\"num\">1 451,5 кг</td><td class=\"num\">1,00</td><td class=\"num\">1 453,3 кг</td><td class=\"num\">4 650,59 Br</td></tr><tr><td>Вязальная проволока</td><td class=\"num\">14,53 кг</td><td class=\"num\">1,00</td><td class=\"num\">14,53 кг</td><td class=\"num\">65,40 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Пиломатериалы</td></tr><tr><td>Доска 25×150×6000 (0,270 м³)</td><td class=\"num\">12 шт</td><td class=\"num\">1,00</td><td class=\"num\">12 шт</td><td class=\"num\">168,00 Br</td></tr><tr><td>Брус упоров 50×50×3000 (0,105 м³)</td><td class=\"num\">14 шт</td><td class=\"num\">1,00</td><td class=\"num\">14 шт</td><td class=\"num\">112,00 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Изоляция и расходники</td></tr><tr><td>Гидроизоляция, рулон 1×10 м</td><td class=\"num\">80,00 м²</td><td class=\"num\">1,15</td><td class=\"num\">10 рул.</td><td class=\"num\">280,00 Br</td></tr><tr><td>Стены и перегородки — материалы (газосиликатные 300 мм, чистая кладка 29,81 м³)</td><td class=\"num\">29,81 м³</td><td class=\"num\">1,00</td><td class=\"num\">6 789,33</td><td class=\"num\">6 789,33 Br</td></tr><tr><td>Стены и перегородки — работы (кладка, армопояс, перемычки)</td><td class=\"num\">40,0 м перим.</td><td class=\"num\">1,00</td><td class=\"num\">2 076,45</td><td class=\"num\">2 076,45 Br</td></tr><tr><td>Штукатурка — материалы (гипс, слой 15 мм, 120,00 м²)</td><td class=\"num\">120,00 м²</td><td class=\"num\">1,00</td><td class=\"num\">1 071,80</td><td class=\"num\">1 071,80 Br</td></tr><tr><td>Штукатурка — работы (по маякам, 120,00 м²)</td><td class=\"num\">120,00 м²</td><td class=\"num\">1,00</td><td class=\"num\">120,00 м²</td><td class=\"num\">1 200,00 Br</td></tr>",
+        "scope": "Рассчитано: плитный фундамент, стены и перегородки, штукатурка.",
+        "excluded": "Не рассчитано: перекрытия, кровля.",
+        "meta": "Объект: плита 10,00 × 8,00 × 0,30 м · стены 40,0 × 3,0 м, проёмы 10,50 м² · штукатурка 120,00 м²",
+        "empty": "",
+        "error": "",
+        "printTitle": "Предварительная ведомость выбранных частей",
+        "printNodes": "Узлы: плита 10,00 × 8,00 × 0,30 м · стены 40,0 × 3,0 м, проёмы 10,50 м² · штукатурка 120,00 м²"
+      }
+    },
+    {
+      "id": "new-empty",
+      "title": "Пустой проект",
+      "purpose": "Выбрана плита без геометрии",
+      "projectSchemaVersion": 1,
+      "section": "slab",
+      "input": {
+        "length": 0,
+        "width": 0,
+        "height": 0,
+        "grade": "М250",
+        "concretePrice": 210,
+        "diameterMm": 12,
+        "stepMm": 200,
+        "meshCount": 2,
+        "rebarPrice": 3.2,
+        "wirePrice": 4.5,
+        "boardPrice": 14,
+        "timberPrice": 8,
+        "sandHeight": 0.2,
+        "sandPrice": 32,
+        "stoneHeight": 0.2,
+        "stonePrice": 55,
+        "hydroPrice": 28
+      },
+      "prices": {
+        "concretePrice": 210,
+        "rebarPrice": 3.2,
+        "wirePrice": 4.5,
+        "boardPrice": 14,
+        "timberPrice": 8,
+        "sandPrice": 32,
+        "stonePrice": 55,
+        "hydroPrice": 28
+      },
+      "selection": null,
+      "openings": null,
+      "rows": [],
+      "intermediate": {
+        "meta": "Плита не задана — введите длину, ширину и толщину.",
+        "categorySubtotals": {},
+        "sectionSubtotals": null,
+        "calculationDetails": null
+      },
+      "total": 0,
+      "displayedTotal": "0,00 Br",
+      "display": {
+        "tableHtml": "",
+        "scope": "Пока ничего не рассчитано.",
+        "excluded": "Не рассчитано: фундамент, стены и перегородки, перекрытия, штукатурка, кровля.",
+        "meta": "Плита не задана — введите длину, ширину и толщину.",
+        "empty": "",
+        "error": "",
+        "printTitle": "Предварительная ведомость выбранных материалов",
+        "printNodes": ""
+      }
+    },
+    {
+      "id": "edge-8-1",
+      "title": "Граница шага арматуры",
+      "purpose": "Пролёт 8,1 м при шаге 200 мм",
+      "projectSchemaVersion": 1,
+      "section": "slab",
+      "input": {
+        "length": 10,
+        "width": 8.1,
+        "height": 0.3,
+        "grade": "М250",
+        "concretePrice": 210,
+        "diameterMm": 12,
+        "stepMm": 200,
+        "meshCount": 2,
+        "rebarPrice": 3.2,
+        "wirePrice": 4.5,
+        "boardPrice": 14,
+        "timberPrice": 8,
+        "sandHeight": 0.2,
+        "sandPrice": 32,
+        "stoneHeight": 0.2,
+        "stonePrice": 55,
+        "hydroPrice": 28
+      },
+      "prices": {
+        "concretePrice": 210,
+        "rebarPrice": 3.2,
+        "wirePrice": 4.5,
+        "boardPrice": 14,
+        "timberPrice": 8,
+        "sandPrice": 32,
+        "stonePrice": 55,
+        "hydroPrice": 28
+      },
+      "selection": null,
+      "openings": null,
+      "rows": [
+        {
+          "category": "concrete",
+          "name": "Бетон М250",
+          "netLabel": "24,30 м³",
+          "net": {
+            "displayed": "24,30",
+            "unit": "м³"
+          },
+          "coefficient": 1.05,
+          "orderLabel": "25,52 м³",
+          "order": {
+            "displayed": "25,52",
+            "unit": "м³"
+          },
+          "cost": 5358.150000000001
+        },
+        {
+          "category": "metal",
+          "name": "Арматура Ø12 мм, 143 шт. × 11.7 м",
+          "netLabel": "1 478,3 кг",
+          "net": {
+            "displayed": "1 478,3",
+            "unit": "кг"
+          },
+          "coefficient": 1.004141159524667,
+          "orderLabel": "1 484,5 кг",
+          "order": {
+            "displayed": "1 484,5",
+            "unit": "кг"
+          },
+          "cost": 4750.24325323475
+        },
+        {
+          "category": "metal",
+          "name": "Вязальная проволока",
+          "netLabel": "14,84 кг",
+          "net": {
+            "displayed": "14,84",
+            "unit": "кг"
+          },
+          "coefficient": 1,
+          "orderLabel": "14,84 кг",
+          "order": {
+            "displayed": "14,84",
+            "unit": "кг"
+          },
+          "cost": 66.80029574861368
+        },
+        {
+          "category": "timber",
+          "name": "Доска 25×150×6000 (0,315 м³)",
+          "netLabel": "14 шт",
+          "net": {
+            "displayed": "14",
+            "unit": "шт"
+          },
+          "coefficient": 1,
+          "orderLabel": "14 шт",
+          "order": {
+            "displayed": "14",
+            "unit": "шт"
+          },
+          "cost": 196
+        },
+        {
+          "category": "timber",
+          "name": "Брус упоров 50×50×3000 (0,113 м³)",
+          "netLabel": "15 шт",
+          "net": {
+            "displayed": "15",
+            "unit": "шт"
+          },
+          "coefficient": 1,
+          "orderLabel": "15 шт",
+          "order": {
+            "displayed": "15",
+            "unit": "шт"
+          },
+          "cost": 120
+        },
+        {
+          "category": "concrete",
+          "name": "Песок",
+          "netLabel": "16,20 м³",
+          "net": {
+            "displayed": "16,20",
+            "unit": "м³"
+          },
+          "coefficient": 1.1,
+          "orderLabel": "17,82 м³",
+          "order": {
+            "displayed": "17,82",
+            "unit": "м³"
+          },
+          "cost": 570.24
+        },
+        {
+          "category": "concrete",
+          "name": "Щебень",
+          "netLabel": "16,20 м³",
+          "net": {
+            "displayed": "16,20",
+            "unit": "м³"
+          },
+          "coefficient": 1.1,
+          "orderLabel": "17,82 м³",
+          "order": {
+            "displayed": "17,82",
+            "unit": "м³"
+          },
+          "cost": 980.1
+        },
+        {
+          "category": "isol",
+          "name": "Гидроизоляция, рулон 1×10 м",
+          "netLabel": "81,00 м²",
+          "net": {
+            "displayed": "81,00",
+            "unit": "м²"
+          },
+          "coefficient": 1.15,
+          "orderLabel": "10 рул.",
+          "order": {
+            "displayed": "10",
+            "unit": "рул."
+          },
+          "cost": 280
+        }
+      ],
+      "intermediate": {
+        "meta": "Плита 10,00 × 8,10 × 0,30 м · периметр 36,20 м",
+        "categorySubtotals": {
+          "concrete": 6908.490000000001,
+          "metal": 4817.0435489833635,
+          "timber": 316,
+          "isol": 280
+        },
+        "sectionSubtotals": null,
+        "calculationDetails": {
+          "perimeter": 36.2,
+          "area": 81
+        }
+      },
+      "total": 12321.533548983363,
+      "displayedTotal": "12 321,53 Br",
+      "display": {
+        "tableHtml": "<tr><td>Бетон М250</td><td class=\"num\">24,30 м³</td><td class=\"num\">1,05</td><td class=\"num\">25,52 м³</td><td class=\"num\">5 358,15 Br</td></tr><tr><td>Арматура Ø12 мм, 143 шт. × 11.7 м</td><td class=\"num\">1 478,3 кг</td><td class=\"num\">1,00</td><td class=\"num\">1 484,5 кг</td><td class=\"num\">4 750,24 Br</td></tr><tr><td>Вязальная проволока</td><td class=\"num\">14,84 кг</td><td class=\"num\">1,00</td><td class=\"num\">14,84 кг</td><td class=\"num\">66,80 Br</td></tr><tr><td>Доска 25×150×6000 (0,315 м³)</td><td class=\"num\">14 шт</td><td class=\"num\">1,00</td><td class=\"num\">14 шт</td><td class=\"num\">196,00 Br</td></tr><tr><td>Брус упоров 50×50×3000 (0,113 м³)</td><td class=\"num\">15 шт</td><td class=\"num\">1,00</td><td class=\"num\">15 шт</td><td class=\"num\">120,00 Br</td></tr><tr><td>Песок</td><td class=\"num\">16,20 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,82 м³</td><td class=\"num\">570,24 Br</td></tr><tr><td>Щебень</td><td class=\"num\">16,20 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,82 м³</td><td class=\"num\">980,10 Br</td></tr><tr><td>Гидроизоляция, рулон 1×10 м</td><td class=\"num\">81,00 м²</td><td class=\"num\">1,15</td><td class=\"num\">10 рул.</td><td class=\"num\">280,00 Br</td></tr>",
+        "scope": "Рассчитано: плитный фундамент.",
+        "excluded": "Не рассчитано: стены и перегородки, перекрытия, штукатурка, кровля.",
+        "meta": "Плита 10,00 × 8,10 × 0,30 м · периметр 36,20 м",
+        "empty": "",
+        "error": "",
+        "printTitle": "Предварительная ведомость выбранных материалов",
+        "printNodes": ""
+      }
+    },
+    {
+      "id": "invalid-slab-step",
+      "title": "Некорректный шаг",
+      "purpose": "Валидация нулевого шага сетки",
+      "projectSchemaVersion": 1,
+      "section": "slab",
+      "input": {
+        "length": 10,
+        "width": 8,
+        "height": 0.3,
+        "grade": "М250",
+        "concretePrice": 210,
+        "diameterMm": 12,
+        "stepMm": 0,
+        "meshCount": 2,
+        "rebarPrice": 3.2,
+        "wirePrice": 4.5,
+        "boardPrice": 14,
+        "timberPrice": 8,
+        "sandHeight": 0.2,
+        "sandPrice": 32,
+        "stoneHeight": 0.2,
+        "stonePrice": 55,
+        "hydroPrice": 28
+      },
+      "prices": {
+        "concretePrice": 210,
+        "rebarPrice": 3.2,
+        "wirePrice": 4.5,
+        "boardPrice": 14,
+        "timberPrice": 8,
+        "sandPrice": 32,
+        "stonePrice": 55,
+        "hydroPrice": 28
+      },
+      "selection": null,
+      "openings": null,
+      "rows": [],
+      "intermediate": null,
+      "total": null,
+      "displayedTotal": "",
+      "display": {
+        "tableHtml": "",
+        "scope": "",
+        "excluded": "",
+        "meta": "",
+        "empty": "Заполните размеры и цены слева.",
+        "error": "Введите шаг сетки и диаметр арматуры больше нуля.",
+        "printTitle": "Предварительная ведомость выбранных материалов",
+        "printNodes": ""
+      }
+    },
+    {
+      "id": "invalid-strip-cover",
+      "title": "Некорректное сечение ленты",
+      "purpose": "Защитный слой не помещается в ленту",
+      "projectSchemaVersion": 1,
+      "section": "strip",
+      "input": {
+        "length": 40,
+        "width": 0.08,
+        "height": 1,
+        "grade": "М250",
+        "concretePrice": 210,
+        "diameterMm": 12,
+        "barCount": 4,
+        "rebarPrice": 3.2,
+        "stirrupMm": 8,
+        "stirrupStepMm": 300,
+        "wirePrice": 4.5,
+        "boardPrice": 14,
+        "timberPrice": 8,
+        "sandHeight": 0.2,
+        "sandPrice": 32,
+        "hydroPrice": 28,
+        "pilesEnabled": false,
+        "pileConcretePrice": 185,
+        "pileDrillingPrice": 45,
+        "pileHydroPrice": 2.8,
+        "piles": []
+      },
+      "prices": {
+        "concretePrice": 210,
+        "rebarPrice": 3.2,
+        "wirePrice": 4.5,
+        "boardPrice": 14,
+        "timberPrice": 8,
+        "sandPrice": 32,
+        "hydroPrice": 28,
+        "pileConcretePrice": 185,
+        "pileDrillingPrice": 45,
+        "pileHydroPrice": 2.8
+      },
+      "selection": null,
+      "openings": null,
+      "rows": [],
+      "intermediate": null,
+      "total": null,
+      "displayedTotal": "",
+      "display": {
+        "tableHtml": "",
+        "scope": "",
+        "excluded": "",
+        "meta": "",
+        "empty": "Заполните размеры и цены слева.",
+        "error": "Ширина и высота должны быть больше 80 мм (два защитных слоя по 40 мм).",
+        "printTitle": "Предварительная ведомость выбранных материалов",
+        "printNodes": ""
+      }
+    },
+    {
+      "id": "invalid-walls-openings",
+      "title": "Недопустимые проёмы",
+      "purpose": "Площадь проёмов больше площади стен",
+      "projectSchemaVersion": 1,
+      "section": "walls",
+      "input": {
+        "perimeter": 40,
+        "loadMaterial": "gas-silicate-300",
+        "height": 3,
+        "jointMm": 2,
+        "reinforceMesh": true,
+        "openings": [
+          {
+            "id": 1,
+            "type": "window",
+            "width": 39,
+            "height": 3,
+            "count": 2
+          }
+        ],
+        "armopoyas": true,
+        "armopoyasWidthMm": 250,
+        "armopoyasHeightMm": 250,
+        "armopoyasRebarMm": 12,
+        "lintels": true,
+        "partitionsEnabled": false,
+        "partitionMaterial": "block-100",
+        "partitionLength": 0,
+        "partitionHeight": 0,
+        "stripRebarPrice": 3.2,
+        "prices": {
+          "blockPrice": 140,
+          "adhesivePrice": 9.5,
+          "meshPrice": 3.2,
+          "partitionBlockPrice": 150,
+          "concretePrice": 185,
+          "workMasonryPrice": 45,
+          "workPartitionPrice": 18,
+          "workArmopoyasPrice": 15
+        }
+      },
+      "prices": {
+        "stripRebarPrice": 3.2,
+        "prices.blockPrice": 140,
+        "prices.adhesivePrice": 9.5,
+        "prices.meshPrice": 3.2,
+        "prices.partitionBlockPrice": 150,
+        "prices.concretePrice": 185,
+        "prices.workMasonryPrice": 45,
+        "prices.workPartitionPrice": 18,
+        "prices.workArmopoyasPrice": 15
+      },
+      "selection": null,
+      "openings": null,
+      "rows": [],
+      "intermediate": null,
+      "total": null,
+      "displayedTotal": "",
+      "display": {
+        "tableHtml": "",
+        "scope": "",
+        "excluded": "",
+        "meta": "",
+        "empty": "Заполните размеры и цены слева.",
+        "error": "Площадь проёмов больше площади стен.",
+        "printTitle": "Предварительная ведомость выбранных материалов",
+        "printNodes": ""
+      }
+    },
+    {
+      "id": "invalid-plaster-area",
+      "title": "Нет площади штукатурки",
+      "purpose": "После вычета проёмов площадь не положительна",
+      "projectSchemaVersion": 1,
+      "section": "plaster",
+      "input": {
+        "length": 40,
+        "wallHeight": 3,
+        "sides": "1",
+        "excludeOpenings": true,
+        "mix": "gypsum",
+        "thicknessMm": 15,
+        "mixPrice": 16.5,
+        "primerLayers": 1,
+        "primerPrice": 28,
+        "beaconStep": 1.2,
+        "beaconPrice": 3.2,
+        "useMesh": false,
+        "meshPrice": 60,
+        "workPrice": 10
+      },
+      "prices": {
+        "mixPrice": 16.5,
+        "primerPrice": 28,
+        "beaconPrice": 3.2,
+        "meshPrice": 60,
+        "workPrice": 10
+      },
+      "selection": null,
+      "openings": [
+        {
+          "id": 1,
+          "type": "window",
+          "width": 40,
+          "height": 3,
+          "count": 1
+        }
+      ],
+      "rows": [],
+      "intermediate": null,
+      "total": null,
+      "displayedTotal": "",
+      "display": {
+        "tableHtml": "",
+        "scope": "",
+        "excluded": "",
+        "meta": "",
+        "empty": "Заполните размеры и цены слева.",
+        "error": "Площадь оштукатуривания после вычета проёмов должна быть больше нуля.",
+        "printTitle": "Предварительная ведомость выбранных материалов",
+        "printNodes": ""
+      }
+    }
+  ],
+  "jsonRoundTrip": {
+    "projectSchemaVersion": 1,
+    "exported": {
+      "format": "smetacraft-project",
+      "version": 1,
+      "block": "summary",
+      "billBlock": "summary",
+      "fields": {
+        "length": "10",
+        "width": "8",
+        "height": "0.3",
+        "grade": "М250",
+        "concrete-price": "210",
+        "bar-diameter": "12",
+        "bar-step": "200",
+        "slab-mesh-count": "2",
+        "rebar-price": "3.2",
+        "wire-price": "4.5",
+        "board-price": "14",
+        "timber-price": "8",
+        "sand-height": "0.2",
+        "sand-price": "32",
+        "stone-height": "0.2",
+        "stone-price": "55",
+        "hydro-price": "28",
+        "strip-length": "40",
+        "strip-width": "0.4",
+        "strip-height": "1",
+        "strip-grade": "М250",
+        "strip-concrete-price": "210",
+        "strip-bar-diameter": "12",
+        "strip-bar-count": "4",
+        "strip-rebar-price": "3.2",
+        "strip-stirrup-diameter": "8",
+        "strip-stirrup-step": "300",
+        "strip-wire-price": "4.5",
+        "strip-board-price": "14",
+        "strip-timber-price": "8",
+        "strip-sand-height": "0.2",
+        "strip-sand-price": "32",
+        "strip-hydro-price": "28",
+        "pile-concrete-price": "185",
+        "pile-work-drilling-price": "45",
+        "pile-hydro-price": "2.8",
+        "walls-perimeter": "40",
+        "walls-load-bearing-material": "gas-silicate-300",
+        "walls-height": "3",
+        "walls-joint-mm": "2",
+        "wall-armopoyas-width": "250",
+        "wall-armopoyas-height": "250",
+        "walls-armopoyas-rebar": "12",
+        "walls-partition-material": "block-100",
+        "walls-partition-length": "0",
+        "walls-partition-height": "0",
+        "wall-block-price": "140",
+        "wall-adhesive-price": "9.5",
+        "wall-mesh-price": "3.2",
+        "partition-block-price": "150",
+        "wall-concrete-price": "185",
+        "wall-work-masonry-price": "45",
+        "wall-work-partition-price": "18",
+        "wall-work-armopoyas-price": "15",
+        "plaster-length": "40",
+        "plaster-height": "3",
+        "plaster-sides": "1",
+        "plaster-mix": "gypsum",
+        "plaster-thick": "15",
+        "plaster-mix-price": "16.5",
+        "plaster-primer-layers": "1",
+        "plaster-primer-price": "28",
+        "plaster-beacon-step": "1.2",
+        "plaster-beacon-price": "3.2",
+        "plaster-mesh-price": "60",
+        "plaster-work-price": "10",
+        "floor-type": "wood",
+        "floor-length": "10",
+        "floor-width": "8",
+        "floor-beam-section": "100x200",
+        "floor-beam-step": "0.6",
+        "floor-insulation-mm": "150",
+        "floor-slab-width": "1.2",
+        "floor-wood-beam-price": "450",
+        "floor-insulation-price": "95",
+        "floor-membrane-price": "1.8",
+        "floor-board-price": "380",
+        "floor-concrete-slab-price": "500",
+        "floor-work-wood-price": "25",
+        "floor-work-concrete-price": "80",
+        "roof-type": "gable",
+        "roof-width": "8",
+        "roof-length": "10",
+        "roof-ridge-height": "2.5",
+        "roof-eave": "0.5",
+        "roof-rafter-section": "50x200",
+        "roof-rafter-step": "600",
+        "roof-mauerlat-section": "150x150",
+        "roof-batten-step": "350",
+        "roof-batten-section": "25x100",
+        "roof-insulation-mm": "150",
+        "roof-covering": "metal-tile",
+        "roof-timber-price": "450",
+        "roof-board-price": "380",
+        "roof-metal-price": "28",
+        "roof-insulation-price": "95",
+        "roof-membrane-price": "110",
+        "roof-vapor-price": "85",
+        "roof-work-price": "65"
+      },
+      "checks": {
+        "summary-include-found": true,
+        "summary-include-walls": true,
+        "summary-include-plaster": true,
+        "summary-include-roof": true,
+        "summary-include-floor": true,
+        "strip-piles-enabled": true,
+        "walls-reinforce-mesh": true,
+        "walls-armopoyas": true,
+        "walls-lintels": true,
+        "walls-partitions-enabled": false,
+        "plaster-exclude-openings": true,
+        "plaster-mesh": false,
+        "floor-board-clad": true,
+        "floor-monolith": false,
+        "roof-warm": true
+      },
+      "radios": {
+        "summary-found-type": "strip"
+      },
+      "openings": [
+        {
+          "id": 1,
+          "locked": true,
+          "type": "window",
+          "width": "1.5",
+          "height": "1.4",
+          "count": "4"
+        },
+        {
+          "id": 2,
+          "locked": false,
+          "type": "entry-door",
+          "width": "1",
+          "height": "2.1",
+          "count": "1"
+        }
+      ],
+      "piles": [
+        {
+          "id": 1,
+          "locked": true,
+          "name": "Основная группа",
+          "diameterMm": 300,
+          "depthM": 2.5,
+          "count": 20
+        }
+      ],
+      "flags": {
+        "roofWidthManual": true,
+        "roofLengthManual": false,
+        "floorLengthManual": true,
+        "floorWidthManual": false,
+        "wallsPerimeterManual": true,
+        "plasterLengthManual": true,
+        "plasterHeightManual": false,
+        "lastFoundationBlock": "strip",
+        "roofNeedsCalc": false,
+        "floorNeedsCalc": false
+      }
+    },
+    "afterClear": {
+      "length": "0",
+      "width": "0",
+      "openings": [],
+      "piles": [],
+      "metalPrice": "1",
+      "foundType": "slab"
+    },
+    "imported": {
+      "format": "smetacraft-project",
+      "version": 1,
+      "block": "summary",
+      "billBlock": "summary",
+      "fields": {
+        "length": "10",
+        "width": "8",
+        "height": "0.3",
+        "grade": "М250",
+        "concrete-price": "210",
+        "bar-diameter": "12",
+        "bar-step": "200",
+        "slab-mesh-count": "2",
+        "rebar-price": "3.2",
+        "wire-price": "4.5",
+        "board-price": "14",
+        "timber-price": "8",
+        "sand-height": "0.2",
+        "sand-price": "32",
+        "stone-height": "0.2",
+        "stone-price": "55",
+        "hydro-price": "28",
+        "strip-length": "40",
+        "strip-width": "0.4",
+        "strip-height": "1",
+        "strip-grade": "М250",
+        "strip-concrete-price": "210",
+        "strip-bar-diameter": "12",
+        "strip-bar-count": "4",
+        "strip-rebar-price": "3.2",
+        "strip-stirrup-diameter": "8",
+        "strip-stirrup-step": "300",
+        "strip-wire-price": "4.5",
+        "strip-board-price": "14",
+        "strip-timber-price": "8",
+        "strip-sand-height": "0.2",
+        "strip-sand-price": "32",
+        "strip-hydro-price": "28",
+        "pile-concrete-price": "185",
+        "pile-work-drilling-price": "45",
+        "pile-hydro-price": "2.8",
+        "walls-perimeter": "40",
+        "walls-load-bearing-material": "gas-silicate-300",
+        "walls-height": "3",
+        "walls-joint-mm": "2",
+        "wall-armopoyas-width": "250",
+        "wall-armopoyas-height": "250",
+        "walls-armopoyas-rebar": "12",
+        "walls-partition-material": "block-100",
+        "walls-partition-length": "0",
+        "walls-partition-height": "0",
+        "wall-block-price": "140",
+        "wall-adhesive-price": "9.5",
+        "wall-mesh-price": "3.2",
+        "partition-block-price": "150",
+        "wall-concrete-price": "185",
+        "wall-work-masonry-price": "45",
+        "wall-work-partition-price": "18",
+        "wall-work-armopoyas-price": "15",
+        "plaster-length": "40",
+        "plaster-height": "3",
+        "plaster-sides": "1",
+        "plaster-mix": "gypsum",
+        "plaster-thick": "15",
+        "plaster-mix-price": "16.5",
+        "plaster-primer-layers": "1",
+        "plaster-primer-price": "28",
+        "plaster-beacon-step": "1.2",
+        "plaster-beacon-price": "3.2",
+        "plaster-mesh-price": "60",
+        "plaster-work-price": "10",
+        "floor-type": "wood",
+        "floor-length": "10",
+        "floor-width": "8",
+        "floor-beam-section": "100x200",
+        "floor-beam-step": "0.6",
+        "floor-insulation-mm": "150",
+        "floor-slab-width": "1.2",
+        "floor-wood-beam-price": "450",
+        "floor-insulation-price": "95",
+        "floor-membrane-price": "1.8",
+        "floor-board-price": "380",
+        "floor-concrete-slab-price": "500",
+        "floor-work-wood-price": "25",
+        "floor-work-concrete-price": "80",
+        "roof-type": "gable",
+        "roof-width": "8",
+        "roof-length": "10",
+        "roof-ridge-height": "2.5",
+        "roof-eave": "0.5",
+        "roof-rafter-section": "50x200",
+        "roof-rafter-step": "600",
+        "roof-mauerlat-section": "150x150",
+        "roof-batten-step": "350",
+        "roof-batten-section": "25x100",
+        "roof-insulation-mm": "150",
+        "roof-covering": "metal-tile",
+        "roof-timber-price": "450",
+        "roof-board-price": "380",
+        "roof-metal-price": "28",
+        "roof-insulation-price": "95",
+        "roof-membrane-price": "110",
+        "roof-vapor-price": "85",
+        "roof-work-price": "65"
+      },
+      "checks": {
+        "summary-include-found": true,
+        "summary-include-walls": true,
+        "summary-include-plaster": true,
+        "summary-include-roof": true,
+        "summary-include-floor": true,
+        "strip-piles-enabled": true,
+        "walls-reinforce-mesh": true,
+        "walls-armopoyas": true,
+        "walls-lintels": true,
+        "walls-partitions-enabled": false,
+        "plaster-exclude-openings": true,
+        "plaster-mesh": false,
+        "floor-board-clad": true,
+        "floor-monolith": false,
+        "roof-warm": true
+      },
+      "radios": {
+        "summary-found-type": "strip"
+      },
+      "openings": [
+        {
+          "id": 1,
+          "locked": true,
+          "type": "window",
+          "width": "1.5",
+          "height": "1.4",
+          "count": "4"
+        },
+        {
+          "id": 2,
+          "locked": false,
+          "type": "entry-door",
+          "width": "1",
+          "height": "2.1",
+          "count": "1"
+        }
+      ],
+      "piles": [
+        {
+          "id": 1,
+          "locked": true,
+          "name": "Основная группа",
+          "diameterMm": 300,
+          "depthM": 2.5,
+          "count": 20
+        }
+      ],
+      "flags": {
+        "roofWidthManual": true,
+        "roofLengthManual": false,
+        "floorLengthManual": true,
+        "floorWidthManual": false,
+        "wallsPerimeterManual": true,
+        "plasterLengthManual": true,
+        "plasterHeightManual": false,
+        "lastFoundationBlock": "strip",
+        "roofNeedsCalc": false,
+        "floorNeedsCalc": false
+      }
+    },
+    "appliedFields": 115,
+    "summaryBefore": {
+      "rows": [
+        {
+          "name": "Бетон М250 (лента 16,80 м³ + сваи 3,89 м³): 20,69 м³",
+          "netLabel": "19,53 м³",
+          "k": 1.0590463779879562,
+          "orderLabel": "20,69 м³",
+          "cost": 4247.228368131213
+        },
+        {
+          "name": "Арматура рабочая А3 Ø12 (лента 155,7 кг + сваи 216,3 кг): 372,0 кг",
+          "netLabel": "348,0 кг",
+          "k": 1.0691230330048254,
+          "orderLabel": "372,0 кг",
+          "cost": 1190.4910243253235
+        },
+        {
+          "name": "Хомуты Ø8 мм + кольца свай Ø6 (лента 156,9 кг + сваи 32,2 кг): 189,1 кг",
+          "netLabel": "171,2 кг",
+          "k": 1.1043042060147177,
+          "orderLabel": "189,1 кг",
+          "cost": 605.0767858793203
+        },
+        {
+          "name": "Вязальная проволока (лента 3,13 кг + сваи 1,76 кг): 4,89 кг",
+          "netLabel": "4,89 кг",
+          "k": 1,
+          "orderLabel": "4,89 кг",
+          "cost": 21.985951940850278
+        },
+        {
+          "name": "Доска 25×150×6000 (2,205 м³)",
+          "netLabel": "98 шт",
+          "k": 1,
+          "orderLabel": "98 шт",
+          "cost": 1372
+        },
+        {
+          "name": "Брус упоров 50×50×3000 (0,473 м³)",
+          "netLabel": "63 шт",
+          "k": 1,
+          "orderLabel": "63 шт",
+          "cost": 504
+        },
+        {
+          "name": "Песок",
+          "netLabel": "3,20 м³",
+          "k": 1.1,
+          "orderLabel": "3,52 м³",
+          "cost": 112.64000000000001
+        },
+        {
+          "id": "strip-hydro",
+          "name": "Гидроизоляция / Рубероид (лента 96,00 м² + гильзы свай 47,12 м²): 143,12 м²",
+          "netLabel": "143,12 м²",
+          "k": 1.15,
+          "orderLabel": "17 рул.",
+          "cost": 487.73892516838697
+        },
+        {
+          "name": "Бурение и заливка свай",
+          "netLabel": "50,00 м.п.",
+          "k": 1,
+          "orderLabel": "50,00 м.п.",
+          "cost": 2250
+        },
+        {
+          "name": "Стены и перегородки — материалы (газосиликатные 300 мм, чистая кладка 29,81 м³)",
+          "netLabel": "29,81 м³",
+          "k": 1,
+          "orderLabel": "6 789,33",
+          "cost": 6789.334320000002
+        },
+        {
+          "name": "Стены и перегородки — работы (кладка, армопояс, перемычки)",
+          "netLabel": "40,0 м перим.",
+          "k": 1,
+          "orderLabel": "2 076,45",
+          "cost": 2076.45
+        },
+        {
+          "name": "Штукатурка — материалы (гипс, слой 15 мм, 109,50 м²)",
+          "netLabel": "109,50 м²",
+          "k": 1,
+          "orderLabel": "976,50",
+          "cost": 976.5
+        },
+        {
+          "name": "Штукатурка — работы (по маякам, 109,50 м²)",
+          "netLabel": "109,50 м²",
+          "k": 1,
+          "orderLabel": "109,50 м²",
+          "cost": 1095
+        },
+        {
+          "name": "Кровля — материалы (скаты 116,75 м², двухскатная)",
+          "netLabel": "116,75 м²",
+          "k": 1,
+          "orderLabel": "7 367,13",
+          "cost": 7367.1320417033585
+        },
+        {
+          "name": "Кровля — работы (монтаж под ключ, 116,75 м²)",
+          "netLabel": "116,75 м²",
+          "k": 1,
+          "orderLabel": "116,75 м²",
+          "cost": 7588.45857309803
+        },
+        {
+          "name": "Перекрытия — материалы (деревянные балки, 80,00 м²)",
+          "netLabel": "80,00 м²",
+          "k": 1,
+          "orderLabel": "3 495,14",
+          "cost": 3495.1400000000003
+        },
+        {
+          "name": "Перекрытия — работы (деревянные балки, 80,00 м²)",
+          "netLabel": "80,00 м²",
+          "k": 1,
+          "orderLabel": "2 000,00",
+          "cost": 2000
+        }
+      ],
+      "total": 42179.175990246484,
+      "meta": "Объект: лента 40,00 × 0,40 × 1,00 м · стены 40,0 × 3,0 м, проёмы 10,50 м² · штукатурка 109,50 м² · кровля двухскатная 8,00 × 10,00 м · перекрытия 10,00 × 8,00 м",
+      "options": {
+        "grouped": true,
+        "sections": [
+          {
+            "id": "foundation",
+            "label": "ленточный фундамент"
+          },
+          {
+            "id": "walls",
+            "label": "стены и перегородки"
+          },
+          {
+            "id": "plaster",
+            "label": "штукатурка"
+          },
+          {
+            "id": "roof",
+            "label": "кровля"
+          },
+          {
+            "id": "floor",
+            "label": "перекрытия"
+          }
+        ],
+        "printTitle": "Предварительная ведомость выбранных частей",
+        "printNodes": "Узлы: лента 40,00 × 0,40 × 1,00 м · стены 40,0 × 3,0 м, проёмы 10,50 м² · штукатурка 109,50 м² · кровля двухскатная 8,00 × 10,00 м · перекрытия 10,00 × 8,00 м"
+      },
+      "displayedTotal": "42 179,18 Br",
+      "scope": "Рассчитано: ленточный фундамент, стены и перегородки, штукатурка, кровля, перекрытия.",
+      "excluded": "Все доступные разделы включены. Другие работы и инженерные системы в ведомость не входят."
+    },
+    "summaryAfter": {
+      "rows": [
+        {
+          "name": "Бетон М250 (лента 16,80 м³ + сваи 3,89 м³): 20,69 м³",
+          "netLabel": "19,53 м³",
+          "k": 1.0590463779879562,
+          "orderLabel": "20,69 м³",
+          "cost": 4247.228368131213
+        },
+        {
+          "name": "Арматура рабочая А3 Ø12 (лента 155,7 кг + сваи 216,3 кг): 372,0 кг",
+          "netLabel": "348,0 кг",
+          "k": 1.0691230330048254,
+          "orderLabel": "372,0 кг",
+          "cost": 1190.4910243253235
+        },
+        {
+          "name": "Хомуты Ø8 мм + кольца свай Ø6 (лента 156,9 кг + сваи 32,2 кг): 189,1 кг",
+          "netLabel": "171,2 кг",
+          "k": 1.1043042060147177,
+          "orderLabel": "189,1 кг",
+          "cost": 605.0767858793203
+        },
+        {
+          "name": "Вязальная проволока (лента 3,13 кг + сваи 1,76 кг): 4,89 кг",
+          "netLabel": "4,89 кг",
+          "k": 1,
+          "orderLabel": "4,89 кг",
+          "cost": 21.985951940850278
+        },
+        {
+          "name": "Доска 25×150×6000 (2,205 м³)",
+          "netLabel": "98 шт",
+          "k": 1,
+          "orderLabel": "98 шт",
+          "cost": 1372
+        },
+        {
+          "name": "Брус упоров 50×50×3000 (0,473 м³)",
+          "netLabel": "63 шт",
+          "k": 1,
+          "orderLabel": "63 шт",
+          "cost": 504
+        },
+        {
+          "name": "Песок",
+          "netLabel": "3,20 м³",
+          "k": 1.1,
+          "orderLabel": "3,52 м³",
+          "cost": 112.64000000000001
+        },
+        {
+          "id": "strip-hydro",
+          "name": "Гидроизоляция / Рубероид (лента 96,00 м² + гильзы свай 47,12 м²): 143,12 м²",
+          "netLabel": "143,12 м²",
+          "k": 1.15,
+          "orderLabel": "17 рул.",
+          "cost": 487.73892516838697
+        },
+        {
+          "name": "Бурение и заливка свай",
+          "netLabel": "50,00 м.п.",
+          "k": 1,
+          "orderLabel": "50,00 м.п.",
+          "cost": 2250
+        },
+        {
+          "name": "Стены и перегородки — материалы (газосиликатные 300 мм, чистая кладка 29,81 м³)",
+          "netLabel": "29,81 м³",
+          "k": 1,
+          "orderLabel": "6 789,33",
+          "cost": 6789.334320000002
+        },
+        {
+          "name": "Стены и перегородки — работы (кладка, армопояс, перемычки)",
+          "netLabel": "40,0 м перим.",
+          "k": 1,
+          "orderLabel": "2 076,45",
+          "cost": 2076.45
+        },
+        {
+          "name": "Штукатурка — материалы (гипс, слой 15 мм, 109,50 м²)",
+          "netLabel": "109,50 м²",
+          "k": 1,
+          "orderLabel": "976,50",
+          "cost": 976.5
+        },
+        {
+          "name": "Штукатурка — работы (по маякам, 109,50 м²)",
+          "netLabel": "109,50 м²",
+          "k": 1,
+          "orderLabel": "109,50 м²",
+          "cost": 1095
+        },
+        {
+          "name": "Кровля — материалы (скаты 116,75 м², двухскатная)",
+          "netLabel": "116,75 м²",
+          "k": 1,
+          "orderLabel": "7 367,13",
+          "cost": 7367.1320417033585
+        },
+        {
+          "name": "Кровля — работы (монтаж под ключ, 116,75 м²)",
+          "netLabel": "116,75 м²",
+          "k": 1,
+          "orderLabel": "116,75 м²",
+          "cost": 7588.45857309803
+        },
+        {
+          "name": "Перекрытия — материалы (деревянные балки, 80,00 м²)",
+          "netLabel": "80,00 м²",
+          "k": 1,
+          "orderLabel": "3 495,14",
+          "cost": 3495.1400000000003
+        },
+        {
+          "name": "Перекрытия — работы (деревянные балки, 80,00 м²)",
+          "netLabel": "80,00 м²",
+          "k": 1,
+          "orderLabel": "2 000,00",
+          "cost": 2000
+        }
+      ],
+      "total": 42179.175990246484,
+      "meta": "Объект: лента 40,00 × 0,40 × 1,00 м · стены 40,0 × 3,0 м, проёмы 10,50 м² · штукатурка 109,50 м² · кровля двухскатная 8,00 × 10,00 м · перекрытия 10,00 × 8,00 м",
+      "options": {
+        "grouped": true,
+        "sections": [
+          {
+            "id": "foundation",
+            "label": "ленточный фундамент"
+          },
+          {
+            "id": "walls",
+            "label": "стены и перегородки"
+          },
+          {
+            "id": "plaster",
+            "label": "штукатурка"
+          },
+          {
+            "id": "roof",
+            "label": "кровля"
+          },
+          {
+            "id": "floor",
+            "label": "перекрытия"
+          }
+        ],
+        "printTitle": "Предварительная ведомость выбранных частей",
+        "printNodes": "Узлы: лента 40,00 × 0,40 × 1,00 м · стены 40,0 × 3,0 м, проёмы 10,50 м² · штукатурка 109,50 м² · кровля двухскатная 8,00 × 10,00 м · перекрытия 10,00 × 8,00 м"
+      },
+      "displayedTotal": "42 179,18 Br",
+      "scope": "Рассчитано: ленточный фундамент, стены и перегородки, штукатурка, кровля, перекрытия.",
+      "excluded": "Все доступные разделы включены. Другие работы и инженерные системы в ведомость не входят."
+    }
+  },
+  "legacyControl": {
+    "purpose": "Existing computeRegressionSummaryTotal: slab + legacy walls + plaster materials only",
+    "input": {
+      "slab": {
+        "length": 10,
+        "width": 8,
+        "height": 0.3,
+        "grade": "М250",
+        "concretePrice": 210,
+        "diameterMm": 12,
+        "stepMm": 200,
+        "meshCount": 2,
+        "rebarPrice": 3.2,
+        "wirePrice": 4.5,
+        "boardPrice": 14,
+        "timberPrice": 8,
+        "sandHeight": 0.2,
+        "sandPrice": 32,
+        "stoneHeight": 0.2,
+        "stonePrice": 55,
+        "hydroPrice": 28
+      },
+      "legacyWalls": {
+        "perimeter": 40,
+        "height": 3,
+        "material": "block",
+        "block": {
+          "length": 0.6,
+          "thick": 0.3,
+          "height": 0.2
+        },
+        "brick": {
+          "name": "1 НФ",
+          "length": 0.25,
+          "width": 0.12,
+          "height": 0.065
+        },
+        "thick": 0.3,
+        "rowHeight": 0.2,
+        "glueType": "bag",
+        "blockPrice": 5.5,
+        "gluePrice": 18,
+        "brickPrice": 0.42,
+        "mortarPrice": 7.5,
+        "meshPrice": 8,
+        "rebarPrice": 3.2,
+        "lintelPrice": 28,
+        "screwPrice": 12,
+        "openings": {
+          "area": 10.499999999999998,
+          "lintelM": 9.5,
+          "count": 5,
+          "fromList": true
+        },
+        "openingMode": "list",
+        "openingRows": [
+          {
+            "w": 1.5,
+            "h": 1.4,
+            "n": 4,
+            "blank": false
+          },
+          {
+            "w": 1,
+            "h": 2.1,
+            "n": 1,
+            "blank": false
+          }
+        ]
+      },
+      "plaster": {
+        "length": 44.444444,
+        "wallHeight": 2.7,
+        "sides": "1",
+        "excludeOpenings": false,
+        "mix": "gypsum",
+        "thicknessMm": 15,
+        "mixPrice": 16.5,
+        "primerLayers": 1,
+        "primerPrice": 28,
+        "beaconStep": 1.2,
+        "beaconPrice": 3.2,
+        "useMesh": false,
+        "meshPrice": 60,
+        "workPrice": 10
+      }
+    },
+    "components": {
+      "slab": 12099.186691312385,
+      "legacyWalls": 6507.302957486137,
+      "plasterMaterials": 1071.8,
+      "plasterWorkExcluded": 1199.999988
+    },
+    "rows": {
+      "slab": [
+        {
+          "name": "Бетон М250",
+          "netLabel": "24,00 м³",
+          "k": 1.05,
+          "orderLabel": "25,20 м³",
+          "cost": 5292.000000000001
+        },
+        {
+          "name": "Арматура Ø12 мм, 140 шт. × 11.7 м",
+          "netLabel": "1 451,5 кг",
+          "k": 1.0012224938875305,
+          "orderLabel": "1 453,3 кг",
+          "cost": 4650.587800369685
+        },
+        {
+          "name": "Вязальная проволока",
+          "netLabel": "14,53 кг",
+          "k": 1,
+          "orderLabel": "14,53 кг",
+          "cost": 65.3988909426987
+        },
+        {
+          "name": "Доска 25×150×6000 (0,270 м³)",
+          "netLabel": "12 шт",
+          "k": 1,
+          "orderLabel": "12 шт",
+          "cost": 168
+        },
+        {
+          "name": "Брус упоров 50×50×3000 (0,105 м³)",
+          "netLabel": "14 шт",
+          "k": 1,
+          "orderLabel": "14 шт",
+          "cost": 112
+        },
+        {
+          "name": "Песок",
+          "netLabel": "16,00 м³",
+          "k": 1.1,
+          "orderLabel": "17,60 м³",
+          "cost": 563.2
+        },
+        {
+          "name": "Щебень",
+          "netLabel": "16,00 м³",
+          "k": 1.1,
+          "orderLabel": "17,60 м³",
+          "cost": 968.0000000000001
+        },
+        {
+          "name": "Гидроизоляция, рулон 1×10 м",
+          "netLabel": "80,00 м²",
+          "k": 1.15,
+          "orderLabel": "10 рул.",
+          "cost": 280
+        }
+      ],
+      "legacyWalls": [
+        {
+          "name": "Газоблок 600×300×200, 20 подд. (34,524 м³)",
+          "netLabel": "912,5 шт",
+          "k": 1.05,
+          "orderLabel": "959 шт",
+          "cost": 5274.5
+        },
+        {
+          "name": "Клей для блоков, мешок 25 кг",
+          "netLabel": "821,3 кг",
+          "k": 1.05,
+          "orderLabel": "35 меш.",
+          "cost": 630
+        },
+        {
+          "name": "Арматура штроб Ø8 мм, 2 прутка × 3 пояса, 22 шт. × 11.7 м",
+          "netLabel": "94,6 кг",
+          "k": 1.0725,
+          "orderLabel": "101,5 кг",
+          "cost": 324.8029574861368
+        },
+        {
+          "name": "Перемычки над проёмами, 5 шт. (опирание 2×250 мм)",
+          "netLabel": "9,50 м",
+          "k": 1,
+          "orderLabel": "9,50 м",
+          "cost": 266
+        },
+        {
+          "name": "Дюбели рамные, 8 шт./проём",
+          "netLabel": "40 шт",
+          "k": 1,
+          "orderLabel": "1 упак.",
+          "cost": 12
+        }
+      ],
+      "plasterMaterials": [
+        {
+          "name": "Гипсовая штукатурка, мешок 30 кг",
+          "netLabel": "1 530,0 кг",
+          "k": 1.05,
+          "orderLabel": "54 меш.",
+          "cost": 891
+        },
+        {
+          "name": "Грунтовка глубокого проникновения, 1 слой, канистра 10 л",
+          "netLabel": "18,00 л",
+          "k": 1.1,
+          "orderLabel": "2 кан.",
+          "cost": 56
+        },
+        {
+          "name": "Маячковый профиль 6 мм × 3.0 м, шаг 1,20 м",
+          "netLabel": "39 шт",
+          "k": 1,
+          "orderLabel": "39 шт",
+          "cost": 124.80000000000001
+        }
+      ]
+    },
+    "total": 19678.28964879852,
+    "displayedTotal": "19 678,29 Br"
+  }
+}
