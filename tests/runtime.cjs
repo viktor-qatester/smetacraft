@@ -6,17 +6,20 @@ const vm = require('node:vm');
 const crypto = require('node:crypto');
 
 const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
+const slabCoreSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'core', 'slab.js'), 'utf8');
 const stripCoreSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'core', 'strip.js'), 'utf8');
 const wallsCoreSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'core', 'walls.js'), 'utf8');
 const plasterCoreSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'core', 'plaster.js'), 'utf8');
 const roofCoreSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'core', 'roof.js'), 'utf8');
 const floorCoreSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'core', 'floor.js'), 'utf8');
+const slabScript = '<script src="js/core/slab.js"></script>';
 const stripScript = '<script src="js/core/strip.js"></script>';
 const wallsScript = '<script src="js/core/walls.js"></script>';
 const plasterScript = '<script src="js/core/plaster.js"></script>';
 const roofScript = '<script src="js/core/roof.js"></script>';
 const floorScript = '<script src="js/core/floor.js"></script>';
-if (html.indexOf(stripScript) < 0 || html.indexOf(wallsScript) < html.indexOf(stripScript) ||
+if (html.indexOf(slabScript) < 0 || html.indexOf(stripScript) < html.indexOf(slabScript) ||
+    html.indexOf(wallsScript) < html.indexOf(stripScript) ||
     html.indexOf(plasterScript) < html.indexOf(wallsScript) ||
     html.indexOf(roofScript) < html.indexOf(plasterScript) ||
     html.indexOf(floorScript) < html.indexOf(roofScript) ||
@@ -139,6 +142,7 @@ function createApp() {
     context[`summaryInclude${name}El`] = get(`summary-include-${name.toLowerCase()}`);
   }
   vm.createContext(context);
+  vm.runInContext(slabCoreSource, context, { filename: 'js/core/slab.js' });
   vm.runInContext(stripCoreSource, context, { filename: 'js/core/strip.js' });
   vm.runInContext(wallsCoreSource, context, { filename: 'js/core/walls.js' });
   vm.runInContext(plasterCoreSource, context, { filename: 'js/core/plaster.js' });
