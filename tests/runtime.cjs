@@ -10,14 +10,17 @@ const stripCoreSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'core',
 const wallsCoreSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'core', 'walls.js'), 'utf8');
 const plasterCoreSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'core', 'plaster.js'), 'utf8');
 const roofCoreSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'core', 'roof.js'), 'utf8');
+const floorCoreSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'core', 'floor.js'), 'utf8');
 const stripScript = '<script src="js/core/strip.js"></script>';
 const wallsScript = '<script src="js/core/walls.js"></script>';
 const plasterScript = '<script src="js/core/plaster.js"></script>';
 const roofScript = '<script src="js/core/roof.js"></script>';
+const floorScript = '<script src="js/core/floor.js"></script>';
 if (html.indexOf(stripScript) < 0 || html.indexOf(wallsScript) < html.indexOf(stripScript) ||
     html.indexOf(plasterScript) < html.indexOf(wallsScript) ||
     html.indexOf(roofScript) < html.indexOf(plasterScript) ||
-    html.indexOf(roofScript) > html.indexOf('<script>')) {
+    html.indexOf(floorScript) < html.indexOf(roofScript) ||
+    html.indexOf(floorScript) > html.indexOf('<script>')) {
   throw new Error('Calculation cores must load before the inline application script');
 }
 const sourceHash = crypto.createHash('sha256').update(html).digest('hex');
@@ -140,6 +143,7 @@ function createApp() {
   vm.runInContext(wallsCoreSource, context, { filename: 'js/core/walls.js' });
   vm.runInContext(plasterCoreSource, context, { filename: 'js/core/plaster.js' });
   vm.runInContext(roofCoreSource, context, { filename: 'js/core/roof.js' });
+  vm.runInContext(floorCoreSource, context, { filename: 'js/core/floor.js' });
   vm.runInContext(appSource, context, { filename: 'index.html' });
   // These are UI synchronization functions only. The fixture already holds their final values.
   for (const name of [
