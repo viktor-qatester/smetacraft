@@ -1,0 +1,3 @@
+interface:
+  display_name: "SmetaCraft: frontend-модули"
+  short_description: "Постепенно разделять UI в Phase 5"
