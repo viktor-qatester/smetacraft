@@ -1,0 +1,3 @@
+interface:
+  display_name: "SmetaCraft: регрессионные тесты"
+  short_description: "Golden и security проверки расчётов и JSON"

@@ -1,0 +1,3 @@
+interface:
+  display_name: "SmetaCraft: проверка формул"
+  short_description: "Единицы, коэффициенты, округление и контроль сметы"

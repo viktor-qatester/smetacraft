@@ -1,0 +1,3 @@
+interface:
+  display_name: "SmetaCraft: предметное ревью"
+  short_description: "Проверка diff, сметы, безопасности и границ задачи"

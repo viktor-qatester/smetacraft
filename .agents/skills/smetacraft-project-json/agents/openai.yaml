@@ -1,0 +1,3 @@
+interface:
+  display_name: "SmetaCraft: контракт JSON"
+  short_description: "Совместимость импорта, экспорта и localStorage"
