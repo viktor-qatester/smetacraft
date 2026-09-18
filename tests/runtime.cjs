@@ -1,4 +1,4 @@
-// Test-only adapter: execute the unchanged functions from index.html in Node's VM.
+// Test-only adapter: execute production functions from index.html and the strip core in Node's VM.
 // It supplies form values and bill elements; no calculation formula lives here.
 const fs = require('node:fs');
 const path = require('node:path');
@@ -6,6 +6,11 @@ const vm = require('node:vm');
 const crypto = require('node:crypto');
 
 const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
+const stripCoreSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'core', 'strip.js'), 'utf8');
+const stripScript = '<script src="js/core/strip.js"></script>';
+if (html.indexOf(stripScript) < 0 || html.indexOf(stripScript) > html.indexOf('<script>')) {
+  throw new Error('Strip core must load before the inline application script');
+}
 const sourceHash = crypto.createHash('sha256').update(html).digest('hex');
 
 function between(start, end) {
@@ -122,6 +127,7 @@ function createApp() {
     context[`summaryInclude${name}El`] = get(`summary-include-${name.toLowerCase()}`);
   }
   vm.createContext(context);
+  vm.runInContext(stripCoreSource, context, { filename: 'js/core/strip.js' });
   vm.runInContext(appSource, context, { filename: 'index.html' });
   // These are UI synchronization functions only. The fixture already holds their final values.
   for (const name of [
