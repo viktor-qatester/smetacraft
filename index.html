@@ -6817,13 +6817,21 @@
         };
       }
 
+      function projectModelFromDom(snapshot) {
+        return projectV1ToModel(snapshot === undefined ? collectProject() : snapshot, true);
+      }
+
       function parseProjectText(text) {
+        return modelToProjectV1(parseProjectModelText(text));
+      }
+
+      function parseProjectModelText(text) {
         const raw = String(text).replace(/^\uFEFF/, "").trim();
         if (!raw) {
           throw new Error("файл пустой.");
         }
         try {
-          return modelToProjectV1(projectV1ToModel(JSON.parse(raw)));
+          return projectV1ToModel(JSON.parse(raw));
         } catch (jsonError) {
           if (jsonError && jsonError.projectValidation) {
             throw jsonError;
@@ -6973,7 +6981,11 @@
       }
 
       function applyProject(state) {
-        state = validateProjectV1(state);
+        return applyProjectModel(projectV1ToModel(state));
+      }
+
+      function applyProjectModel(model) {
+        const state = modelToProjectV1(model);
         let applied = 0;
 
         if (Array.isArray(state.openings)) {
@@ -7082,7 +7094,7 @@
       function exportProjectV1Snapshot() {
         const raw = collectProject();
         try {
-          return modelToProjectV1(projectV1ToModel(raw, true), true);
+          return modelToProjectV1(projectModelFromDom(raw), true);
         } catch (error) {
           if (!error || !error.projectValidation) throw error;
           // Keep the established export/autosave behavior while a form row is incomplete.
@@ -7107,7 +7119,7 @@
           if (!raw) {
             return null;
           }
-          return parseProjectText(raw);
+          return parseProjectModelText(raw);
         } catch (error) {
           return null;
         }
@@ -7127,7 +7139,7 @@
           return false;
         }
         try {
-          applyProject(state);
+          applyProjectModel(state);
           return true;
         } catch (error) {
           return false;
@@ -7552,7 +7564,7 @@
         const reader = new FileReader();
         reader.onload = function () {
           try {
-            const applied = applyProject(parseProjectText(reader.result));
+            const applied = applyProjectModel(parseProjectModelText(reader.result));
             setProjectStatus(
               "Проект загружен из «" + file.name + "»: восстановлено полей — " + applied + ". Смета пересчитана.",
               false

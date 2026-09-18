@@ -127,3 +127,36 @@ test('Phase 3B file import and localStorage restore pass through the model', () 
   assert.equal(app.loadFromLocalStorage(), true);
   assert.deepStrictEqual(plain(app.collectProject()), project);
 });
+
+test('Phase 3C manual DOM and JSON produce the same model and restore the same project', () => {
+  const { app, get } = projectFixture(fixtures);
+  get('strip-length').value = '42,5';
+  get('roof-metal-price').value = '31.00';
+  get('summary-include-roof').checked = false;
+  app.writeOpeningsState([
+    { id: 1, type: 'window', width: '1.5', height: '1.4', count: '4', locked: false },
+    { id: 2, type: 'entry-door', width: '1', height: '2.1', count: '1', locked: true },
+  ]);
+  const before = plain(app.collectProject());
+  const fromDom = plain(app.projectModelFromDom());
+  const fromJson = plain(app.parseProjectModelText(JSON.stringify(before)));
+  delete fromDom.compatibility.domExtras;
+  assert.deepStrictEqual(fromDom, fromJson);
+  assert.equal(fromDom.strip['strip-length'].value, 42.5);
+  assert.equal(fromDom.prices['roof-metal-price'].raw, '31.00');
+  assert.equal(fromDom.openings[0].locked, false);
+  app.resetProjectToZero();
+  app.applyProjectModel(fromDom);
+  assert.deepStrictEqual(plain(app.collectProject()), before);
+});
+
+test('Phase 3C rejects a malformed model before changing DOM or storage', () => {
+  const { app } = setup();
+  const before = plain(app.collectProject());
+  const model = app.projectModelFromDom();
+  model.scope.checks['roof-warm'] = 'false';
+  const stored = app.window.localStorage.getItem('smetacraft_project');
+  assert.throws(() => app.applyProjectModel(model), /boolean/);
+  assert.deepStrictEqual(plain(app.collectProject()), before);
+  assert.equal(app.window.localStorage.getItem('smetacraft_project'), stored);
+});
