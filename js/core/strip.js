@@ -321,32 +321,21 @@
             rows[3].orderLabel = formatQty(combinedWireKg, 2) + " кг";
             rows[3].cost += pileCosts.wire;
 
-            const combinedHydroNet = hydroNet + pileTotals.ruberoidNet;
-            const combinedHydroOrder = hydroNet * (1 + HYDRO_OVERLAP) + pileTotals.ruberoidOrder;
-            const hydroRow = rows.find(function (row) {
-              return (
-                row.id === "strip-hydro" ||
-                String(row.name).toLowerCase().indexOf("гидроизоляция") !== -1
-              );
+            const hydroIdx = rows.findIndex(function (row) {
+              return row.id === "strip-hydro";
             });
-            if (hydroRow) {
-              hydroRow.name =
-                "Гидроизоляция / Рубероид (лента " +
-                formatQty(hydroNet, 2) +
-                " м² + гильзы свай " +
-                formatQty(pileTotals.ruberoidNet, 2) +
-                " м²): " +
-                formatQty(combinedHydroNet, 2) +
-                " м²";
-              hydroRow.netLabel = formatQty(combinedHydroNet, 2) + " м²";
-              hydroRow.orderLabel =
-                String(rolls) +
-                " рул. + " +
-                formatQty(pileTotals.ruberoidOrder, 2) +
-                " м²";
-              hydroRow.k =
-                combinedHydroNet > 0 ? combinedHydroOrder / combinedHydroNet : 1 + HYDRO_OVERLAP;
-              hydroRow.cost = rolls * input.hydroPrice + pileCosts.ruberoid;
+            if (hydroIdx !== -1) {
+              rows.splice(hydroIdx + 1, 0, {
+                id: "strip-pile-hydro",
+                name: "Рубероид гильз свай",
+                netLabel: formatQty(pileTotals.ruberoidNet, 2) + " м²",
+                k:
+                  pileTotals.ruberoidNet > 0
+                    ? pileTotals.ruberoidOrder / pileTotals.ruberoidNet
+                    : 1 + PILE_RUBEROID_RESERVE,
+                orderLabel: formatQty(pileTotals.ruberoidOrder, 2) + " м²",
+                cost: pileCosts.ruberoid,
+              });
             }
 
             rows.push({
