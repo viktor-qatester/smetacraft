@@ -22,6 +22,14 @@
         return Math.abs(actual - expected) < 0.005;
       }
 
+      function isRegressionBadgeVisible() {
+        try {
+          return new URLSearchParams(window.location.search).has("regression");
+        } catch (error) {
+          return false;
+        }
+      }
+
       function setRegressionField(id, value) {
         const el = document.getElementById(id);
         if (el) {
@@ -315,7 +323,6 @@
         floorExpected
       ) {
         const badge = document.getElementById("regression-badge");
-        badge.hidden = false;
         badge.classList.toggle("pass", passed);
         badge.classList.toggle("fail", !passed);
         if (passed) {
@@ -338,6 +345,7 @@
           badge.textContent = "Ошибка регрессии!";
           badge.title = failures.join(" · ");
         }
+        badge.hidden = !isRegressionBadgeVisible();
       }
 
       function runRegressionTests() {
