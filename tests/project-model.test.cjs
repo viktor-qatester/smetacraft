@@ -81,3 +81,49 @@ test('invalid v1 and incompatible model versions are rejected', () => {
   model.schemaVersion = 2;
   assert.throws(() => app.modelToProjectV1(model), /модели/);
 });
+
+test('Phase 3B export retains DOM-only fields, while import ignores them', () => {
+  const { app, get } = projectFixture(fixtures);
+  const intake = get('intake-length');
+  intake.id = 'intake-length'; intake.type = 'text'; intake.value = '12.5';
+  const intakeCheck = get('intake-include-found');
+  intakeCheck.id = 'intake-include-found'; intakeCheck.type = 'checkbox'; intakeCheck.checked = true;
+  const exported = plain(app.exportProjectV1Snapshot());
+  assert.equal(exported.fields['intake-length'], '12.5');
+  assert.equal(exported.checks['intake-include-found'], true);
+  const imported = plain(app.parseProjectText(JSON.stringify(exported)));
+  assert.equal(imported.fields['intake-length'], undefined);
+  assert.equal(imported.checks['intake-include-found'], undefined);
+  assert.equal(imported.fields.length, exported.fields.length);
+});
+
+test('Phase 3B export keeps an incomplete form row and current storage shape', () => {
+  const { app } = setup();
+  const original = plain(app.collectProject());
+  app.writeOpeningsState([{ id: 1, type: 'window', width: '', height: '1.5', count: '1', locked: true }]);
+  const raw = plain(app.collectProject());
+  assert.equal(raw.openings[0].width, '');
+  assert.deepStrictEqual(plain(app.exportProjectV1Snapshot()), raw);
+  app.writeOpeningsState(original.openings);
+  assert.deepStrictEqual(plain(app.exportProjectV1Snapshot()), original);
+});
+
+test('Phase 3B file import and localStorage restore pass through the model', () => {
+  const { app, project } = setup();
+  app.resetProjectToZero();
+  app.projectFileEl = { files: [{ name: 'fixture.json', size: 1024 }], value: 'selected' };
+  app.projectFileNameEl = { textContent: '' };
+  app.projectStatusEl = { textContent: '', classList: { toggle() {} } };
+  app.FileReader = class {
+    readAsText() { this.result = JSON.stringify(project); this.onload(); }
+  };
+  app.handleProjectFileChange();
+  assert.deepStrictEqual(plain(app.collectProject()), project);
+  assert.match(app.projectStatusEl.textContent, /Проект загружен/);
+  app.persistSuspended = false;
+  app.saveToLocalStorage();
+  assert.deepStrictEqual(JSON.parse(app.window.localStorage.getItem('smetacraft_project')), project);
+  app.resetProjectToZero();
+  assert.equal(app.loadFromLocalStorage(), true);
+  assert.deepStrictEqual(plain(app.collectProject()), project);
+});

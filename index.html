@@ -2187,7 +2187,7 @@
         return true;
       }
 
-      function projectV1ToModel(project) {
+      function projectV1ToModel(project, preserveDomExtras) {
         const state = validateProjectV1(project);
         const model = {
           schemaVersion: 1,
@@ -2216,6 +2216,15 @@
         });
         if (state.block !== undefined) model.viewState.block = state.block;
         if (state.billBlock !== undefined) model.viewState.billBlock = state.billBlock;
+        if (preserveDomExtras) {
+          model.compatibility.domExtras = { fields: {}, checks: {} };
+          Object.keys(project.fields || {}).forEach(function (id) {
+            if (!PROJECT_FIELD_IDS.has(id)) model.compatibility.domExtras.fields[id] = project.fields[id];
+          });
+          Object.keys(project.checks || {}).forEach(function (id) {
+            if (!PROJECT_CHECK_IDS.has(id)) model.compatibility.domExtras.checks[id] = project.checks[id];
+          });
+        }
         return model;
       }
 
@@ -2226,7 +2235,7 @@
         return Number(source) === cell.value ? cell.raw : cell.value;
       }
 
-      function modelToProjectV1(model) {
+      function modelToProjectV1(model, preserveDomExtras) {
         if (!model || model.schemaVersion !== 1 || !model.compatibility ||
             model.compatibility.format !== PROJECT_FORMAT || model.compatibility.version !== PROJECT_VERSION) {
           throw projectError("неверная версия внутренней модели.");
@@ -2243,7 +2252,12 @@
         });
         if (model.viewState.block !== undefined) output.block = model.viewState.block;
         if (model.viewState.billBlock !== undefined) output.billBlock = model.viewState.billBlock;
-        return validateProjectV1(output);
+        const validated = validateProjectV1(output);
+        if (preserveDomExtras && model.compatibility.domExtras) {
+          Object.assign(validated.fields, model.compatibility.domExtras.fields);
+          Object.assign(validated.checks, model.compatibility.domExtras.checks);
+        }
+        return validated;
       }
 
       const BILL_PRINT_SUB = "Предварительная ведомость выбранных материалов";
@@ -6809,7 +6823,7 @@
           throw new Error("файл пустой.");
         }
         try {
-          return validateProjectV1(JSON.parse(raw));
+          return modelToProjectV1(projectV1ToModel(JSON.parse(raw)));
         } catch (jsonError) {
           if (jsonError && jsonError.projectValidation) {
             throw jsonError;
@@ -7065,12 +7079,23 @@
         return JSON.parse(JSON.stringify(state));
       }
 
+      function exportProjectV1Snapshot() {
+        const raw = collectProject();
+        try {
+          return modelToProjectV1(projectV1ToModel(raw, true), true);
+        } catch (error) {
+          if (!error || !error.projectValidation) throw error;
+          // Keep the established export/autosave behavior while a form row is incomplete.
+          return raw;
+        }
+      }
+
       function saveToLocalStorage() {
         if (persistSuspended) {
           return;
         }
         try {
-          window.localStorage.setItem(STORAGE_KEY, JSON.stringify(collectProject()));
+          window.localStorage.setItem(STORAGE_KEY, JSON.stringify(exportProjectV1Snapshot()));
         } catch (error) {
           return;
         }
@@ -7501,7 +7526,7 @@
       });
 
       document.getElementById("project-export").addEventListener("click", function () {
-        const text = JSON.stringify(collectProject(), null, 2);
+        const text = JSON.stringify(exportProjectV1Snapshot(), null, 2);
         try {
           downloadProjectFile(text);
         } catch (error) {
