@@ -5,7 +5,7 @@ description: "Постепенно выделять frontend-модули SmetaC
 
 # Frontend-модули SmetaCraft
 
-Применяй вместе с `smetacraft-phase-orchestrator` после утверждения конкретного шага Phase 5. Сверь `docs/ROADMAP.md`, `AGENTS.md`, карту системы, `index.html`, `js/core/*.js` и тесты.
+Применяй вместе с `smetacraft-phase-orchestrator` после утверждения конкретного шага Phase 5. Сверь `docs/ROADMAP.md`, `AGENTS.md`, карту системы, `index.html`, `js/core/*.js`, `js/ui/*.js`, `js/app/*.js` и тесты.
 
 Для одного пользовательского потока составь карту: DOM-элементы, чтение и проверка ввода, состояние, обработчики, запуск, вызовы Calculation Core и запись результата. Выделяй только согласованные части. Явно определи вход модуля, зависимости и порядок загрузки; один источник состояния должен остаться один. Не меняй формулы и возвращаемые строки `name/netLabel/k/orderLabel/cost` при переносе UI.
 

@@ -1,7 +1,11 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 const fixtures = require('./scenarios.cjs');
-const { html, projectFixture, plain } = require('./runtime.cjs');
+const { projectFixture, plain } = require('./runtime.cjs');
+const wallsSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'app', 'walls.js'), 'utf8');
+const pilesSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'app', 'piles.js'), 'utf8');
 
 function setup() {
   const { app, get } = projectFixture(fixtures);
@@ -134,10 +138,11 @@ test('pile HTML payload stays an input value; row builders use no HTML parser si
   assert.equal(row.querySelector('.js-pile-name').tagName, 'INPUT');
   assert.equal(app.window.__smetacraftXss, undefined);
   for (const name of ['wallsOpeningRowTemplate', 'pileRowTemplate']) {
-    const start = html.indexOf('function ' + name + '(');
-    const end = html.indexOf('\n      function ', start + 1);
+    const source = name === 'pileRowTemplate' ? pilesSource : wallsSource;
+    const start = source.indexOf('function ' + name + '(');
+    const end = source.indexOf('\n      function ', start + 1);
     assert.ok(start >= 0);
-    assert.doesNotMatch(html.slice(start, end), /innerHTML|insertAdjacentHTML|outerHTML|onerror\s*=/);
+    assert.doesNotMatch(source.slice(start, end), /innerHTML|insertAdjacentHTML|outerHTML|onerror\s*=/);
   }
 });
 
