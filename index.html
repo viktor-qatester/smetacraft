@@ -2149,6 +2149,103 @@
         "roofWidthManual roofLengthManual floorLengthManual floorWidthManual wallsPerimeterManual plasterLengthManual plasterHeightManual lastFoundationBlock roofNeedsCalc floorNeedsCalc"
       ).split(" "));
 
+      // Phase 3A: pure, inactive project model. JSON v1 and the live DOM path stay unchanged.
+      const MODEL_FIELD_SPEC = {
+        slab: "length:m width:m height:m grade:text bar-diameter:mm bar-step:mm slab-mesh-count:count sand-height:m stone-height:m",
+        strip: "strip-length:m strip-width:m strip-height:m strip-grade:text strip-bar-diameter:mm strip-bar-count:count strip-stirrup-diameter:mm strip-stirrup-step:mm strip-sand-height:m",
+        walls: "walls-perimeter:m walls-load-bearing-material:text walls-height:m walls-joint-mm:mm wall-armopoyas-width:mm wall-armopoyas-height:mm walls-armopoyas-rebar:mm walls-partition-material:text walls-partition-length:m walls-partition-height:m",
+        plaster: "plaster-length:m plaster-height:m plaster-sides:count plaster-mix:text plaster-thick:mm plaster-primer-layers:count plaster-beacon-step:m",
+        floor: "floor-type:text floor-length:m floor-width:m floor-beam-section:text floor-beam-step:m floor-insulation-mm:mm floor-slab-width:m",
+        roof: "roof-type:text roof-width:m roof-length:m roof-ridge-height:m roof-eave:m roof-rafter-section:text roof-rafter-step:mm roof-mauerlat-section:text roof-batten-step:mm roof-batten-section:text roof-insulation-mm:mm roof-covering:text",
+        prices: "concrete-price:m3 rebar-price:kg wire-price:kg board-price:piece timber-price:piece sand-price:m3 stone-price:m3 hydro-price:roll strip-concrete-price:m3 strip-rebar-price:kg strip-wire-price:kg strip-board-price:piece strip-timber-price:piece strip-sand-price:m3 strip-hydro-price:roll pile-concrete-price:m3 pile-work-drilling-price:m pile-hydro-price:m2 wall-block-price:m3 wall-adhesive-price:bag wall-mesh-price:m partition-block-price:m3 wall-concrete-price:m3 wall-work-masonry-price:m3 wall-work-partition-price:m2 wall-work-armopoyas-price:m plaster-mix-price:bag plaster-primer-price:can plaster-beacon-price:piece plaster-mesh-price:roll plaster-work-price:m2 floor-wood-beam-price:m3 floor-insulation-price:m3 floor-membrane-price:m2 floor-board-price:m3 floor-concrete-slab-price:piece floor-work-wood-price:m2 floor-work-concrete-price:piece roof-timber-price:m3 roof-board-price:m3 roof-metal-price:m2 roof-insulation-price:m3 roof-membrane-price:roll roof-vapor-price:roll roof-work-price:m2"
+      };
+
+      function modelFieldEntries() {
+        const entries = [];
+        Object.keys(MODEL_FIELD_SPEC).forEach(function (group) {
+          MODEL_FIELD_SPEC[group].split(" ").forEach(function (item) {
+            const parts = item.split(":");
+            entries.push({ group: group, id: parts[0], unit: parts[1] });
+          });
+        });
+        return entries;
+      }
+
+      function modelValue(raw, unit, applicable) {
+        if (unit === "text") {
+          return { state: "known", value: String(raw), raw: raw, unit: unit, applicable: applicable };
+        }
+        const source = typeof raw === "string" ? raw.trim().replace(",", ".") : raw;
+        const numeric = source === "" ? NaN : Number(source);
+        return { state: Number.isFinite(numeric) ? "known" : raw === "" ? "unknown" : "unparsed",
+          value: Number.isFinite(numeric) ? numeric : null, raw: raw, unit: unit, applicable: applicable };
+      }
+
+      function modelApplicable(id, checks) {
+        if (id === "roof-insulation-mm") return checks["roof-warm"] !== false;
+        if (id.indexOf("walls-partition-") === 0) return checks["walls-partitions-enabled"] !== false;
+        return true;
+      }
+
+      function projectV1ToModel(project) {
+        const state = validateProjectV1(project);
+        const model = {
+          schemaVersion: 1,
+          compatibility: { format: PROJECT_FORMAT, version: PROJECT_VERSION },
+          scope: { checks: {}, radios: {} },
+          slab: {}, strip: {}, walls: {}, plaster: {}, floor: {}, roof: {}, prices: {},
+          openings: state.openings.map(function (row) { return Object.assign({}, row); }),
+          piles: state.piles.map(function (row) { return Object.assign({}, row); }),
+          relationships: {},
+          viewState: { flags: {} }
+        };
+        modelFieldEntries().forEach(function (entry) {
+          if (Object.prototype.hasOwnProperty.call(state.fields, entry.id)) {
+            model[entry.group][entry.id] = modelValue(state.fields[entry.id], entry.unit,
+              modelApplicable(entry.id, state.checks));
+          } else {
+            model[entry.group][entry.id] = { state: "unknown", value: null, unit: entry.unit,
+              applicable: modelApplicable(entry.id, state.checks) };
+          }
+        });
+        Object.keys(state.checks).forEach(function (id) { model.scope.checks[id] = state.checks[id]; });
+        Object.keys(state.radios).forEach(function (id) { model.scope.radios[id] = state.radios[id]; });
+        Object.keys(state.flags).forEach(function (id) {
+          if (id === "roofNeedsCalc" || id === "floorNeedsCalc") model.viewState.flags[id] = state.flags[id];
+          else model.relationships[id] = state.flags[id];
+        });
+        if (state.block !== undefined) model.viewState.block = state.block;
+        if (state.billBlock !== undefined) model.viewState.billBlock = state.billBlock;
+        return model;
+      }
+
+      function modelExportValue(cell) {
+        if (cell.state !== "known" || !Object.prototype.hasOwnProperty.call(cell, "raw")) return cell.raw;
+        if (cell.unit === "text") return String(cell.raw) === cell.value ? cell.raw : cell.value;
+        const source = typeof cell.raw === "string" ? cell.raw.trim().replace(",", ".") : cell.raw;
+        return Number(source) === cell.value ? cell.raw : cell.value;
+      }
+
+      function modelToProjectV1(model) {
+        if (!model || model.schemaVersion !== 1 || !model.compatibility ||
+            model.compatibility.format !== PROJECT_FORMAT || model.compatibility.version !== PROJECT_VERSION) {
+          throw projectError("неверная версия внутренней модели.");
+        }
+        const output = { format: PROJECT_FORMAT, version: PROJECT_VERSION,
+          fields: {}, checks: Object.assign({}, model.scope.checks),
+          radios: Object.assign({}, model.scope.radios),
+          openings: model.openings.map(function (row) { return Object.assign({}, row); }),
+          piles: model.piles.map(function (row) { return Object.assign({}, row); }),
+          flags: Object.assign({}, model.relationships, model.viewState.flags) };
+        modelFieldEntries().forEach(function (entry) {
+          const cell = model[entry.group][entry.id];
+          if (cell && Object.prototype.hasOwnProperty.call(cell, "raw")) output.fields[entry.id] = modelExportValue(cell);
+        });
+        if (model.viewState.block !== undefined) output.block = model.viewState.block;
+        if (model.viewState.billBlock !== undefined) output.billBlock = model.viewState.billBlock;
+        return validateProjectV1(output);
+      }
+
       const BILL_PRINT_SUB = "Предварительная ведомость выбранных материалов";
       const SUMMARY_PRINT_SUB = "Предварительная ведомость выбранных частей";
 
