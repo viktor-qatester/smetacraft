@@ -27,7 +27,11 @@
       }
 
       function barCount(span, step) {
-        return Math.ceil(span / step) + 1;
+        const quotient = span / step;
+        const nearest = Math.round(quotient);
+        const adjusted =
+          Math.abs(quotient - nearest) < 1e-9 ? nearest : quotient;
+        return Math.ceil(adjusted) + 1;
       }
 
       function lengthWithSplices(span, rodLength, overlap) {
