@@ -759,19 +759,35 @@
         },
         {
           "category": "isol",
-          "name": "Гидроизоляция / Рубероид (лента 96,00 м² + гильзы свай 47,12 м²): 143,12 м²",
-          "netLabel": "143,12 м²",
+          "name": "Гидроизоляция, рулон 1×10 м",
+          "netLabel": "96,00 м²",
           "net": {
-            "displayed": "143,12",
+            "displayed": "96,00",
             "unit": "м²"
           },
           "coefficient": 1.15,
-          "orderLabel": "17 рул.",
+          "orderLabel": "12 рул.",
           "order": {
-            "displayed": "17",
+            "displayed": "12",
             "unit": "рул."
           },
-          "cost": 487.73892516838697
+          "cost": 336
+        },
+        {
+          "category": "isol",
+          "name": "Рубероид гильз свай",
+          "netLabel": "47,12 м²",
+          "net": {
+            "displayed": "47,12",
+            "unit": "м²"
+          },
+          "coefficient": 1.15,
+          "orderLabel": "54,19 м²",
+          "order": {
+            "displayed": "54,19",
+            "unit": "м²"
+          },
+          "cost": 151.73892516838697
         },
         {
           "category": "concrete",
@@ -825,7 +841,7 @@
       "total": 10791.161055445094,
       "displayedTotal": "10 791,16 Br",
       "display": {
-        "tableHtml": "<tr><td>Бетон М250 (лента 16,80 м³ + сваи 3,89 м³): 20,69 м³</td><td class=\"num\">19,53 м³</td><td class=\"num\">1,06</td><td class=\"num\">20,69 м³</td><td class=\"num\">4 247,23 Br</td></tr><tr><td>Арматура рабочая А3 Ø12 (лента 155,7 кг + сваи 216,3 кг): 372,0 кг</td><td class=\"num\">348,0 кг</td><td class=\"num\">1,07</td><td class=\"num\">372,0 кг</td><td class=\"num\">1 190,49 Br</td></tr><tr><td>Хомуты Ø8 мм + кольца свай Ø6 (лента 156,9 кг + сваи 32,2 кг): 189,1 кг</td><td class=\"num\">171,2 кг</td><td class=\"num\">1,10</td><td class=\"num\">189,1 кг</td><td class=\"num\">605,08 Br</td></tr><tr><td>Вязальная проволока (лента 3,13 кг + сваи 1,76 кг): 4,89 кг</td><td class=\"num\">4,89 кг</td><td class=\"num\">1,00</td><td class=\"num\">4,89 кг</td><td class=\"num\">21,99 Br</td></tr><tr><td>Доска 25×150×6000 (2,205 м³)</td><td class=\"num\">98 шт</td><td class=\"num\">1,00</td><td class=\"num\">98 шт</td><td class=\"num\">1 372,00 Br</td></tr><tr><td>Брус упоров 50×50×3000 (0,473 м³)</td><td class=\"num\">63 шт</td><td class=\"num\">1,00</td><td class=\"num\">63 шт</td><td class=\"num\">504,00 Br</td></tr><tr><td>Песок</td><td class=\"num\">3,20 м³</td><td class=\"num\">1,10</td><td class=\"num\">3,52 м³</td><td class=\"num\">112,64 Br</td></tr><tr><td>Гидроизоляция / Рубероид (лента 96,00 м² + гильзы свай 47,12 м²): 143,12 м²</td><td class=\"num\">143,12 м²</td><td class=\"num\">1,15</td><td class=\"num\">17 рул.</td><td class=\"num\">487,74 Br</td></tr><tr><td>Бурение и заливка свай</td><td class=\"num\">50,00 м.п.</td><td class=\"num\">1,00</td><td class=\"num\">50,00 м.п.</td><td class=\"num\">2 250,00 Br</td></tr>",
+        "tableHtml": "<tr><td>Бетон М250 (лента 16,80 м³ + сваи 3,89 м³): 20,69 м³</td><td class=\"num\">19,53 м³</td><td class=\"num\">1,06</td><td class=\"num\">20,69 м³</td><td class=\"num\">4 247,23 Br</td></tr><tr><td>Арматура рабочая А3 Ø12 (лента 155,7 кг + сваи 216,3 кг): 372,0 кг</td><td class=\"num\">348,0 кг</td><td class=\"num\">1,07</td><td class=\"num\">372,0 кг</td><td class=\"num\">1 190,49 Br</td></tr><tr><td>Хомуты Ø8 мм + кольца свай Ø6 (лента 156,9 кг + сваи 32,2 кг): 189,1 кг</td><td class=\"num\">171,2 кг</td><td class=\"num\">1,10</td><td class=\"num\">189,1 кг</td><td class=\"num\">605,08 Br</td></tr><tr><td>Вязальная проволока (лента 3,13 кг + сваи 1,76 кг): 4,89 кг</td><td class=\"num\">4,89 кг</td><td class=\"num\">1,00</td><td class=\"num\">4,89 кг</td><td class=\"num\">21,99 Br</td></tr><tr><td>Доска 25×150×6000 (2,205 м³)</td><td class=\"num\">98 шт</td><td class=\"num\">1,00</td><td class=\"num\">98 шт</td><td class=\"num\">1 372,00 Br</td></tr><tr><td>Брус упоров 50×50×3000 (0,473 м³)</td><td class=\"num\">63 шт</td><td class=\"num\">1,00</td><td class=\"num\">63 шт</td><td class=\"num\">504,00 Br</td></tr><tr><td>Песок</td><td class=\"num\">3,20 м³</td><td class=\"num\">1,10</td><td class=\"num\">3,52 м³</td><td class=\"num\">112,64 Br</td></tr><tr><td>Гидроизоляция, рулон 1×10 м</td><td class=\"num\">96,00 м²</td><td class=\"num\">1,15</td><td class=\"num\">12 рул.</td><td class=\"num\">336,00 Br</td></tr><tr><td>Рубероид гильз свай</td><td class=\"num\">47,12 м²</td><td class=\"num\">1,15</td><td class=\"num\">54,19 м²</td><td class=\"num\">151,74 Br</td></tr><tr><td>Бурение и заливка свай</td><td class=\"num\">50,00 м.п.</td><td class=\"num\">1,00</td><td class=\"num\">50,00 м.п.</td><td class=\"num\">2 250,00 Br</td></tr>",
         "scope": "Рассчитано: ленточный фундамент.",
         "excluded": "Не рассчитано: стены и перегородки, перекрытия, штукатурка, кровля.",
         "meta": "Лента 40,00 × 0,40 × 1,00 м · объём 16,00 м³ · опалубка 80,00 м · сваи 20 шт",
@@ -950,9 +966,9 @@
         {
           "category": "metal",
           "name": "Арматура А3 Ø12 мм (армопояс 149 кг): 0,149 т",
-          "netLabel": "149,2 кг",
+          "netLabel": "142,1 кг",
           "net": {
-            "displayed": "149,2",
+            "displayed": "142,1",
             "unit": "кг"
           },
           "coefficient": 1.05,
@@ -966,9 +982,9 @@
         {
           "category": "metal",
           "name": "Арматура А1 Ø6 мм (хомуты армопояса): 0,026 т",
-          "netLabel": "26,1 кг",
+          "netLabel": "24,9 кг",
           "net": {
-            "displayed": "26,1",
+            "displayed": "24,9",
             "unit": "кг"
           },
           "coefficient": 1.05,
@@ -1032,7 +1048,7 @@
       "total": 9274.45684,
       "displayedTotal": "9 274,46 Br",
       "display": {
-        "tableHtml": "<tr><td>Стеновые блоки газосиликатные 300 мм (грязный объём 36,00 м³ − проёмы 0,00 м³ − армопояс 2,50 м³): 33,50 м³</td><td class=\"num\">33,50 м³</td><td class=\"num\">1,05</td><td class=\"num\">35,18 м³</td><td class=\"num\">4 924,50 Br</td></tr><tr><td>Клей для блоков (расход 1,2 мешка/м³): 41 меш.</td><td class=\"num\">40,2 меш.</td><td class=\"num\">1,00</td><td class=\"num\">41 меш.</td><td class=\"num\">389,50 Br</td></tr><tr><td>Армирующая сетка (2 полосы × 3 рядов): 252,0 м.п.</td><td class=\"num\">240,0 м.п.</td><td class=\"num\">1,05</td><td class=\"num\">252,0 м.п.</td><td class=\"num\">806,40 Br</td></tr><tr><td>Бетон М250 (армопояс 2,50 м³): 2,63 м³</td><td class=\"num\">2,50 м³</td><td class=\"num\">1,05</td><td class=\"num\">2,63 м³</td><td class=\"num\">485,63 Br</td></tr><tr><td>Арматура А3 Ø12 мм (армопояс 149 кг): 0,149 т</td><td class=\"num\">149,2 кг</td><td class=\"num\">1,05</td><td class=\"num\">0,149 т</td><td class=\"num\">477,39 Br</td></tr><tr><td>Арматура А1 Ø6 мм (хомуты армопояса): 0,026 т</td><td class=\"num\">26,1 кг</td><td class=\"num\">1,05</td><td class=\"num\">0,026 т</td><td class=\"num\">83,54 Br</td></tr><tr><td>Кладка несущих стен: 33,50 м³</td><td class=\"num\">33,50 м³</td><td class=\"num\">1,00</td><td class=\"num\">33,50 м³</td><td class=\"num\">1 507,50 Br</td></tr><tr><td>Устройство армопояса и перемычек (армопояс 40,0 м.п.)</td><td class=\"num\">40,0 м.п.</td><td class=\"num\">1,00</td><td class=\"num\">40,0 м.п.</td><td class=\"num\">600,00 Br</td></tr>",
+        "tableHtml": "<tr><td>Стеновые блоки газосиликатные 300 мм (грязный объём 36,00 м³ − проёмы 0,00 м³ − армопояс 2,50 м³): 33,50 м³</td><td class=\"num\">33,50 м³</td><td class=\"num\">1,05</td><td class=\"num\">35,18 м³</td><td class=\"num\">4 924,50 Br</td></tr><tr><td>Клей для блоков (расход 1,2 мешка/м³): 41 меш.</td><td class=\"num\">40,2 меш.</td><td class=\"num\">1,00</td><td class=\"num\">41 меш.</td><td class=\"num\">389,50 Br</td></tr><tr><td>Армирующая сетка (2 полосы × 3 рядов): 252,0 м.п.</td><td class=\"num\">240,0 м.п.</td><td class=\"num\">1,05</td><td class=\"num\">252,0 м.п.</td><td class=\"num\">806,40 Br</td></tr><tr><td>Бетон М250 (армопояс 2,50 м³): 2,63 м³</td><td class=\"num\">2,50 м³</td><td class=\"num\">1,05</td><td class=\"num\">2,63 м³</td><td class=\"num\">485,63 Br</td></tr><tr><td>Арматура А3 Ø12 мм (армопояс 149 кг): 0,149 т</td><td class=\"num\">142,1 кг</td><td class=\"num\">1,05</td><td class=\"num\">0,149 т</td><td class=\"num\">477,39 Br</td></tr><tr><td>Арматура А1 Ø6 мм (хомуты армопояса): 0,026 т</td><td class=\"num\">24,9 кг</td><td class=\"num\">1,05</td><td class=\"num\">0,026 т</td><td class=\"num\">83,54 Br</td></tr><tr><td>Кладка несущих стен: 33,50 м³</td><td class=\"num\">33,50 м³</td><td class=\"num\">1,00</td><td class=\"num\">33,50 м³</td><td class=\"num\">1 507,50 Br</td></tr><tr><td>Устройство армопояса и перемычек (армопояс 40,0 м.п.)</td><td class=\"num\">40,0 м.п.</td><td class=\"num\">1,00</td><td class=\"num\">40,0 м.п.</td><td class=\"num\">600,00 Br</td></tr>",
         "scope": "Рассчитано: стены и перегородки.",
         "excluded": "Не рассчитано: фундамент, перекрытия, штукатурка, кровля.",
         "meta": "Стены 40,0 × 3,0 м · газосиликатные 300 мм · чистая кладка 33,50 м³ · проёмы 0,00 м²",
@@ -1172,9 +1188,9 @@
         {
           "category": "metal",
           "name": "Арматура А3 Ø12 мм (армопояс 149 кг + перемычки 34 кг): 0,183 т",
-          "netLabel": "182,8 кг",
+          "netLabel": "174,0 кг",
           "net": {
-            "displayed": "182,8",
+            "displayed": "174,0",
             "unit": "кг"
           },
           "coefficient": 1.05,
@@ -1188,9 +1204,9 @@
         {
           "category": "metal",
           "name": "Арматура А1 Ø6 мм (хомуты армопояса): 0,026 т",
-          "netLabel": "26,1 кг",
+          "netLabel": "24,9 кг",
           "net": {
-            "displayed": "26,1",
+            "displayed": "24,9",
             "unit": "кг"
           },
           "coefficient": 1.05,
@@ -1254,7 +1270,7 @@
       "total": 8865.784320000002,
       "displayedTotal": "8 865,78 Br",
       "display": {
-        "tableHtml": "<tr><td>Стеновые блоки газосиликатные 300 мм (грязный объём 36,00 м³ − проёмы 3,15 м³ − армопояс 2,50 м³ − перемычки 0,54 м³): 29,81 м³</td><td class=\"num\">29,81 м³</td><td class=\"num\">1,05</td><td class=\"num\">31,30 м³</td><td class=\"num\">4 382,07 Br</td></tr><tr><td>Клей для блоков (расход 1,2 мешка/м³): 36 меш.</td><td class=\"num\">35,8 меш.</td><td class=\"num\">1,00</td><td class=\"num\">36 меш.</td><td class=\"num\">342,00 Br</td></tr><tr><td>Армирующая сетка (2 полосы × 3 рядов): 252,0 м.п.</td><td class=\"num\">240,0 м.п.</td><td class=\"num\">1,05</td><td class=\"num\">252,0 м.п.</td><td class=\"num\">806,40 Br</td></tr><tr><td>Бетон М250 (армопояс 2,50 м³ + перемычки 0,54 м³): 3,19 м³</td><td class=\"num\">3,04 м³</td><td class=\"num\">1,05</td><td class=\"num\">3,19 м³</td><td class=\"num\">590,52 Br</td></tr><tr><td>Арматура А3 Ø12 мм (армопояс 149 кг + перемычки 34 кг): 0,183 т</td><td class=\"num\">182,8 кг</td><td class=\"num\">1,05</td><td class=\"num\">0,183 т</td><td class=\"num\">584,80 Br</td></tr><tr><td>Арматура А1 Ø6 мм (хомуты армопояса): 0,026 т</td><td class=\"num\">26,1 кг</td><td class=\"num\">1,05</td><td class=\"num\">0,026 т</td><td class=\"num\">83,54 Br</td></tr><tr><td>Кладка несущих стен: 29,81 м³</td><td class=\"num\">29,81 м³</td><td class=\"num\">1,00</td><td class=\"num\">29,81 м³</td><td class=\"num\">1 341,45 Br</td></tr><tr><td>Устройство армопояса и перемычек (армопояс 40,0 м.п. + перемычки 9,0 м.п.)</td><td class=\"num\">49,0 м.п.</td><td class=\"num\">1,00</td><td class=\"num\">49,0 м.п.</td><td class=\"num\">735,00 Br</td></tr>",
+        "tableHtml": "<tr><td>Стеновые блоки газосиликатные 300 мм (грязный объём 36,00 м³ − проёмы 3,15 м³ − армопояс 2,50 м³ − перемычки 0,54 м³): 29,81 м³</td><td class=\"num\">29,81 м³</td><td class=\"num\">1,05</td><td class=\"num\">31,30 м³</td><td class=\"num\">4 382,07 Br</td></tr><tr><td>Клей для блоков (расход 1,2 мешка/м³): 36 меш.</td><td class=\"num\">35,8 меш.</td><td class=\"num\">1,00</td><td class=\"num\">36 меш.</td><td class=\"num\">342,00 Br</td></tr><tr><td>Армирующая сетка (2 полосы × 3 рядов): 252,0 м.п.</td><td class=\"num\">240,0 м.п.</td><td class=\"num\">1,05</td><td class=\"num\">252,0 м.п.</td><td class=\"num\">806,40 Br</td></tr><tr><td>Бетон М250 (армопояс 2,50 м³ + перемычки 0,54 м³): 3,19 м³</td><td class=\"num\">3,04 м³</td><td class=\"num\">1,05</td><td class=\"num\">3,19 м³</td><td class=\"num\">590,52 Br</td></tr><tr><td>Арматура А3 Ø12 мм (армопояс 149 кг + перемычки 34 кг): 0,183 т</td><td class=\"num\">174,0 кг</td><td class=\"num\">1,05</td><td class=\"num\">0,183 т</td><td class=\"num\">584,80 Br</td></tr><tr><td>Арматура А1 Ø6 мм (хомуты армопояса): 0,026 т</td><td class=\"num\">24,9 кг</td><td class=\"num\">1,05</td><td class=\"num\">0,026 т</td><td class=\"num\">83,54 Br</td></tr><tr><td>Кладка несущих стен: 29,81 м³</td><td class=\"num\">29,81 м³</td><td class=\"num\">1,00</td><td class=\"num\">29,81 м³</td><td class=\"num\">1 341,45 Br</td></tr><tr><td>Устройство армопояса и перемычек (армопояс 40,0 м.п. + перемычки 9,0 м.п.)</td><td class=\"num\">49,0 м.п.</td><td class=\"num\">1,00</td><td class=\"num\">49,0 м.п.</td><td class=\"num\">735,00 Br</td></tr>",
         "scope": "Рассчитано: стены и перегородки.",
         "excluded": "Не рассчитано: фундамент, перекрытия, штукатурка, кровля.",
         "meta": "Стены 40,0 × 3,0 м · газосиликатные 300 мм · чистая кладка 29,81 м³ · проёмы 10,50 м²",
@@ -3372,19 +3388,35 @@
         },
         {
           "category": "isol",
-          "name": "Гидроизоляция / Рубероид (лента 96,00 м² + гильзы свай 47,12 м²): 143,12 м²",
-          "netLabel": "143,12 м²",
+          "name": "Гидроизоляция, рулон 1×10 м",
+          "netLabel": "96,00 м²",
           "net": {
-            "displayed": "143,12",
+            "displayed": "96,00",
             "unit": "м²"
           },
           "coefficient": 1.15,
-          "orderLabel": "17 рул.",
+          "orderLabel": "12 рул.",
           "order": {
-            "displayed": "17",
+            "displayed": "12",
             "unit": "рул."
           },
-          "cost": 487.73892516838697
+          "cost": 336
+        },
+        {
+          "category": "isol",
+          "name": "Рубероид гильз свай",
+          "netLabel": "47,12 м²",
+          "net": {
+            "displayed": "47,12",
+            "unit": "м²"
+          },
+          "coefficient": 1.15,
+          "orderLabel": "54,19 м²",
+          "order": {
+            "displayed": "54,19",
+            "unit": "м²"
+          },
+          "cost": 151.73892516838697
         },
         {
           "category": "concrete",
@@ -3502,7 +3534,7 @@
       "total": 30790.438870246486,
       "displayedTotal": "30 790,44 Br",
       "display": {
-        "tableHtml": "<tr class=\"cat-row\"><td colspan=\"5\">Бетон и растворы</td></tr><tr><td>Бетон М250 (лента 16,80 м³ + сваи 3,89 м³): 20,69 м³</td><td class=\"num\">19,53 м³</td><td class=\"num\">1,06</td><td class=\"num\">20,69 м³</td><td class=\"num\">4 247,23 Br</td></tr><tr><td>Песок</td><td class=\"num\">3,20 м³</td><td class=\"num\">1,10</td><td class=\"num\">3,52 м³</td><td class=\"num\">112,64 Br</td></tr><tr><td>Бурение и заливка свай</td><td class=\"num\">50,00 м.п.</td><td class=\"num\">1,00</td><td class=\"num\">50,00 м.п.</td><td class=\"num\">2 250,00 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Арматура и металл</td></tr><tr><td>Арматура рабочая А3 Ø12 (лента 155,7 кг + сваи 216,3 кг): 372,0 кг</td><td class=\"num\">348,0 кг</td><td class=\"num\">1,07</td><td class=\"num\">372,0 кг</td><td class=\"num\">1 190,49 Br</td></tr><tr><td>Хомуты Ø8 мм + кольца свай Ø6 (лента 156,9 кг + сваи 32,2 кг): 189,1 кг</td><td class=\"num\">171,2 кг</td><td class=\"num\">1,10</td><td class=\"num\">189,1 кг</td><td class=\"num\">605,08 Br</td></tr><tr><td>Вязальная проволока (лента 3,13 кг + сваи 1,76 кг): 4,89 кг</td><td class=\"num\">4,89 кг</td><td class=\"num\">1,00</td><td class=\"num\">4,89 кг</td><td class=\"num\">21,99 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Пиломатериалы</td></tr><tr><td>Доска 25×150×6000 (2,205 м³)</td><td class=\"num\">98 шт</td><td class=\"num\">1,00</td><td class=\"num\">98 шт</td><td class=\"num\">1 372,00 Br</td></tr><tr><td>Брус упоров 50×50×3000 (0,473 м³)</td><td class=\"num\">63 шт</td><td class=\"num\">1,00</td><td class=\"num\">63 шт</td><td class=\"num\">504,00 Br</td></tr><tr><td>Кровля — материалы (скаты 116,75 м², двухскатная)</td><td class=\"num\">116,75 м²</td><td class=\"num\">1,00</td><td class=\"num\">7 367,13</td><td class=\"num\">7 367,13 Br</td></tr><tr><td>Кровля — работы (монтаж под ключ, 116,75 м²)</td><td class=\"num\">116,75 м²</td><td class=\"num\">1,00</td><td class=\"num\">116,75 м²</td><td class=\"num\">7 588,46 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Изоляция и расходники</td></tr><tr><td>Гидроизоляция / Рубероид (лента 96,00 м² + гильзы свай 47,12 м²): 143,12 м²</td><td class=\"num\">143,12 м²</td><td class=\"num\">1,15</td><td class=\"num\">17 рул.</td><td class=\"num\">487,74 Br</td></tr><tr><td>Перекрытия — материалы (ЖБ плиты, 80,00 м²)</td><td class=\"num\">80,00 м²</td><td class=\"num\">1,00</td><td class=\"num\">4 403,69</td><td class=\"num\">4 403,69 Br</td></tr><tr><td>Перекрытия — работы (ЖБ плиты, 80,00 м²)</td><td class=\"num\">80,00 м²</td><td class=\"num\">1,00</td><td class=\"num\">640,00</td><td class=\"num\">640,00 Br</td></tr>",
+        "tableHtml": "<tr class=\"cat-row\"><td colspan=\"5\">Бетон и растворы</td></tr><tr><td>Бетон М250 (лента 16,80 м³ + сваи 3,89 м³): 20,69 м³</td><td class=\"num\">19,53 м³</td><td class=\"num\">1,06</td><td class=\"num\">20,69 м³</td><td class=\"num\">4 247,23 Br</td></tr><tr><td>Песок</td><td class=\"num\">3,20 м³</td><td class=\"num\">1,10</td><td class=\"num\">3,52 м³</td><td class=\"num\">112,64 Br</td></tr><tr><td>Бурение и заливка свай</td><td class=\"num\">50,00 м.п.</td><td class=\"num\">1,00</td><td class=\"num\">50,00 м.п.</td><td class=\"num\">2 250,00 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Арматура и металл</td></tr><tr><td>Арматура рабочая А3 Ø12 (лента 155,7 кг + сваи 216,3 кг): 372,0 кг</td><td class=\"num\">348,0 кг</td><td class=\"num\">1,07</td><td class=\"num\">372,0 кг</td><td class=\"num\">1 190,49 Br</td></tr><tr><td>Хомуты Ø8 мм + кольца свай Ø6 (лента 156,9 кг + сваи 32,2 кг): 189,1 кг</td><td class=\"num\">171,2 кг</td><td class=\"num\">1,10</td><td class=\"num\">189,1 кг</td><td class=\"num\">605,08 Br</td></tr><tr><td>Вязальная проволока (лента 3,13 кг + сваи 1,76 кг): 4,89 кг</td><td class=\"num\">4,89 кг</td><td class=\"num\">1,00</td><td class=\"num\">4,89 кг</td><td class=\"num\">21,99 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Пиломатериалы</td></tr><tr><td>Доска 25×150×6000 (2,205 м³)</td><td class=\"num\">98 шт</td><td class=\"num\">1,00</td><td class=\"num\">98 шт</td><td class=\"num\">1 372,00 Br</td></tr><tr><td>Брус упоров 50×50×3000 (0,473 м³)</td><td class=\"num\">63 шт</td><td class=\"num\">1,00</td><td class=\"num\">63 шт</td><td class=\"num\">504,00 Br</td></tr><tr><td>Кровля — материалы (скаты 116,75 м², двухскатная)</td><td class=\"num\">116,75 м²</td><td class=\"num\">1,00</td><td class=\"num\">7 367,13</td><td class=\"num\">7 367,13 Br</td></tr><tr><td>Кровля — работы (монтаж под ключ, 116,75 м²)</td><td class=\"num\">116,75 м²</td><td class=\"num\">1,00</td><td class=\"num\">116,75 м²</td><td class=\"num\">7 588,46 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Изоляция и расходники</td></tr><tr><td>Гидроизоляция, рулон 1×10 м</td><td class=\"num\">96,00 м²</td><td class=\"num\">1,15</td><td class=\"num\">12 рул.</td><td class=\"num\">336,00 Br</td></tr><tr><td>Рубероид гильз свай</td><td class=\"num\">47,12 м²</td><td class=\"num\">1,15</td><td class=\"num\">54,19 м²</td><td class=\"num\">151,74 Br</td></tr><tr><td>Перекрытия — материалы (ЖБ плиты, 80,00 м²)</td><td class=\"num\">80,00 м²</td><td class=\"num\">1,00</td><td class=\"num\">4 403,69</td><td class=\"num\">4 403,69 Br</td></tr><tr><td>Перекрытия — работы (ЖБ плиты, 80,00 м²)</td><td class=\"num\">80,00 м²</td><td class=\"num\">1,00</td><td class=\"num\">640,00</td><td class=\"num\">640,00 Br</td></tr>",
         "scope": "Рассчитано: ленточный фундамент, кровля, перекрытия.",
         "excluded": "Не рассчитано: стены и перегородки, штукатурка.",
         "meta": "Объект: лента 40,00 × 0,40 × 1,00 м · кровля двухскатная 8,00 × 10,00 м · перекрытия 10,00 × 8,00 м",
@@ -4860,11 +4892,19 @@
         },
         {
           "id": "strip-hydro",
-          "name": "Гидроизоляция / Рубероид (лента 96,00 м² + гильзы свай 47,12 м²): 143,12 м²",
-          "netLabel": "143,12 м²",
+          "name": "Гидроизоляция, рулон 1×10 м",
+          "netLabel": "96,00 м²",
           "k": 1.15,
-          "orderLabel": "17 рул.",
-          "cost": 487.73892516838697
+          "orderLabel": "12 рул.",
+          "cost": 336
+        },
+        {
+          "id": "strip-pile-hydro",
+          "name": "Рубероид гильз свай",
+          "netLabel": "47,12 м²",
+          "k": 1.15,
+          "orderLabel": "54,19 м²",
+          "cost": 151.73892516838697
         },
         {
           "name": "Бурение и заливка свай",
@@ -5016,11 +5056,19 @@
         },
         {
           "id": "strip-hydro",
-          "name": "Гидроизоляция / Рубероид (лента 96,00 м² + гильзы свай 47,12 м²): 143,12 м²",
-          "netLabel": "143,12 м²",
+          "name": "Гидроизоляция, рулон 1×10 м",
+          "netLabel": "96,00 м²",
           "k": 1.15,
-          "orderLabel": "17 рул.",
-          "cost": 487.73892516838697
+          "orderLabel": "12 рул.",
+          "cost": 336
+        },
+        {
+          "id": "strip-pile-hydro",
+          "name": "Рубероид гильз свай",
+          "netLabel": "47,12 м²",
+          "k": 1.15,
+          "orderLabel": "54,19 м²",
+          "cost": 151.73892516838697
         },
         {
           "name": "Бурение и заливка свай",

@@ -38,7 +38,9 @@
         let beltConcreteNet = 0;
         let beltConcreteOrder = 0;
         let beltRebarA3Kg = 0;
+        let beltRebarA3KgNet = 0;
         let beltStirrupKg = 0;
+        let beltStirrupKgNet = 0;
         let beltWorkM = 0;
         const beltWm = input.armopoyasWidthMm / 1000;
         const beltHm = input.armopoyasHeightMm / 1000;
@@ -46,12 +48,16 @@
           vBeltDisplace = P * beltWm * beltHm;
           beltConcreteNet = vBeltDisplace;
           beltConcreteOrder = beltConcreteNet * reserve;
-          const beltRebarLen = P * 4 * reserve;
-          beltRebarA3Kg = beltRebarLen * 0.888;
+          const beltRebarLenNet = P * 4;
+          const beltRebarLenOrder = beltRebarLenNet * reserve;
+          beltRebarA3Kg = beltRebarLenOrder * 0.888;
+          beltRebarA3KgNet = beltRebarLenNet * 0.888;
           const stirrupCount = Math.ceil(P / 0.25);
           const stirrupUnitLen = 2 * (beltWm - 0.1) + 2 * (beltHm - 0.1) + 0.1;
-          const stirrupTotalLen = stirrupCount * stirrupUnitLen * reserve;
+          const stirrupTotalLenNet = stirrupCount * stirrupUnitLen;
+          const stirrupTotalLen = stirrupTotalLenNet * reserve;
           beltStirrupKg = stirrupTotalLen * 0.222;
+          beltStirrupKgNet = stirrupTotalLenNet * 0.222;
           beltWorkM = P;
         }
 
@@ -160,7 +166,9 @@
           });
         }
 
+        const lintelRebarA3KgNet = lintelRebarLenNet * 0.888;
         const lintelRebarA3Kg = lintelRebarLenOrder * 0.888;
+        const rebarA3KgNet = beltRebarA3KgNet + lintelRebarA3KgNet;
         const rebarA3Kg = beltRebarA3Kg + lintelRebarA3Kg;
         if (rebarA3Kg > 0) {
           const rebarParts = [];
@@ -177,7 +185,7 @@
               "): " +
               formatQty(rebarA3Kg / 1000, 3) +
               " т",
-            netLabel: formatQty(rebarA3Kg, 1) + " кг",
+            netLabel: formatQty(rebarA3KgNet, 1) + " кг",
             k: reserve,
             orderLabel: formatQty(rebarA3Kg / 1000, 3) + " т",
             cost: rebarA3Kg * rebarPriceKg,
@@ -188,7 +196,7 @@
           rows.push({
             name:
               "Арматура А1 Ø6 мм (хомуты армопояса): " + formatQty(beltStirrupKg / 1000, 3) + " т",
-            netLabel: formatQty(beltStirrupKg, 1) + " кг",
+            netLabel: formatQty(beltStirrupKgNet, 1) + " кг",
             k: reserve,
             orderLabel: formatQty(beltStirrupKg / 1000, 3) + " т",
             cost: beltStirrupKg * rebarPriceKg,
