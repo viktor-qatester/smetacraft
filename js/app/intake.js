@@ -92,7 +92,7 @@
           const n = parseNumber(row.count);
           if (row.type === "entry-door") {
             doors += n;
-          } else {
+          } else if (row.type === "window") {
             windows += n;
           }
         }

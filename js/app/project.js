@@ -24,15 +24,20 @@
       function writeOpeningsState(list) {
         const rows = list.length
           ? list
-          : [{ type: "window", width: "1.5", height: "1.5", count: "6", locked: true, id: 1 }];
+          : [
+              { type: "window", width: "1.5", height: "1.4", count: "4", locked: true, id: 1 },
+              { type: "entry-door", width: "1.0", height: "2.1", count: "1", id: 2 },
+            ];
         while (wallsOpeningsBody.firstElementChild) {
           wallsOpeningsBody.firstElementChild.remove();
         }
         rows.forEach(function (item, index) {
+          const normalizedType =
+            item && item.type === "interior-door" ? "entry-door" : item && item.type != null ? item.type : "window";
           const row = wallsOpeningRowTemplate({
             id: item && item.id != null ? item.id : index + 1,
             locked: item && item.locked != null ? item.locked : index === 0,
-            type: item && item.type != null ? item.type : "window",
+            type: normalizedType,
             width: item && item.width != null ? item.width : item && item.w != null ? item.w : "1.5",
             height: item && item.height != null ? item.height : item && item.h != null ? item.h : "1.5",
             count: item && item.count != null ? item.count : item && item.n != null ? item.n : "1",

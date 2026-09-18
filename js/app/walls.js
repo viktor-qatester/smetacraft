@@ -87,6 +87,7 @@
         }
         const locked = Boolean(options.locked);
         const type = options.type != null ? String(options.type) : "window";
+        const displayType = type === "interior-door" ? "entry-door" : type;
         const width = options.width != null ? String(options.width) : "1.5";
         const height = options.height != null ? String(options.height) : "1.5";
         const count = options.count != null ? String(options.count) : "1";
@@ -104,14 +105,13 @@
         [
           ["window", "Окно"],
           ["entry-door", "Входная дверь"],
-          ["interior-door", "Межкомнатная дверь"],
         ].forEach(function (item) {
           const option = document.createElement("option");
           option.value = item[0];
           option.textContent = item[1];
           select.appendChild(option);
         });
-        select.value = type;
+        select.value = displayType;
         typeCell.appendChild(select);
         tr.appendChild(typeCell);
         [["width", width, "decimal", "0.1", "0.1"], ["height", height, "decimal", "0.1", "0.1"], ["count", count, "numeric", "1", "1"]].forEach(function (item) {
