@@ -323,7 +323,6 @@
 
             const combinedHydroNet = hydroNet + pileTotals.ruberoidNet;
             const combinedHydroOrder = hydroNet * (1 + HYDRO_OVERLAP) + pileTotals.ruberoidOrder;
-            const combinedRolls = Math.ceil(combinedHydroOrder / ROLL_AREA);
             const hydroRow = rows.find(function (row) {
               return (
                 row.id === "strip-hydro" ||
@@ -340,7 +339,11 @@
                 formatQty(combinedHydroNet, 2) +
                 " м²";
               hydroRow.netLabel = formatQty(combinedHydroNet, 2) + " м²";
-              hydroRow.orderLabel = String(combinedRolls) + " рул.";
+              hydroRow.orderLabel =
+                String(rolls) +
+                " рул. + " +
+                formatQty(pileTotals.ruberoidOrder, 2) +
+                " м²";
               hydroRow.k =
                 combinedHydroNet > 0 ? combinedHydroOrder / combinedHydroNet : 1 + HYDRO_OVERLAP;
               hydroRow.cost = rolls * input.hydroPrice + pileCosts.ruberoid;
