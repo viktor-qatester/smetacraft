@@ -8,10 +8,13 @@ const crypto = require('node:crypto');
 const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
 const stripCoreSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'core', 'strip.js'), 'utf8');
 const wallsCoreSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'core', 'walls.js'), 'utf8');
+const plasterCoreSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'core', 'plaster.js'), 'utf8');
 const stripScript = '<script src="js/core/strip.js"></script>';
 const wallsScript = '<script src="js/core/walls.js"></script>';
+const plasterScript = '<script src="js/core/plaster.js"></script>';
 if (html.indexOf(stripScript) < 0 || html.indexOf(wallsScript) < html.indexOf(stripScript) ||
-    html.indexOf(wallsScript) > html.indexOf('<script>')) {
+    html.indexOf(plasterScript) < html.indexOf(wallsScript) ||
+    html.indexOf(plasterScript) > html.indexOf('<script>')) {
   throw new Error('Calculation cores must load before the inline application script');
 }
 const sourceHash = crypto.createHash('sha256').update(html).digest('hex');
@@ -132,6 +135,7 @@ function createApp() {
   vm.createContext(context);
   vm.runInContext(stripCoreSource, context, { filename: 'js/core/strip.js' });
   vm.runInContext(wallsCoreSource, context, { filename: 'js/core/walls.js' });
+  vm.runInContext(plasterCoreSource, context, { filename: 'js/core/plaster.js' });
   vm.runInContext(appSource, context, { filename: 'index.html' });
   // These are UI synchronization functions only. The fixture already holds their final values.
   for (const name of [
