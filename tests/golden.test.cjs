@@ -102,5 +102,15 @@ test('legacy 19 678,29 Br control is distinct from renderSummary', () => {
 test('existing runRegressionTests passes with deterministic Node form fixtures', () => {
   const result = runExistingRegression(fixtures);
   assert.equal(result.passed, true, result.badge);
-  assert.match(result.badge, /19\u00a0678,29 Br/);
+  assert.equal(result.hidden, true);
+  assert.equal(result.badge, '');
+});
+
+test('failed runRegressionTests remains visible with diagnostic details', () => {
+  const broken = { ...fixtures, slab: { ...fixtures.slab, length: fixtures.slab.length + 1 } };
+  const result = runExistingRegression(broken);
+  assert.equal(result.passed, false);
+  assert.equal(result.hidden, false);
+  assert.equal(result.badge, 'Ошибка регрессии!');
+  assert.match(result.title, /Плита/);
 });

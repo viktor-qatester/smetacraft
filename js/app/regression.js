@@ -312,34 +312,12 @@
         return { total: total, errors: errors };
       }
 
-      function updateRegressionBadge(
-        passed,
-        failures,
-        summaryExpected,
-        stripPilesExpected,
-        roofExpected,
-        wallsExpected,
-        plasterExpected,
-        floorExpected
-      ) {
+      function updateRegressionBadge(passed, failures) {
         const badge = document.getElementById("regression-badge");
-        badge.classList.toggle("pass", passed);
+        badge.hidden = passed;
         badge.classList.toggle("fail", !passed);
         if (passed) {
-          badge.textContent =
-            "Тесты пройдены: Сводная (" +
-            formatMoney(summaryExpected) +
-            ") | Лента со сваями (" +
-            formatMoney(stripPilesExpected) +
-            ") | Кровля (" +
-            formatMoney(roofExpected) +
-            ") | Стены (" +
-            formatMoney(wallsExpected) +
-            ") | Штукатурка (" +
-            formatMoney(plasterExpected) +
-            ") | Перекрытия (" +
-            formatMoney(floorExpected) +
-            ")";
+          badge.textContent = "";
           badge.removeAttribute("title");
         } else {
           badge.textContent = "Ошибка регрессии!";
@@ -515,16 +493,7 @@
         setActiveBlock("summary");
 
         const passed = failures.length === 0;
-        updateRegressionBadge(
-          passed,
-          failures,
-          REGRESSION_EXPECT.summary,
-          REGRESSION_EXPECT.stripPiles,
-          REGRESSION_EXPECT.roof,
-          REGRESSION_EXPECT.walls,
-          REGRESSION_EXPECT.plaster,
-          REGRESSION_EXPECT.floor
-        );
+        updateRegressionBadge(passed, failures);
         persistSuspended = previousPersist;
         return passed;
       }

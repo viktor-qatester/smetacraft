@@ -534,7 +534,8 @@ function runExistingRegression(fixtures) {
   app.getOpeningsData = () => phase === 'plaster' ? sixWindows : [];
   app.setActiveBlock = block => { app.activeBlock = block; };
   const passed = app.runRegressionTests();
-  return { passed, badge: get('regression-badge').textContent };
+  const badge = get('regression-badge');
+  return { passed, badge: badge.textContent, hidden: badge.hidden, title: badge.title };
 }
 
 module.exports = { html, sourceHash, createApp, projectFixture, runScenario, runJsonRoundTrip, runLocalStorageRoundTrip, runIntakeSlabSmoke, runLegacyControl, runExistingRegression, plain };
