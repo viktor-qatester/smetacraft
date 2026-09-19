@@ -323,7 +323,6 @@
           badge.textContent = "Ошибка регрессии!";
           badge.title = failures.join(" · ");
         }
-        badge.hidden = !isRegressionBadgeVisible();
       }
 
       function runRegressionTests() {
