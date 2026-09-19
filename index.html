@@ -2049,6 +2049,15 @@
                 <p class="note">Смета пересчитывается сразу после чтения файла. Файл никуда не отправляется — он читается в браузере.</p>
               </fieldset>
 
+              <fieldset>
+                <legend>Проверить серверный приём</legend>
+                <div class="project-actions">
+                  <button type="button" class="btn-action" id="project-server-check">Проверить приём проекта сервером</button>
+                </div>
+                <p class="note">Только по нажатию: текущий JSON-проект передаётся локальному серверу. Сервер подтверждает приём и не сохраняет проект.</p>
+                <p id="project-server-status" class="project-status" role="status" aria-live="polite"></p>
+              </fieldset>
+
               <p id="project-status" class="project-status">Проект хранится только у вас: ни экспорт, ни импорт не обращаются к сети.</p>
             </form>
           </section>
@@ -2124,6 +2133,7 @@
     <script src="js/app/project.js"></script>
     <script src="js/app/reset.js"></script>
     <script src="js/app/file-import.js"></script>
+    <script src="js/app/backend-check.js"></script>
     <script src="js/app/boot.js"></script>
   </body>
 </html>

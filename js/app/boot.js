@@ -24,6 +24,7 @@
       bindRoofEvents();
       bindPriceEvents();
       bindProjectEvents();
+      bindBackendCheck();
 
       projectFileEl.addEventListener("change", handleProjectFileChange);
 
