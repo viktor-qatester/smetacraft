@@ -319,6 +319,120 @@ test('migration block is hidden on a non-loopback host', () => {
   assert.equal(fieldset.hidden, true);
 });
 
+test('201 migrate saves capabilityToken to receipt before readback fetch', async () => {
+  const body = canonicalBody(createApp().context);
+  const projectId = '1'.repeat(32);
+  const capabilityToken = 'tok-' + '2'.repeat(40);
+  let receiptBeforeReadback = null;
+  const { app } = createMigrationApp({
+    fetchImpl: async (url) => {
+      if (url === '/api/projects/migrate') {
+        return {
+          ok: true,
+          status: 201,
+          json: async () => ({
+            ok: true,
+            projectId,
+            revision: 1,
+            sha256: digest(body),
+            capabilityToken,
+          }),
+        };
+      }
+      receiptBeforeReadback = JSON.parse(
+        app.window.localStorage.getItem('smetacraft_project_migration_v1'),
+      );
+      return {
+        ok: true,
+        status: 200,
+        json: async () => ({
+          ok: true,
+          projectId,
+          revision: 1,
+          sha256: digest(body),
+          project: golden.jsonRoundTrip.exported,
+        }),
+      };
+    },
+  });
+  app.window.localStorage.setItem('smetacraft_project', body);
+  await app.runProjectMigration();
+  assert.ok(receiptBeforeReadback);
+  assert.equal(receiptBeforeReadback.state, 'sending');
+  assert.equal(receiptBeforeReadback.capabilityToken, capabilityToken);
+  assert.equal(receiptBeforeReadback.projectId, projectId);
+  assert.equal(receiptBeforeReadback.revision, 1);
+});
+
+test('replay 200 without capabilityToken succeeds when receipt already has token', async () => {
+  const body = canonicalBody(createApp().context);
+  const projectId = '3'.repeat(32);
+  const capabilityToken = 'tok-' + '4'.repeat(40);
+  let attempts = 0;
+  const { app, status } = createMigrationApp({
+    fetchImpl: async (url) => {
+      attempts += 1;
+      if (url === '/api/projects/migrate') {
+        if (attempts === 1) {
+          return {
+            ok: true,
+            status: 201,
+            json: async () => ({
+              ok: true,
+              projectId,
+              revision: 1,
+              sha256: digest(body),
+              capabilityToken,
+            }),
+          };
+        }
+        return {
+          ok: true,
+          status: 200,
+          json: async () => ({
+            ok: true,
+            projectId,
+            revision: 1,
+            sha256: digest(body),
+            replayed: true,
+          }),
+        };
+      }
+      if (attempts === 2) {
+        return {
+          ok: false,
+          status: 500,
+          json: async () => ({ ok: false, error: 'readback_failed' }),
+        };
+      }
+      return {
+        ok: true,
+        status: 200,
+        json: async () => ({
+          ok: true,
+          projectId,
+          revision: 1,
+          sha256: digest(body),
+          project: golden.jsonRoundTrip.exported,
+        }),
+      };
+    },
+  });
+  app.window.localStorage.setItem('smetacraft_project', body);
+  await app.runProjectMigration();
+  const failedReceipt = JSON.parse(app.window.localStorage.getItem('smetacraft_project_migration_v1'));
+  assert.equal(failedReceipt.state, 'failed');
+  assert.equal(failedReceipt.capabilityToken, capabilityToken);
+  assert.equal(failedReceipt.lastError, 'readback_failed');
+
+  await app.runProjectMigration();
+  const receipt = JSON.parse(app.window.localStorage.getItem('smetacraft_project_migration_v1'));
+  assert.equal(receipt.state, 'server verified');
+  assert.equal(receipt.capabilityToken, capabilityToken);
+  assert.equal(receipt.idempotencyKey, failedReceipt.idempotencyKey);
+  assert.match(status.textContent, /проверена чтением/);
+});
+
 test('end-to-end migrate readback via HTTP', async () => {
   await new Promise((resolve, reject) => {
     const dbPath = tempDbPath('e2e');
