@@ -16,7 +16,7 @@ const slabUiSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'ui', 'sla
 const stripUiSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'ui', 'strip.js'), 'utf8');
 const appNames = ['config', 'state', 'utils', 'bill', 'price', 'piles', 'foundations', 'walls', 'plaster',
   'roof', 'floor', 'links', 'summary', 'render', 'intake', 'regression', 'project',
-  'reset', 'file-import', 'backend-check', 'boot'];
+  'reset', 'file-import', 'backend-check', 'project-migration', 'boot'];
 const scriptPaths = ['js/core/slab.js', 'js/core/strip.js', 'js/core/walls.js',
   'js/core/plaster.js', 'js/core/roof.js', 'js/core/floor.js',
   'js/ui/slab.js', 'js/ui/strip.js', ...appNames.map(name => `js/app/${name}.js`)];

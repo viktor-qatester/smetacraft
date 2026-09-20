@@ -2070,6 +2070,15 @@
                 <p class="note">Смета пересчитывается сразу после чтения файла. Файл никуда не отправляется — он читается в браузере.</p>
               </fieldset>
 
+              <fieldset id="project-migration-fieldset">
+                <legend>Перенос на сервер</legend>
+                <div class="project-actions">
+                  <button type="button" class="btn-action" id="project-migrate">Перенести копию на сервер</button>
+                </div>
+                <p class="note">Только по нажатию: копия текущего JSON-проекта сохраняется на локальном сервере. Локальный проект в браузере не удаляется и не заменяется.</p>
+                <p id="project-migration-status" class="project-status" role="status" aria-live="polite"></p>
+              </fieldset>
+
               <fieldset id="project-server-check-fieldset">
                 <legend>Проверить серверный приём</legend>
                 <div class="project-actions">
@@ -2155,6 +2164,7 @@
     <script src="js/app/reset.js"></script>
     <script src="js/app/file-import.js"></script>
     <script src="js/app/backend-check.js"></script>
+    <script src="js/app/project-migration.js"></script>
     <script src="js/app/boot.js"></script>
   </body>
 </html>

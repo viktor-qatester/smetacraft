@@ -26,6 +26,7 @@
       bindPriceEvents();
       bindProjectEvents();
       bindBackendCheck();
+      bindProjectMigration();
 
       projectFileEl.addEventListener("change", handleProjectFileChange);
 

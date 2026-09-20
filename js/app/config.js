@@ -61,6 +61,7 @@
       const PROJECT_VERSION = 1;
       const PROJECT_FILENAME = "smetacraft_project.json";
       const STORAGE_KEY = "smetacraft_project";
+      const MIGRATION_RECEIPT_KEY = "smetacraft_project_migration_v1";
       const PROJECT_MAX_FILE_BYTES = 1024 * 1024;
       const PROJECT_MAX_ROWS = 500;
       const PROJECT_FIELD_IDS = new Set((
