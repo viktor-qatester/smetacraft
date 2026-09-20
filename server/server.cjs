@@ -2,10 +2,14 @@ const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
-
-const ROOT = path.resolve(__dirname, '..');
-const MAX_BODY = 1024 * 1024;
-const MAX_ROWS = 500;
+const {
+  ROOT, DB_PATH, MAX_BODY, RECORD_VERSION, IDEMPOTENCY_KEY_PATTERN, PROJECT_ID_PATTERN,
+} = require('./config.cjs');
+const { validProject } = require('./project-validator.cjs');
+const { isStorageReady } = require('./db.cjs');
+const {
+  createProjectRepository, ConflictError, StorageError,
+} = require('./project-repository.cjs');
 
 function sendJson(res, status, value) {
   res.writeHead(status, {
@@ -16,20 +20,17 @@ function sendJson(res, status, value) {
   res.end(JSON.stringify(value));
 }
 
+function sendRawJson(res, status, body) {
+  res.writeHead(status, {
+    'Content-Type': 'application/json; charset=utf-8',
+    'Cache-Control': 'no-store',
+    'X-Content-Type-Options': 'nosniff',
+  });
+  res.end(body);
+}
+
 function fail(res, status, code) {
   sendJson(res, status, { ok: false, error: code });
-}
-
-function isObject(value) {
-  return value !== null && typeof value === 'object' && !Array.isArray(value);
-}
-
-function numeric(value, integer = false) {
-  const validString = typeof value === 'string' &&
-    /^\s*[+-]?(?:\d+(?:[.,]\d*)?|[.,]\d+)(?:[eE][+-]?\d+)?\s*$/.test(value);
-  const number = typeof value === 'number' ? value :
-    validString ? Number(value.trim().replace(',', '.')) : NaN;
-  return Number.isFinite(number) && (!integer || (Number.isSafeInteger(number) && number > 0));
 }
 
 function validLocalAuthority(req) {
@@ -52,57 +53,36 @@ function validLocalAuthority(req) {
     (typeof origin === 'string' && origin.toLowerCase() === expectedOrigin);
 }
 
-// Transport preflight for JSON v1. The browser's established importer remains
-// the authority for applying a project to the form.
-function validProject(project) {
-  if (!isObject(project) || project.format !== 'smetacraft-project' || project.version !== 1) return false;
-  if (project.block !== undefined &&
-      !['intake', 'slab', 'strip', 'walls', 'plaster', 'floor', 'roof', 'summary', 'price', 'project'].includes(project.block)) return false;
-  if (project.billBlock !== undefined &&
-      !['slab', 'strip', 'walls', 'floor', 'plaster', 'roof', 'summary'].includes(project.billBlock)) return false;
-  for (const section of ['fields', 'checks', 'radios', 'flags']) {
-    if (project[section] !== undefined && !isObject(project[section])) return false;
-  }
-  if (project.fields && Object.values(project.fields).some(value =>
-    typeof value !== 'string' && !(typeof value === 'number' && Number.isFinite(value)))) return false;
-  if (project.checks && Object.values(project.checks).some(value => typeof value !== 'boolean')) return false;
-  if (project.radios && project.radios['summary-found-type'] !== undefined &&
-      !['slab', 'strip'].includes(project.radios['summary-found-type'])) return false;
-  if (project.flags && Object.entries(project.flags).some(([key, value]) =>
-    key === 'lastFoundationBlock' ? !['slab', 'strip'].includes(value) : typeof value !== 'boolean')) return false;
-  for (const section of ['openings', 'piles']) {
-    const rows = project[section];
-    if (rows === undefined) continue;
-    if (!Array.isArray(rows) || rows.length > MAX_ROWS) return false;
-    if (rows.some((row, index) => {
-      if (!isObject(row) || (row.id !== undefined &&
-          (typeof row.id !== 'number' || !numeric(row.id, true))) ||
-          (row.locked !== undefined && typeof row.locked !== 'boolean')) return true;
-      if (section === 'openings') {
-        if (row.type !== undefined && !['window', 'entry-door', 'interior-door'].includes(row.type)) return true;
-        return [['width', 'w'], ['height', 'h'], ['count', 'n']].some(([name, alias]) =>
-          row[name] !== undefined || row[alias] !== undefined
-            ? !numeric(row[name] !== undefined ? row[name] : row[alias]) : false);
-      }
-      return (row.name !== undefined && (typeof row.name !== 'string' || row.name.length > 256)) ||
-        (row.diameterMm !== undefined && ![200, 250, 300, 350, 400].includes(row.diameterMm)) ||
-        (row.depthM !== undefined && !numeric(row.depthM)) ||
-        (row.count !== undefined && !numeric(row.count, true));
-    })) return false;
-  }
-  return true;
+function hashIdempotencyKey(key) {
+  return crypto.createHash('sha256').update(key).digest('hex');
 }
 
-function handleCheck(req, res) {
-  if (req.method !== 'POST') return fail(res, 405, 'method_not_allowed');
+function capabilityHash(projectId, token) {
+  return crypto.createHash('sha256').update(`${projectId}:${token}`).digest('hex');
+}
+
+function generateProjectId() {
+  return crypto.randomBytes(16).toString('hex');
+}
+
+function generateCapabilityToken() {
+  return crypto.randomBytes(32).toString('base64url');
+}
+
+function readJsonBody(req, res, onBody) {
   if (!/^application\/json(?:\s*;\s*charset=utf-8)?$/i.test(req.headers['content-type'] || '')) {
-    return fail(res, 415, 'unsupported_media_type');
+    fail(res, 415, 'unsupported_media_type');
+    return;
   }
   if (!validLocalAuthority(req)) {
-    return fail(res, 403, 'origin_forbidden');
+    fail(res, 403, 'origin_forbidden');
+    return;
   }
   const declared = Number(req.headers['content-length']);
-  if (Number.isFinite(declared) && declared > MAX_BODY) return fail(res, 413, 'body_too_large');
+  if (Number.isFinite(declared) && declared > MAX_BODY) {
+    fail(res, 413, 'body_too_large');
+    return;
+  }
   const chunks = [];
   let bytes = 0;
   let finished = false;
@@ -119,8 +99,57 @@ function handleCheck(req, res) {
   });
   req.on('end', () => {
     if (finished) return;
+    onBody(Buffer.concat(chunks));
+  });
+}
+
+function migrateEnvelope(record, extra = {}) {
+  return {
+    ok: true,
+    recordVersion: record.recordVersion,
+    projectId: record.projectId,
+    revision: record.revision,
+    bytes: record.bytes,
+    sha256: record.sha256,
+    createdAt: record.createdAt,
+    updatedAt: record.updatedAt,
+    ...extra,
+  };
+}
+
+function buildGetBody(record) {
+  const envelope = JSON.stringify({
+    ok: true,
+    recordVersion: record.recordVersion,
+    projectId: record.projectId,
+    revision: record.revision,
+    bytes: record.bytes,
+    sha256: record.sha256,
+    createdAt: record.createdAt,
+    updatedAt: record.updatedAt,
+    ownerId: record.ownerId,
+  });
+  return `${envelope.slice(0, -1)},"project":${record.projectBytes.toString('utf8')}}`;
+}
+
+function parseBearerToken(req) {
+  const header = req.headers.authorization;
+  if (typeof header !== 'string' || !header.startsWith('Bearer ')) return null;
+  const token = header.slice('Bearer '.length);
+  return token.length > 0 ? token : null;
+}
+
+function timingSafeHashEqual(left, right) {
+  const leftBuffer = Buffer.from(left, 'utf8');
+  const rightBuffer = Buffer.from(right, 'utf8');
+  if (leftBuffer.length !== rightBuffer.length) return false;
+  return crypto.timingSafeEqual(leftBuffer, rightBuffer);
+}
+
+function handleCheck(req, res) {
+  if (req.method !== 'POST') return fail(res, 405, 'method_not_allowed');
+  readJsonBody(req, res, body => {
     let project;
-    const body = Buffer.concat(chunks);
     try {
       project = JSON.parse(body.toString('utf8'));
     } catch {
@@ -129,10 +158,82 @@ function handleCheck(req, res) {
     if (!validProject(project)) return fail(res, 422, 'invalid_project_v1');
     sendJson(res, 200, {
       ok: true,
-      bytes,
+      bytes: body.length,
       sha256: crypto.createHash('sha256').update(body).digest('hex'),
     });
   });
+}
+
+function handleMigrate(req, res, repository) {
+  if (req.method !== 'POST') return fail(res, 405, 'method_not_allowed');
+  const idempotencyKey = req.headers['idempotency-key'];
+  if (idempotencyKey === undefined) return fail(res, 400, 'idempotency_key_required');
+  if (typeof idempotencyKey !== 'string' || !IDEMPOTENCY_KEY_PATTERN.test(idempotencyKey)) {
+    return fail(res, 400, 'invalid_idempotency_key');
+  }
+  readJsonBody(req, res, body => {
+    let project;
+    try {
+      project = JSON.parse(body.toString('utf8'));
+    } catch {
+      return fail(res, 400, 'invalid_json');
+    }
+    if (!validProject(project)) return fail(res, 422, 'invalid_project_v1');
+    const sha256 = crypto.createHash('sha256').update(body).digest('hex');
+    const now = new Date().toISOString();
+    const projectId = generateProjectId();
+    const capabilityToken = generateCapabilityToken();
+    const hash = capabilityHash(projectId, capabilityToken);
+    try {
+      const result = repository.createProject({
+        projectId,
+        bytes: body,
+        sha256,
+        capabilityHash: hash,
+        idempotencyKeyHash: hashIdempotencyKey(idempotencyKey),
+        now,
+      });
+      const payload = migrateEnvelope(result.record, {
+        replayed: result.replayed,
+      });
+      if (!result.replayed) {
+        payload.capabilityToken = capabilityToken;
+      }
+      sendJson(res, result.replayed ? 200 : 201, payload);
+    } catch (error) {
+      if (error instanceof ConflictError) return fail(res, 409, 'idempotency_key_conflict');
+      if (error instanceof StorageError) return fail(res, 503, 'storage_unavailable');
+      return fail(res, 503, 'storage_unavailable');
+    }
+  });
+}
+
+function handleGetProject(req, res, projectId, repository) {
+  if (req.method !== 'GET' && req.method !== 'HEAD') return fail(res, 405, 'method_not_allowed');
+  if (!validLocalAuthority(req)) return fail(res, 403, 'origin_forbidden');
+  const token = parseBearerToken(req);
+  if (!token) return fail(res, 401, 'capability_required');
+  let record;
+  try {
+    record = repository.getProject({ projectId });
+  } catch (error) {
+    if (error instanceof StorageError) return fail(res, 503, 'storage_unavailable');
+    return fail(res, 503, 'storage_unavailable');
+  }
+  if (!record || !timingSafeHashEqual(record.capabilityHash, capabilityHash(projectId, token))) {
+    return fail(res, 404, 'not_found');
+  }
+  const body = buildGetBody(record);
+  if (req.method === 'HEAD') {
+    res.writeHead(200, {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Cache-Control': 'no-store',
+      'X-Content-Type-Options': 'nosniff',
+      'Content-Length': Buffer.byteLength(body),
+    });
+    return res.end();
+  }
+  sendRawJson(res, 200, body);
 }
 
 function handleStatic(req, res, pathname) {
@@ -153,7 +254,11 @@ function handleStatic(req, res, pathname) {
   });
 }
 
-function createServer() {
+function createServer(options = {}) {
+  const dbPath = options.dbPath || DB_PATH;
+  const storageReady = isStorageReady(dbPath);
+  const repository = storageReady ? createProjectRepository({ dbPath }) : null;
+
   return http.createServer((req, res) => {
     let pathname;
     try {
@@ -162,6 +267,15 @@ function createServer() {
       return fail(res, 400, 'bad_url');
     }
     if (pathname === '/api/project-check') return handleCheck(req, res);
+    if (pathname === '/api/projects/migrate') {
+      if (!repository) return fail(res, 503, 'storage_unavailable');
+      return handleMigrate(req, res, repository);
+    }
+    const projectMatch = pathname.match(/^\/api\/projects\/([0-9a-f]{32})$/);
+    if (projectMatch) {
+      if (!repository) return fail(res, 503, 'storage_unavailable');
+      return handleGetProject(req, res, projectMatch[1], repository);
+    }
     if (pathname.startsWith('/api/')) return fail(res, 404, 'not_found');
     handleStatic(req, res, pathname);
   });
@@ -169,6 +283,10 @@ function createServer() {
 
 if (require.main === module) {
   const port = Number(process.env.PORT || 8000);
+  if (!isStorageReady(DB_PATH)) {
+    process.stderr.write('Storage unavailable: run node server/db-migrate.cjs before starting the server.\n');
+    process.exit(1);
+  }
   createServer().listen(port, '127.0.0.1', () => {
     process.stdout.write(`SmetaCraft: http://127.0.0.1:${port}/\n`);
   });
