@@ -7,15 +7,16 @@
       });
 
       slabUi.bindEvents({
-        form, gradeEl, concretePriceEl, render,
+        form, gradeEl, concretePriceEl, barDiameterEl, rodLengthEl, render,
         syncRoofFootprintFromFoundation, syncFloorFromFoundation,
         syncWallsPerimeterFromFoundation
       });
 
       stripUi.bindEvents({
-        stripForm, stripGradeEl, stripConcretePriceEl, pilesBodyEl,
-        render, syncRoofFootprintFromFoundation, syncFloorFromFoundation,
-        syncWallsPerimeterFromFoundation, syncPilesUi, pileRowTemplate
+        stripForm, stripGradeEl, stripConcretePriceEl, stripBarDiameterEl,
+        stripRodLengthEl, pilesBodyEl, render, syncRoofFootprintFromFoundation,
+        syncFloorFromFoundation, syncWallsPerimeterFromFoundation, syncPilesUi,
+        pileRowTemplate
       });
 
       bindWallsEvents();

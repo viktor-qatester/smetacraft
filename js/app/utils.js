@@ -34,6 +34,10 @@
         return Math.ceil(adjusted) + 1;
       }
 
+      function defaultRodLengthM(diameterMm) {
+        return diameterMm === 12 ? 5.8 : 6.0;
+      }
+
       function lengthWithSplices(span, rodLength, overlap) {
         if (span <= rodLength) return span;
         const usable = rodLength - overlap;

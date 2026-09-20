@@ -11,8 +11,8 @@ function setup() {
 test('Phase 3A mapping covers the complete JSON v1 allowlist', () => {
   const { app, project } = setup();
   const entries = plain(app.modelFieldEntries());
-  assert.equal(entries.length, 99);
-  assert.equal(new Set(entries.map(entry => entry.id)).size, 99);
+  assert.equal(entries.length, 101);
+  assert.equal(new Set(entries.map(entry => entry.id)).size, 101);
   assert.deepStrictEqual(entries.map(entry => entry.id).sort(), Object.keys(project.fields).sort());
   assert.ok(entries.every(entry => entry.unit && entry.group));
 });

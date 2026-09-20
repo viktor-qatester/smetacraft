@@ -11,7 +11,7 @@
         PILE_CONCRETE_LOSS, PILE_LONG_BARS, PILE_LONG_KG_M, PILE_REBAR_RESERVE,
         PILE_ROSTRVERK, PILE_RUBEROID_RESERVE, PILE_STIRRUP_INNER,
         PILE_STIRRUP_KG_M, PILE_STIRRUP_STEP, PILE_WIRE_KG_NODE, PILE_WIRE_NODES,
-        ROD_LENGTH, ROLL_AREA, STAKE_EXTRA, STAKE_SPACING, TIMBER_SIZE,
+        ROLL_AREA, STAKE_EXTRA, STAKE_SPACING, TIMBER_SIZE,
         TIMBER_STOCK, WIRE_RATE, formatQty, isZeroSize, kgPerMeter, barCount,
         lengthWithSplices, stirrupBarLength
       } = deps;
@@ -109,10 +109,11 @@
         const overlap = OVERLAP_DIAMETERS * (input.diameterMm / 1000);
         const kgLong = kgPerMeter(input.diameterMm);
         const netMeters = input.barCount * input.length;
+        const rodLength = input.rodLengthM;
         const metersWithLap =
-          input.barCount * lengthWithSplices(input.length, ROD_LENGTH, overlap);
-        const rods = Math.ceil(metersWithLap / ROD_LENGTH);
-        const purchasedMeters = rods * ROD_LENGTH;
+          input.barCount * lengthWithSplices(input.length, rodLength, overlap);
+        const rods = Math.ceil(metersWithLap / rodLength);
+        const purchasedMeters = rods * rodLength;
         const netKg = netMeters * kgLong;
         const orderKg = purchasedMeters * kgLong;
 
@@ -126,16 +127,16 @@
         const stirrupN = barCount(input.length, stepM);
         const kgStirrup = kgPerMeter(input.stirrupMm);
         const stirrupNetM = stirrupN * stirrupLen;
-        const perRod = Math.floor(ROD_LENGTH / stirrupLen);
+        const perRod = Math.floor(rodLength / stirrupLen);
         const stirrupOverlap = OVERLAP_DIAMETERS * (input.stirrupMm / 1000);
         let stirrupRods;
         if (perRod < 1) {
-          const oneWithLap = lengthWithSplices(stirrupLen, ROD_LENGTH, stirrupOverlap);
-          stirrupRods = Math.ceil((stirrupN * oneWithLap) / ROD_LENGTH);
+          const oneWithLap = lengthWithSplices(stirrupLen, rodLength, stirrupOverlap);
+          stirrupRods = Math.ceil((stirrupN * oneWithLap) / rodLength);
         } else {
           stirrupRods = Math.ceil(stirrupN / perRod);
         }
-        const stirrupPurchasedM = stirrupRods * ROD_LENGTH;
+        const stirrupPurchasedM = stirrupRods * rodLength;
         const stirrupNetKg = stirrupNetM * kgStirrup;
         const stirrupOrderKg = stirrupPurchasedM * kgStirrup;
         const hookM = Math.max(HOOK_MIN, HOOK_DIAMETERS * (input.stirrupMm / 1000));
@@ -171,7 +172,7 @@
             input.diameterMm +
             " мм, " +
             rods +
-            " шт. × 11.7 м",
+            " шт. × " + formatQty(rodLength, 1) + " м",
           netLabel: formatQty(netKg, 1) + " кг",
           k: netKg > 0 ? orderKg / netKg : 1,
           orderLabel: formatQty(orderKg, 1) + " кг",

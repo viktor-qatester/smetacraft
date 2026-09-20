@@ -5,7 +5,7 @@
     createCalculator: function (deps) {
       const {
         BOARD_LENGTH, BOARD_THICK, BOARD_WIDTH, COMPACTION, CONCRETE_RESERVE,
-        HYDRO_OVERLAP, OVERLAP_DIAMETERS, ROD_LENGTH, ROLL_AREA, STAKE_EXTRA,
+        HYDRO_OVERLAP, OVERLAP_DIAMETERS, ROLL_AREA, STAKE_EXTRA,
         STAKE_SPACING, TIMBER_SIZE, TIMBER_STOCK, WIRE_RATE, formatQty,
         isZeroSize, kgPerMeter, barCount, lengthWithSplices
       } = deps;
@@ -24,11 +24,12 @@
         const nAlongWidth = barCount(input.length, stepM) * input.meshCount;
         const netMeters =
           nAlongLength * input.length + nAlongWidth * input.width;
+        const rodLength = input.rodLengthM;
         const metersWithLap =
-          nAlongLength * lengthWithSplices(input.length, ROD_LENGTH, overlap) +
-          nAlongWidth * lengthWithSplices(input.width, ROD_LENGTH, overlap);
-        const rods = Math.ceil(metersWithLap / ROD_LENGTH);
-        const purchasedMeters = rods * ROD_LENGTH;
+          nAlongLength * lengthWithSplices(input.length, rodLength, overlap) +
+          nAlongWidth * lengthWithSplices(input.width, rodLength, overlap);
+        const rods = Math.ceil(metersWithLap / rodLength);
+        const purchasedMeters = rods * rodLength;
         const kgM = kgPerMeter(input.diameterMm);
         const netKg = netMeters * kgM;
         const orderKg = purchasedMeters * kgM;
@@ -55,7 +56,7 @@
         });
 
         rows.push({
-          name: "Арматура Ø" + input.diameterMm + " мм, " + rods + " шт. × 11.7 м",
+          name: "Арматура Ø" + input.diameterMm + " мм, " + rods + " шт. × " + formatQty(rodLength, 1) + " м",
           netLabel: formatQty(netKg, 1) + " кг",
           k: netKg > 0 ? orderKg / netKg : 1,
           orderLabel: formatQty(orderKg, 1) + " кг",

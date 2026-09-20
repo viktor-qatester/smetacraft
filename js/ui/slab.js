@@ -4,8 +4,8 @@
 
   root.SmetaCraftSlabUi = Object.freeze({
     createController: function (deps) {
-      const { document, parseNumber, formatQty, slabIsEmpty, calculateSlab,
-        showZeroBill, showBillError, showBill, errorEl } = deps;
+      const { document, parseNumber, formatQty, defaultRodLengthM, slabIsEmpty, calculateSlab,
+        showZeroBill, showBillError, showBill, errorEl, rodLengthManualRef } = deps;
 
       function readForm() {
         return {
@@ -15,6 +15,7 @@
           grade: document.getElementById("grade").value,
           concretePrice: parseNumber(document.getElementById("concrete-price").value),
           diameterMm: parseNumber(document.getElementById("bar-diameter").value),
+          rodLengthM: parseNumber(document.getElementById("rod-length").value),
           stepMm: parseNumber(document.getElementById("bar-step").value),
           meshCount: parseNumber(document.getElementById("slab-mesh-count").value),
           rebarPrice: parseNumber(document.getElementById("rebar-price").value),
@@ -33,8 +34,8 @@
         if (!(input.length > 0 && input.width > 0 && input.height > 0)) {
           return "Введите длину, ширину и толщину больше нуля.";
         }
-        if (!(input.stepMm > 0 && input.diameterMm > 0)) {
-          return "Введите шаг сетки и диаметр арматуры больше нуля.";
+        if (!(input.stepMm > 0 && input.diameterMm > 0 && input.rodLengthM > 0)) {
+          return "Введите шаг сетки, диаметр арматуры и длину прутка больше нуля.";
         }
         if (input.meshCount !== 1 && input.meshCount !== 2) {
           return "Выберите одну или две арматурные сетки.";
@@ -92,7 +93,7 @@
       }
 
       function bindEvents(options) {
-        const { form, gradeEl, concretePriceEl, render,
+        const { form, gradeEl, concretePriceEl, barDiameterEl, rodLengthEl, render,
           syncRoofFootprintFromFoundation, syncFloorFromFoundation,
           syncWallsPerimeterFromFoundation } = options;
 
@@ -102,7 +103,16 @@
           render();
         });
 
-        function onFormUpdate() {
+        barDiameterEl.addEventListener("change", function () {
+          if (!rodLengthManualRef.value) {
+            rodLengthEl.value = String(defaultRodLengthM(parseNumber(barDiameterEl.value)));
+          }
+        });
+
+        function onFormUpdate(event) {
+          if (event && event.target === rodLengthEl) {
+            rodLengthManualRef.value = true;
+          }
           syncRoofFootprintFromFoundation();
           syncFloorFromFoundation();
           syncWallsPerimeterFromFoundation();

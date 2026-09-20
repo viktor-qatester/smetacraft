@@ -1,15 +1,15 @@
       // MODULE: REGRESSION TESTS
       // ==========================================
       const REGRESSION_EXPECT = {
-        slab: 12099.19,
-        slabOneMesh: 9741.19,
+        slab: 12359.46,
+        slabOneMesh: 9871.33,
         walls: 7821.96,
         // Штукатурка: 40 × 3 м, одна сторона, автовычет 13.5 м² проёмов → 106.5 м².
         // 48 меш. × 16.50 + 2 кан. × 28 + 35 маяков × 3.20 + 106.5 м² × 10.00 работ.
         plaster: 2025.0,
         // Сводная регрессия: плита + legacy-стены + материалы штукатурки (без работ).
-        summary: 19678.29,
-        stripPiles: 10791.16,
+        summary: 19938.56,
+        stripPiles: 10782.49,
         roof: 14955.59,
         // Перекрытия: дерево 10 × 8 м, брус 100×200 шаг 0.6 м, утеплитель 150 мм, накат.
         floor: 5495.14,
@@ -44,6 +44,8 @@
         gradeEl.value = "М250";
         concretePriceEl.value = "210";
         document.getElementById("bar-diameter").value = "12";
+        setRegressionField("rod-length", "5.8");
+        rodLengthManual = false;
         setRegressionField("bar-step", "200");
         document.getElementById("slab-mesh-count").value = "2";
         setRegressionField("rebar-price", "3.20");
@@ -125,6 +127,8 @@
         stripGradeEl.value = "М250";
         stripConcretePriceEl.value = "210";
         document.getElementById("strip-bar-diameter").value = "12";
+        setRegressionField("strip-rod-length", "5.8");
+        stripRodLengthManual = false;
         setRegressionField("strip-bar-count", "4");
         document.getElementById("strip-stirrup-diameter").value = "8";
         setRegressionField("strip-stirrup-step", "300");
@@ -417,9 +421,9 @@
           const rebarRow = oneMeshBill.rows.find(function (row) {
             return row.name.indexOf("Арматура Ø") === 0;
           });
-          if (!rebarRow || rebarRow.name.indexOf("70 шт.") === -1 ||
+          if (!rebarRow || rebarRow.name.indexOf("149 шт.") === -1 ||
               !moneyEqual(oneMeshBill.total, REGRESSION_EXPECT.slabOneMesh)) {
-            failures.push("Плита, одна сетка: ожидается 70 хлыстов и 9 741,19 Br.");
+            failures.push("Плита, одна сетка: ожидается 149 хлыстов × 5,8 м и 9 871,33 Br.");
           }
         }
         document.getElementById("slab-mesh-count").value = "2";

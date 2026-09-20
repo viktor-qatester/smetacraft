@@ -1,7 +1,7 @@
       // MODULE: CONSTANTS
       // ==========================================
       const CONCRETE_RESERVE = 0.05;
-      const ROD_LENGTH = 11.7;
+      const ROD_LENGTH = 11.7; // walls armopoyas only; slab/strip use form field rod-length
       const OVERLAP_DIAMETERS = 40;
       const WIRE_RATE = 0.01;
       const BOARD_THICK = 0.025;
@@ -64,8 +64,8 @@
       const PROJECT_MAX_FILE_BYTES = 1024 * 1024;
       const PROJECT_MAX_ROWS = 500;
       const PROJECT_FIELD_IDS = new Set((
-        "length width height grade concrete-price bar-diameter bar-step slab-mesh-count rebar-price wire-price board-price timber-price sand-height sand-price stone-height stone-price hydro-price " +
-        "strip-length strip-width strip-height strip-grade strip-concrete-price strip-bar-diameter strip-bar-count strip-rebar-price strip-stirrup-diameter strip-stirrup-step strip-wire-price strip-board-price strip-timber-price strip-sand-height strip-sand-price strip-hydro-price pile-concrete-price pile-work-drilling-price pile-hydro-price " +
+        "length width height grade concrete-price bar-diameter bar-step rod-length slab-mesh-count rebar-price wire-price board-price timber-price sand-height sand-price stone-height stone-price hydro-price " +
+        "strip-length strip-width strip-height strip-grade strip-concrete-price strip-bar-diameter strip-bar-count strip-rod-length strip-rebar-price strip-stirrup-diameter strip-stirrup-step strip-wire-price strip-board-price strip-timber-price strip-sand-height strip-sand-price strip-hydro-price pile-concrete-price pile-work-drilling-price pile-hydro-price " +
         "walls-perimeter walls-load-bearing-material walls-height walls-joint-mm wall-armopoyas-width wall-armopoyas-height walls-armopoyas-rebar walls-partition-material walls-partition-length walls-partition-height wall-block-price wall-adhesive-price wall-mesh-price partition-block-price wall-concrete-price wall-work-masonry-price wall-work-partition-price wall-work-armopoyas-price " +
         "plaster-length plaster-height plaster-sides plaster-mix plaster-thick plaster-mix-price plaster-primer-layers plaster-primer-price plaster-beacon-step plaster-beacon-price plaster-mesh-price plaster-work-price " +
         "floor-type floor-length floor-width floor-beam-section floor-beam-step floor-insulation-mm floor-slab-width floor-wood-beam-price floor-insulation-price floor-membrane-price floor-board-price floor-concrete-slab-price floor-work-wood-price floor-work-concrete-price " +
@@ -75,13 +75,13 @@
         "summary-include-found summary-include-walls summary-include-plaster summary-include-roof summary-include-floor strip-piles-enabled walls-reinforce-mesh walls-armopoyas walls-lintels walls-partitions-enabled plaster-exclude-openings plaster-mesh floor-board-clad floor-monolith roof-warm"
       ).split(" "));
       const PROJECT_FLAG_IDS = new Set((
-        "roofWidthManual roofLengthManual floorLengthManual floorWidthManual wallsPerimeterManual plasterLengthManual plasterHeightManual lastFoundationBlock roofNeedsCalc floorNeedsCalc"
+        "rodLengthManual stripRodLengthManual roofWidthManual roofLengthManual floorLengthManual floorWidthManual wallsPerimeterManual plasterLengthManual plasterHeightManual lastFoundationBlock roofNeedsCalc floorNeedsCalc"
       ).split(" "));
 
       // Phase 3A: pure, inactive project model. JSON v1 and the live DOM path stay unchanged.
       const MODEL_FIELD_SPEC = {
-        slab: "length:m width:m height:m grade:text bar-diameter:mm bar-step:mm slab-mesh-count:count sand-height:m stone-height:m",
-        strip: "strip-length:m strip-width:m strip-height:m strip-grade:text strip-bar-diameter:mm strip-bar-count:count strip-stirrup-diameter:mm strip-stirrup-step:mm strip-sand-height:m",
+        slab: "length:m width:m height:m grade:text bar-diameter:mm bar-step:mm rod-length:m slab-mesh-count:count sand-height:m stone-height:m",
+        strip: "strip-length:m strip-width:m strip-height:m strip-grade:text strip-bar-diameter:mm strip-bar-count:count strip-rod-length:m strip-stirrup-diameter:mm strip-stirrup-step:mm strip-sand-height:m",
         walls: "walls-perimeter:m walls-load-bearing-material:text walls-height:m walls-joint-mm:mm wall-armopoyas-width:mm wall-armopoyas-height:mm walls-armopoyas-rebar:mm walls-partition-material:text walls-partition-length:m walls-partition-height:m",
         plaster: "plaster-length:m plaster-height:m plaster-sides:count plaster-mix:text plaster-thick:mm plaster-primer-layers:count plaster-beacon-step:m",
         floor: "floor-type:text floor-length:m floor-width:m floor-beam-section:text floor-beam-step:m floor-insulation-mm:mm floor-slab-width:m",

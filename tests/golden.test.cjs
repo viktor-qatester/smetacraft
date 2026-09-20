@@ -91,10 +91,10 @@ test('first-time questionnaire: slab only → summary names its scope and exclus
   assert.equal(actual.error, '');
 });
 
-test('legacy 19 678,29 Br control is distinct from renderSummary', () => {
+test('legacy 19 938,56 Br control is distinct from renderSummary', () => {
   const actual = runLegacyControl(fixtures.slab, fixtures.plaster);
   assert.deepStrictEqual(actual, golden.legacyControl);
-  assert.equal(actual.displayedTotal, '19\u00a0678,29 Br');
+  assert.equal(actual.displayedTotal, '19\u00a0938,56 Br');
   const visible = golden.cases.find(x => x.id === 'summary-legacy-fixture-visible');
   assert.notEqual(visible.displayedTotal, actual.displayedTotal);
 });
