@@ -126,12 +126,22 @@
           idempotencyKey = crypto.randomUUID();
         }
 
-        writeMigrationReceipt({
+        const sendingReceipt = {
           receiptVersion: 1,
           idempotencyKey: idempotencyKey,
           sha256: expectedSha256,
           state: "sending",
-        });
+        };
+        if (
+          priorReceipt &&
+          priorReceipt.idempotencyKey === idempotencyKey &&
+          priorReceipt.capabilityToken
+        ) {
+          sendingReceipt.capabilityToken = priorReceipt.capabilityToken;
+          sendingReceipt.projectId = priorReceipt.projectId;
+          sendingReceipt.revision = priorReceipt.revision;
+        }
+        writeMigrationReceipt(sendingReceipt);
 
         const localProjectBefore = window.localStorage.getItem(STORAGE_KEY);
         button.disabled = true;
@@ -151,14 +161,25 @@
           }
         }
 
-        function markFailed(errorCode) {
-          writeMigrationReceipt({
+        function failedReceiptFields(errorCode) {
+          const fields = {
             receiptVersion: 1,
             idempotencyKey: idempotencyKey,
             sha256: expectedSha256,
             state: "failed",
             lastError: errorCode,
-          });
+          };
+          const current = readMigrationReceipt();
+          if (current && current.capabilityToken) {
+            fields.capabilityToken = current.capabilityToken;
+            fields.projectId = current.projectId;
+            fields.revision = current.revision;
+          }
+          return fields;
+        }
+
+        function markFailed(errorCode) {
+          writeMigrationReceipt(failedReceiptFields(errorCode));
           status.textContent = "Перенос не выполнен. Локальный проект не изменён. (" + errorCode + ")";
         }
 
@@ -185,6 +206,18 @@
             throw new Error("digest_mismatch");
           }
 
+          if (result.capabilityToken) {
+            writeMigrationReceipt({
+              receiptVersion: 1,
+              idempotencyKey: idempotencyKey,
+              sha256: expectedSha256,
+              projectId: result.projectId,
+              revision: result.revision,
+              capabilityToken: result.capabilityToken,
+              state: "sending",
+            });
+          }
+
           let capabilityToken = result.capabilityToken;
           if (!capabilityToken) {
             const tokenSource = readMigrationReceipt() || priorReceipt;
@@ -196,15 +229,17 @@
             throw new Error("capability_token_missing");
           }
 
-          writeMigrationReceipt({
-            receiptVersion: 1,
-            idempotencyKey: idempotencyKey,
-            sha256: expectedSha256,
-            projectId: result.projectId,
-            revision: result.revision,
-            capabilityToken: capabilityToken,
-            state: "sending",
-          });
+          if (!result.capabilityToken) {
+            writeMigrationReceipt({
+              receiptVersion: 1,
+              idempotencyKey: idempotencyKey,
+              sha256: expectedSha256,
+              projectId: result.projectId,
+              revision: result.revision,
+              capabilityToken: capabilityToken,
+              state: "sending",
+            });
+          }
 
           const readResponse = await fetch("/api/projects/" + result.projectId, {
             headers: { Authorization: "Bearer " + capabilityToken },
@@ -242,22 +277,10 @@
         } catch (error) {
           restoreLocalProjectIfNeeded();
           if (error && error.name === "AbortError") {
-            writeMigrationReceipt({
-              receiptVersion: 1,
-              idempotencyKey: idempotencyKey,
-              sha256: expectedSha256,
-              state: "failed",
-              lastError: "timeout",
-            });
+            writeMigrationReceipt(failedReceiptFields("timeout"));
             status.textContent = "Сервер недоступен. Локальный проект не изменён.";
           } else if (!error || error.message === "Failed to fetch" || error.message === "NetworkError") {
-            writeMigrationReceipt({
-              receiptVersion: 1,
-              idempotencyKey: idempotencyKey,
-              sha256: expectedSha256,
-              state: "failed",
-              lastError: "network",
-            });
+            writeMigrationReceipt(failedReceiptFields("network"));
             status.textContent = "Сервер недоступен. Локальный проект не изменён.";
           } else {
             markFailed(error.message || "bad_response");
