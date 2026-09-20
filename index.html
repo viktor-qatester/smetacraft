@@ -464,17 +464,24 @@
         bottom: 12px;
         z-index: 100;
         width: auto;
-        min-width: 320px;
-        max-width: 680px;
-        padding: 10px 20px;
-        border: 1px solid;
+        max-width: 280px;
+        padding: 6px 10px;
+        border: 1px solid var(--ink);
         background: #fff;
         font-size: 11px;
         font-weight: 650;
         line-height: 1.35;
-        white-space: nowrap;
         pointer-events: none;
         opacity: 0.92;
+      }
+
+      .regression-badge.diagnostics {
+        min-width: 320px;
+        max-width: 680px;
+        padding: 10px 20px;
+        white-space: nowrap;
+        border-color: var(--muted);
+        color: var(--ink);
       }
 
       .regression-badge.fail {

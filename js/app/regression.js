@@ -312,12 +312,54 @@
         return { total: total, errors: errors };
       }
 
-      function updateRegressionBadge(passed, failures) {
+      function updateRegressionBadge(
+        passed,
+        failures,
+        summaryExpected,
+        stripPilesExpected,
+        roofExpected,
+        wallsExpected,
+        plasterExpected,
+        floorExpected
+      ) {
         const badge = document.getElementById("regression-badge");
-        badge.hidden = passed;
+        const diagnostics = isRegressionBadgeVisible();
+
+        badge.classList.remove("fail", "diagnostics");
+
+        if (!diagnostics && passed) {
+          badge.hidden = true;
+          badge.textContent = "";
+          badge.removeAttribute("title");
+          return;
+        }
+
+        if (!diagnostics && !passed) {
+          badge.hidden = false;
+          badge.classList.add("fail");
+          badge.textContent = "Ошибка регрессии!";
+          badge.title = failures.join(" · ");
+          return;
+        }
+
+        badge.hidden = false;
+        badge.classList.add("diagnostics");
         badge.classList.toggle("fail", !passed);
         if (passed) {
-          badge.textContent = "";
+          badge.textContent =
+            "Тесты пройдены: Сводная (" +
+            formatMoney(summaryExpected) +
+            ") | Лента со сваями (" +
+            formatMoney(stripPilesExpected) +
+            ") | Кровля (" +
+            formatMoney(roofExpected) +
+            ") | Стены (" +
+            formatMoney(wallsExpected) +
+            ") | Штукатурка (" +
+            formatMoney(plasterExpected) +
+            ") | Перекрытия (" +
+            formatMoney(floorExpected) +
+            ")";
           badge.removeAttribute("title");
         } else {
           badge.textContent = "Ошибка регрессии!";
@@ -492,7 +534,16 @@
         setActiveBlock("summary");
 
         const passed = failures.length === 0;
-        updateRegressionBadge(passed, failures);
+        updateRegressionBadge(
+          passed,
+          failures,
+          REGRESSION_EXPECT.summary,
+          REGRESSION_EXPECT.stripPiles,
+          REGRESSION_EXPECT.roof,
+          REGRESSION_EXPECT.walls,
+          REGRESSION_EXPECT.plaster,
+          REGRESSION_EXPECT.floor
+        );
         persistSuspended = previousPersist;
         return passed;
       }
