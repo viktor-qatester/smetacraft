@@ -911,8 +911,18 @@
                       <option value="2" selected>2</option>
                     </select>
                   </label>
+                  <label>
+                    Длина прутка, м
+                    <input id="rod-length" name="rod-length" type="text" inputmode="decimal" value="5.8" list="rod-length-presets" autocomplete="off" />
+                  </label>
                 </div>
-                <p class="note">Нахлёст 40d, хлыст 11.7 м. Проволока — 1% от массы арматуры.</p>
+                <datalist id="rod-length-presets">
+                  <option value="5.8"></option>
+                  <option value="6.0"></option>
+                  <option value="11.7"></option>
+                  <option value="12.0"></option>
+                </datalist>
+                <p class="note">Нахлёст 40d. По умолчанию Ø12 — 5,8 м, остальные — 6,0 м; можно выбрать 11,7 или 12,0 м для крупных объектов. Проволока — 1% от массы арматуры.</p>
               </fieldset>
 
               <fieldset>
@@ -1006,8 +1016,18 @@
                     Число стержней
                     <input id="strip-bar-count" name="strip-bar-count" type="text" inputmode="numeric" value="4" autocomplete="off" />
                   </label>
+                  <label>
+                    Длина прутка, м
+                    <input id="strip-rod-length" name="strip-rod-length" type="text" inputmode="decimal" value="5.8" list="strip-rod-length-presets" autocomplete="off" />
+                  </label>
                 </div>
-                <p class="note">Продольные стержни по длине ленты. Нахлёст 40d, хлыст 11.7 м. Типично 4 стержня (2+2) для ленты 400 мм.</p>
+                <datalist id="strip-rod-length-presets">
+                  <option value="5.8"></option>
+                  <option value="6.0"></option>
+                  <option value="11.7"></option>
+                  <option value="12.0"></option>
+                </datalist>
+                <p class="note">Продольные стержни по длине ленты. Нахлёст 40d. По умолчанию Ø12 — 5,8 м, остальные — 6,0 м; можно выбрать 11,7 или 12,0 м. Типично 4 стержня (2+2) для ленты 400 мм.</p>
               </fieldset>
 
               <fieldset>
@@ -1026,7 +1046,7 @@
                     <input id="strip-stirrup-step" name="strip-stirrup-step" type="text" inputmode="decimal" value="300" autocomplete="off" />
                   </label>
                 </div>
-                <p class="note">Прямоугольный хомут: защитный слой 40 мм, два крюка по 10d (не менее 75 мм). Нарезка из хлыстов 11.7 м.</p>
+                <p class="note">Прямоугольный хомут: защитный слой 40 мм, два крюка по 10d (не менее 75 мм). Нарезка из хлыстов той же длины, что рабочие стержни.</p>
               </fieldset>
 
               <fieldset>
@@ -2094,7 +2114,7 @@
           </div>
           <button type="button" class="btn-text" id="bill-next" hidden>Добавить части → Сводная смета</button>
           <button type="button" class="btn-print" id="bill-print" hidden>Распечатать смету / PDF</button>
-          <p class="note">Стоимость ориентировочная, по ценам прайс-листа в Br. Это не полная стоимость дома и не замена проекту. Остатки хлыстов 11.7 м входят в заказ целиком.</p>
+          <p class="note">Стоимость ориентировочная, по ценам прайс-листа в Br. Это не полная стоимость дома и не замена проекту. Остатки хлыстов выбранной длины входят в заказ целиком.</p>
         </aside>
       </div>
     </div>

@@ -27,10 +27,10 @@ test('v1 allowlists exactly match the representative export', () => {
   const { app, original } = setup();
   assert.equal(original.format, 'smetacraft-project');
   assert.equal(original.version, 1);
-  assert.equal(Object.keys(original.fields).length, 99);
+  assert.equal(Object.keys(original.fields).length, 101);
   assert.equal(Object.keys(original.checks).length, 15);
   assert.deepStrictEqual(original.radios, { 'summary-found-type': 'strip' });
-  assert.equal(Object.keys(original.flags).length, 10);
+  assert.equal(Object.keys(original.flags).length, 12);
   const parsed = app.parseProjectText(JSON.stringify(original));
   assert.deepStrictEqual(plain(parsed), original);
 });

@@ -4,9 +4,9 @@
 
   root.SmetaCraftStripUi = Object.freeze({
     createController: function (deps) {
-      const { document, parseNumber, formatQty, COVER, stirrupBarLength,
+      const { document, parseNumber, formatQty, defaultRodLengthM, COVER, stirrupBarLength,
         pilesEnabledEl, getPilesData, stripIsEmpty, calculateStrip,
-        showZeroBill, showBillError, showBill, stripErrorEl } = deps;
+        showZeroBill, showBillError, showBill, stripErrorEl, stripRodLengthManualRef } = deps;
 
       function readStripForm() {
         return {
@@ -16,6 +16,7 @@
           grade: document.getElementById("strip-grade").value,
           concretePrice: parseNumber(document.getElementById("strip-concrete-price").value),
           diameterMm: parseNumber(document.getElementById("strip-bar-diameter").value),
+          rodLengthM: parseNumber(document.getElementById("strip-rod-length").value),
           barCount: parseNumber(document.getElementById("strip-bar-count").value),
           rebarPrice: parseNumber(document.getElementById("strip-rebar-price").value),
           stirrupMm: parseNumber(document.getElementById("strip-stirrup-diameter").value),
@@ -44,8 +45,8 @@
         if (!(input.barCount >= 2 && Number.isInteger(input.barCount))) {
           return "Число рабочих стержней — целое число от 2.";
         }
-        if (!(input.diameterMm > 0 && input.stirrupMm > 0 && input.stirrupStepMm > 0)) {
-          return "Введите диаметры арматуры и шаг хомутов больше нуля.";
+        if (!(input.diameterMm > 0 && input.rodLengthM > 0 && input.stirrupMm > 0 && input.stirrupStepMm > 0)) {
+          return "Введите диаметры арматуры, длину прутка и шаг хомутов больше нуля.";
         }
         if (stirrupBarLength(input.width, input.height, COVER, input.stirrupMm) <= 0) {
           return "Длина хомута получилась некорректной. Проверьте сечение ленты.";
@@ -129,9 +130,10 @@
       }
 
       function bindEvents(options) {
-        const { stripForm, stripGradeEl, stripConcretePriceEl, pilesBodyEl,
-          render, syncRoofFootprintFromFoundation, syncFloorFromFoundation,
-          syncWallsPerimeterFromFoundation, syncPilesUi, pileRowTemplate } = options;
+        const { stripForm, stripGradeEl, stripConcretePriceEl, stripBarDiameterEl,
+          stripRodLengthEl, pilesBodyEl, render, syncRoofFootprintFromFoundation,
+          syncFloorFromFoundation, syncWallsPerimeterFromFoundation, syncPilesUi,
+          pileRowTemplate } = options;
 
         stripGradeEl.addEventListener("change", function () {
           const option = stripGradeEl.selectedOptions[0];
@@ -139,7 +141,16 @@
           render();
         });
 
-        function onFormUpdate() {
+        stripBarDiameterEl.addEventListener("change", function () {
+          if (!stripRodLengthManualRef.value) {
+            stripRodLengthEl.value = String(defaultRodLengthM(parseNumber(stripBarDiameterEl.value)));
+          }
+        });
+
+        function onFormUpdate(event) {
+          if (event && event.target === stripRodLengthEl) {
+            stripRodLengthManualRef.value = true;
+          }
           syncRoofFootprintFromFoundation();
           syncFloorFromFoundation();
           syncWallsPerimeterFromFoundation();

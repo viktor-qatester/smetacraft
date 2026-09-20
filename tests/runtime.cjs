@@ -82,6 +82,7 @@ function createApp() {
     console,
     activeBlock: 'slab', billBlock: 'slab', lastFoundationBlock: 'slab',
     roofNeedsCalc: false, floorNeedsCalc: false, persistSuspended: true,
+    rodLengthManual: false, stripRodLengthManual: false,
     roofWidthManual: false, roofLengthManual: false,
     floorLengthManual: false, floorWidthManual: false,
     wallsPerimeterManual: false, plasterLengthManual: false, plasterHeightManual: false,
@@ -267,11 +268,12 @@ function projectFixture(fixtures) {
     for (const [key, id] of Object.entries(mapping)) fields[id] = source[key];
   };
   assign(slab, { length:'length', width:'width', height:'height', grade:'grade', concretePrice:'concrete-price',
-    diameterMm:'bar-diameter', stepMm:'bar-step', meshCount:'slab-mesh-count', rebarPrice:'rebar-price',
+    diameterMm:'bar-diameter', rodLengthM:'rod-length', stepMm:'bar-step', meshCount:'slab-mesh-count', rebarPrice:'rebar-price',
     wirePrice:'wire-price', boardPrice:'board-price', timberPrice:'timber-price', sandHeight:'sand-height',
     sandPrice:'sand-price', stoneHeight:'stone-height', stonePrice:'stone-price', hydroPrice:'hydro-price' });
   assign(strip, { length:'strip-length', width:'strip-width', height:'strip-height', grade:'strip-grade',
-    concretePrice:'strip-concrete-price', diameterMm:'strip-bar-diameter', barCount:'strip-bar-count',
+    concretePrice:'strip-concrete-price', diameterMm:'strip-bar-diameter', rodLengthM:'strip-rod-length',
+    barCount:'strip-bar-count',
     rebarPrice:'strip-rebar-price', stirrupMm:'strip-stirrup-diameter', stirrupStepMm:'strip-stirrup-step',
     wirePrice:'strip-wire-price', boardPrice:'strip-board-price', timberPrice:'strip-timber-price',
     sandHeight:'strip-sand-height', sandPrice:'strip-sand-price', hydroPrice:'strip-hydro-price',
@@ -414,7 +416,7 @@ function runIntakeSlabSmoke(fixtures) {
     'intake-windows': 0, 'intake-doors': 0,
     'intake-ridge-height': 0, 'intake-eave': 0,
     grade: input.grade, 'concrete-price': input.concretePrice,
-    'bar-diameter': input.diameterMm, 'bar-step': input.stepMm,
+    'bar-diameter': input.diameterMm, 'rod-length': input.rodLengthM, 'bar-step': input.stepMm,
     'slab-mesh-count': input.meshCount, 'rebar-price': input.rebarPrice,
     'wire-price': input.wirePrice, 'board-price': input.boardPrice,
     'timber-price': input.timberPrice, 'sand-height': input.sandHeight,

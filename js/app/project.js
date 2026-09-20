@@ -77,6 +77,8 @@
           openings: readOpeningsState(),
           piles: readPilesRows(),
           flags: {
+            rodLengthManual: rodLengthManual,
+            stripRodLengthManual: stripRodLengthManual,
             roofWidthManual: roofWidthManual,
             roofLengthManual: roofLengthManual,
             floorLengthManual: floorLengthManual,
@@ -293,6 +295,12 @@
         }
 
         const flags = state.flags && typeof state.flags === "object" ? state.flags : {};
+        if (typeof flags.rodLengthManual === "boolean") {
+          rodLengthManual = flags.rodLengthManual;
+        }
+        if (typeof flags.stripRodLengthManual === "boolean") {
+          stripRodLengthManual = flags.stripRodLengthManual;
+        }
         if (typeof flags.roofWidthManual === "boolean") {
           roofWidthManual = flags.roofWidthManual;
         }
@@ -426,6 +434,8 @@
         }
         const state = cloneProject(demoProjectSnapshot);
         state.flags = {
+          rodLengthManual: false,
+          stripRodLengthManual: false,
           roofWidthManual: false,
           roofLengthManual: false,
           floorLengthManual: false,

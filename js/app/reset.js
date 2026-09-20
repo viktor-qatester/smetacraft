@@ -64,6 +64,8 @@
         clearTableBody(pilesBodyEl);
         pileSeq = 0;
 
+        rodLengthManual = false;
+        stripRodLengthManual = false;
         wallsPerimeterManual = false;
         roofWidthManual = false;
         roofLengthManual = false;

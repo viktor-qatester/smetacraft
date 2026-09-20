@@ -1,6 +1,6 @@
 {
   "description": "Observed outputs from the unchanged index.html calculation and render functions",
-  "sourceSha256": "46098095060352192c5dbbc381d0f1b215426d68803fb2a7f6ca958c6730a249",
+  "sourceSha256": "623117f0da4209d31bffb0f6964284913edfaae4fed5b85eb83ab2b034ab2e1a",
   "projectSchemaVersion": 1,
   "cases": [
     {
@@ -16,6 +16,7 @@
         "grade": "М250",
         "concretePrice": 210,
         "diameterMm": 12,
+        "rodLengthM": 5.8,
         "stepMm": 200,
         "meshCount": 1,
         "rebarPrice": 3.2,
@@ -59,35 +60,35 @@
         },
         {
           "category": "metal",
-          "name": "Арматура Ø12 мм, 70 шт. × 11.7 м",
+          "name": "Арматура Ø12 мм, 149 шт. × 5,8 м",
           "netLabel": "725,8 кг",
           "net": {
             "displayed": "725,8",
             "unit": "кг"
           },
-          "coefficient": 1.0012224938875305,
-          "orderLabel": "726,7 кг",
+          "coefficient": 1.056479217603912,
+          "orderLabel": "766,8 кг",
           "order": {
-            "displayed": "726,7",
+            "displayed": "766,8",
             "unit": "кг"
           },
-          "cost": 2325.2939001848426
+          "cost": 2453.6251386321624
         },
         {
           "category": "metal",
           "name": "Вязальная проволока",
-          "netLabel": "7,27 кг",
+          "netLabel": "7,67 кг",
           "net": {
-            "displayed": "7,27",
+            "displayed": "7,67",
             "unit": "кг"
           },
           "coefficient": 1,
-          "orderLabel": "7,27 кг",
+          "orderLabel": "7,67 кг",
           "order": {
-            "displayed": "7,27",
+            "displayed": "7,67",
             "unit": "кг"
           },
-          "cost": 32.69944547134935
+          "cost": 34.50410351201478
         },
         {
           "category": "timber",
@@ -174,7 +175,7 @@
         "meta": "Плита 10,00 × 8,00 × 0,30 м · периметр 36,00 м",
         "categorySubtotals": {
           "concrete": 6823.200000000001,
-          "metal": 2357.993345656192,
+          "metal": 2488.129242144177,
           "timber": 280,
           "isol": 280
         },
@@ -184,10 +185,10 @@
           "area": 80
         }
       },
-      "total": 9741.193345656193,
-      "displayedTotal": "9 741,19 Br",
+      "total": 9871.329242144178,
+      "displayedTotal": "9 871,33 Br",
       "display": {
-        "tableHtml": "<tr><td>Бетон М250</td><td class=\"num\">24,00 м³</td><td class=\"num\">1,05</td><td class=\"num\">25,20 м³</td><td class=\"num\">5 292,00 Br</td></tr><tr><td>Арматура Ø12 мм, 70 шт. × 11.7 м</td><td class=\"num\">725,8 кг</td><td class=\"num\">1,00</td><td class=\"num\">726,7 кг</td><td class=\"num\">2 325,29 Br</td></tr><tr><td>Вязальная проволока</td><td class=\"num\">7,27 кг</td><td class=\"num\">1,00</td><td class=\"num\">7,27 кг</td><td class=\"num\">32,70 Br</td></tr><tr><td>Доска 25×150×6000 (0,270 м³)</td><td class=\"num\">12 шт</td><td class=\"num\">1,00</td><td class=\"num\">12 шт</td><td class=\"num\">168,00 Br</td></tr><tr><td>Брус упоров 50×50×3000 (0,105 м³)</td><td class=\"num\">14 шт</td><td class=\"num\">1,00</td><td class=\"num\">14 шт</td><td class=\"num\">112,00 Br</td></tr><tr><td>Песок</td><td class=\"num\">16,00 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,60 м³</td><td class=\"num\">563,20 Br</td></tr><tr><td>Щебень</td><td class=\"num\">16,00 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,60 м³</td><td class=\"num\">968,00 Br</td></tr><tr><td>Гидроизоляция, рулон 1×10 м</td><td class=\"num\">80,00 м²</td><td class=\"num\">1,15</td><td class=\"num\">10 рул.</td><td class=\"num\">280,00 Br</td></tr>",
+        "tableHtml": "<tr><td>Бетон М250</td><td class=\"num\">24,00 м³</td><td class=\"num\">1,05</td><td class=\"num\">25,20 м³</td><td class=\"num\">5 292,00 Br</td></tr><tr><td>Арматура Ø12 мм, 149 шт. × 5,8 м</td><td class=\"num\">725,8 кг</td><td class=\"num\">1,06</td><td class=\"num\">766,8 кг</td><td class=\"num\">2 453,63 Br</td></tr><tr><td>Вязальная проволока</td><td class=\"num\">7,67 кг</td><td class=\"num\">1,00</td><td class=\"num\">7,67 кг</td><td class=\"num\">34,50 Br</td></tr><tr><td>Доска 25×150×6000 (0,270 м³)</td><td class=\"num\">12 шт</td><td class=\"num\">1,00</td><td class=\"num\">12 шт</td><td class=\"num\">168,00 Br</td></tr><tr><td>Брус упоров 50×50×3000 (0,105 м³)</td><td class=\"num\">14 шт</td><td class=\"num\">1,00</td><td class=\"num\">14 шт</td><td class=\"num\">112,00 Br</td></tr><tr><td>Песок</td><td class=\"num\">16,00 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,60 м³</td><td class=\"num\">563,20 Br</td></tr><tr><td>Щебень</td><td class=\"num\">16,00 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,60 м³</td><td class=\"num\">968,00 Br</td></tr><tr><td>Гидроизоляция, рулон 1×10 м</td><td class=\"num\">80,00 м²</td><td class=\"num\">1,15</td><td class=\"num\">10 рул.</td><td class=\"num\">280,00 Br</td></tr>",
         "scope": "Рассчитано: плитный фундамент.",
         "excluded": "Не рассчитано: стены и перегородки, перекрытия, штукатурка, кровля.",
         "meta": "Плита 10,00 × 8,00 × 0,30 м · периметр 36,00 м",
@@ -210,6 +211,7 @@
         "grade": "М250",
         "concretePrice": 210,
         "diameterMm": 12,
+        "rodLengthM": 5.8,
         "stepMm": 200,
         "meshCount": 2,
         "rebarPrice": 3.2,
@@ -253,35 +255,35 @@
         },
         {
           "category": "metal",
-          "name": "Арматура Ø12 мм, 140 шт. × 11.7 м",
+          "name": "Арматура Ø12 мм, 298 шт. × 5,8 м",
           "netLabel": "1 451,5 кг",
           "net": {
             "displayed": "1 451,5",
             "unit": "кг"
           },
-          "coefficient": 1.0012224938875305,
-          "orderLabel": "1 453,3 кг",
+          "coefficient": 1.056479217603912,
+          "orderLabel": "1 533,5 кг",
           "order": {
-            "displayed": "1 453,3",
+            "displayed": "1 533,5",
             "unit": "кг"
           },
-          "cost": 4650.587800369685
+          "cost": 4907.250277264325
         },
         {
           "category": "metal",
           "name": "Вязальная проволока",
-          "netLabel": "14,53 кг",
+          "netLabel": "15,34 кг",
           "net": {
-            "displayed": "14,53",
+            "displayed": "15,34",
             "unit": "кг"
           },
           "coefficient": 1,
-          "orderLabel": "14,53 кг",
+          "orderLabel": "15,34 кг",
           "order": {
-            "displayed": "14,53",
+            "displayed": "15,34",
             "unit": "кг"
           },
-          "cost": 65.3988909426987
+          "cost": 69.00820702402956
         },
         {
           "category": "timber",
@@ -368,7 +370,7 @@
         "meta": "Плита 10,00 × 8,00 × 0,30 м · периметр 36,00 м",
         "categorySubtotals": {
           "concrete": 6823.200000000001,
-          "metal": 4715.986691312384,
+          "metal": 4976.258484288354,
           "timber": 280,
           "isol": 280
         },
@@ -378,10 +380,10 @@
           "area": 80
         }
       },
-      "total": 12099.186691312385,
-      "displayedTotal": "12 099,19 Br",
+      "total": 12359.458484288356,
+      "displayedTotal": "12 359,46 Br",
       "display": {
-        "tableHtml": "<tr><td>Бетон М250</td><td class=\"num\">24,00 м³</td><td class=\"num\">1,05</td><td class=\"num\">25,20 м³</td><td class=\"num\">5 292,00 Br</td></tr><tr><td>Арматура Ø12 мм, 140 шт. × 11.7 м</td><td class=\"num\">1 451,5 кг</td><td class=\"num\">1,00</td><td class=\"num\">1 453,3 кг</td><td class=\"num\">4 650,59 Br</td></tr><tr><td>Вязальная проволока</td><td class=\"num\">14,53 кг</td><td class=\"num\">1,00</td><td class=\"num\">14,53 кг</td><td class=\"num\">65,40 Br</td></tr><tr><td>Доска 25×150×6000 (0,270 м³)</td><td class=\"num\">12 шт</td><td class=\"num\">1,00</td><td class=\"num\">12 шт</td><td class=\"num\">168,00 Br</td></tr><tr><td>Брус упоров 50×50×3000 (0,105 м³)</td><td class=\"num\">14 шт</td><td class=\"num\">1,00</td><td class=\"num\">14 шт</td><td class=\"num\">112,00 Br</td></tr><tr><td>Песок</td><td class=\"num\">16,00 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,60 м³</td><td class=\"num\">563,20 Br</td></tr><tr><td>Щебень</td><td class=\"num\">16,00 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,60 м³</td><td class=\"num\">968,00 Br</td></tr><tr><td>Гидроизоляция, рулон 1×10 м</td><td class=\"num\">80,00 м²</td><td class=\"num\">1,15</td><td class=\"num\">10 рул.</td><td class=\"num\">280,00 Br</td></tr>",
+        "tableHtml": "<tr><td>Бетон М250</td><td class=\"num\">24,00 м³</td><td class=\"num\">1,05</td><td class=\"num\">25,20 м³</td><td class=\"num\">5 292,00 Br</td></tr><tr><td>Арматура Ø12 мм, 298 шт. × 5,8 м</td><td class=\"num\">1 451,5 кг</td><td class=\"num\">1,06</td><td class=\"num\">1 533,5 кг</td><td class=\"num\">4 907,25 Br</td></tr><tr><td>Вязальная проволока</td><td class=\"num\">15,34 кг</td><td class=\"num\">1,00</td><td class=\"num\">15,34 кг</td><td class=\"num\">69,01 Br</td></tr><tr><td>Доска 25×150×6000 (0,270 м³)</td><td class=\"num\">12 шт</td><td class=\"num\">1,00</td><td class=\"num\">12 шт</td><td class=\"num\">168,00 Br</td></tr><tr><td>Брус упоров 50×50×3000 (0,105 м³)</td><td class=\"num\">14 шт</td><td class=\"num\">1,00</td><td class=\"num\">14 шт</td><td class=\"num\">112,00 Br</td></tr><tr><td>Песок</td><td class=\"num\">16,00 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,60 м³</td><td class=\"num\">563,20 Br</td></tr><tr><td>Щебень</td><td class=\"num\">16,00 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,60 м³</td><td class=\"num\">968,00 Br</td></tr><tr><td>Гидроизоляция, рулон 1×10 м</td><td class=\"num\">80,00 м²</td><td class=\"num\">1,15</td><td class=\"num\">10 рул.</td><td class=\"num\">280,00 Br</td></tr>",
         "scope": "Рассчитано: плитный фундамент.",
         "excluded": "Не рассчитано: стены и перегородки, перекрытия, штукатурка, кровля.",
         "meta": "Плита 10,00 × 8,00 × 0,30 м · периметр 36,00 м",
@@ -404,6 +406,7 @@
         "grade": "М250",
         "concretePrice": 210,
         "diameterMm": 12,
+        "rodLengthM": 5.8,
         "barCount": 4,
         "rebarPrice": 3.2,
         "stirrupMm": 8,
@@ -453,19 +456,19 @@
         },
         {
           "category": "metal",
-          "name": "Арматура рабочая Ø12 мм, 15 шт. × 11.7 м",
+          "name": "Арматура рабочая Ø12 мм, 30 шт. × 5,8 м",
           "netLabel": "142,0 кг",
           "net": {
             "displayed": "142,0",
             "unit": "кг"
           },
-          "coefficient": 1.096875,
-          "orderLabel": "155,7 кг",
+          "coefficient": 1.0875,
+          "orderLabel": "154,4 кг",
           "order": {
-            "displayed": "155,7",
+            "displayed": "154,4",
             "unit": "кг"
           },
-          "cost": 498.2772643253235
+          "cost": 494.01848428835484
         },
         {
           "category": "metal",
@@ -475,29 +478,29 @@
             "displayed": "140,5",
             "unit": "кг"
           },
-          "coefficient": 1.1161616161616157,
-          "orderLabel": "156,9 кг",
+          "coefficient": 1.1066217732884396,
+          "orderLabel": "155,5 кг",
           "order": {
-            "displayed": "156,9",
+            "displayed": "155,5",
             "unit": "кг"
           },
-          "cost": 501.9682070240295
+          "cost": 497.67788046826854
         },
         {
           "category": "metal",
           "name": "Вязальная проволока",
-          "netLabel": "3,13 кг",
+          "netLabel": "3,10 кг",
           "net": {
-            "displayed": "3,13",
+            "displayed": "3,10",
             "unit": "кг"
           },
           "coefficient": 1,
-          "orderLabel": "3,13 кг",
+          "orderLabel": "3,10 кг",
           "order": {
-            "displayed": "3,13",
+            "displayed": "3,10",
             "unit": "кг"
           },
-          "cost": 14.065951940850276
+          "cost": 13.945730129390018
         },
         {
           "category": "timber",
@@ -568,7 +571,7 @@
         "meta": "Лента 40,00 × 0,40 × 1,00 м · объём 16,00 м³ · опалубка 80,00 м",
         "categorySubtotals": {
           "concrete": 3640.64,
-          "metal": 1014.3114232902033,
+          "metal": 1005.6420948860133,
           "timber": 1876,
           "isol": 336
         },
@@ -580,10 +583,10 @@
           "pileTotals": null
         }
       },
-      "total": 6866.951423290203,
-      "displayedTotal": "6 866,95 Br",
+      "total": 6858.2820948860135,
+      "displayedTotal": "6 858,28 Br",
       "display": {
-        "tableHtml": "<tr><td>Бетон М250</td><td class=\"num\">16,00 м³</td><td class=\"num\">1,05</td><td class=\"num\">16,80 м³</td><td class=\"num\">3 528,00 Br</td></tr><tr><td>Арматура рабочая Ø12 мм, 15 шт. × 11.7 м</td><td class=\"num\">142,0 кг</td><td class=\"num\">1,10</td><td class=\"num\">155,7 кг</td><td class=\"num\">498,28 Br</td></tr><tr><td>Хомуты Ø8 мм, 135 шт., гибы 2×80 мм</td><td class=\"num\">140,5 кг</td><td class=\"num\">1,12</td><td class=\"num\">156,9 кг</td><td class=\"num\">501,97 Br</td></tr><tr><td>Вязальная проволока</td><td class=\"num\">3,13 кг</td><td class=\"num\">1,00</td><td class=\"num\">3,13 кг</td><td class=\"num\">14,07 Br</td></tr><tr><td>Доска 25×150×6000 (2,205 м³)</td><td class=\"num\">98 шт</td><td class=\"num\">1,00</td><td class=\"num\">98 шт</td><td class=\"num\">1 372,00 Br</td></tr><tr><td>Брус упоров 50×50×3000 (0,473 м³)</td><td class=\"num\">63 шт</td><td class=\"num\">1,00</td><td class=\"num\">63 шт</td><td class=\"num\">504,00 Br</td></tr><tr><td>Песок</td><td class=\"num\">3,20 м³</td><td class=\"num\">1,10</td><td class=\"num\">3,52 м³</td><td class=\"num\">112,64 Br</td></tr><tr><td>Гидроизоляция, рулон 1×10 м</td><td class=\"num\">96,00 м²</td><td class=\"num\">1,15</td><td class=\"num\">12 рул.</td><td class=\"num\">336,00 Br</td></tr>",
+        "tableHtml": "<tr><td>Бетон М250</td><td class=\"num\">16,00 м³</td><td class=\"num\">1,05</td><td class=\"num\">16,80 м³</td><td class=\"num\">3 528,00 Br</td></tr><tr><td>Арматура рабочая Ø12 мм, 30 шт. × 5,8 м</td><td class=\"num\">142,0 кг</td><td class=\"num\">1,09</td><td class=\"num\">154,4 кг</td><td class=\"num\">494,02 Br</td></tr><tr><td>Хомуты Ø8 мм, 135 шт., гибы 2×80 мм</td><td class=\"num\">140,5 кг</td><td class=\"num\">1,11</td><td class=\"num\">155,5 кг</td><td class=\"num\">497,68 Br</td></tr><tr><td>Вязальная проволока</td><td class=\"num\">3,10 кг</td><td class=\"num\">1,00</td><td class=\"num\">3,10 кг</td><td class=\"num\">13,95 Br</td></tr><tr><td>Доска 25×150×6000 (2,205 м³)</td><td class=\"num\">98 шт</td><td class=\"num\">1,00</td><td class=\"num\">98 шт</td><td class=\"num\">1 372,00 Br</td></tr><tr><td>Брус упоров 50×50×3000 (0,473 м³)</td><td class=\"num\">63 шт</td><td class=\"num\">1,00</td><td class=\"num\">63 шт</td><td class=\"num\">504,00 Br</td></tr><tr><td>Песок</td><td class=\"num\">3,20 м³</td><td class=\"num\">1,10</td><td class=\"num\">3,52 м³</td><td class=\"num\">112,64 Br</td></tr><tr><td>Гидроизоляция, рулон 1×10 м</td><td class=\"num\">96,00 м²</td><td class=\"num\">1,15</td><td class=\"num\">12 рул.</td><td class=\"num\">336,00 Br</td></tr>",
         "scope": "Рассчитано: ленточный фундамент.",
         "excluded": "Не рассчитано: стены и перегородки, перекрытия, штукатурка, кровля.",
         "meta": "Лента 40,00 × 0,40 × 1,00 м · объём 16,00 м³ · опалубка 80,00 м",
@@ -606,6 +609,7 @@
         "grade": "М250",
         "concretePrice": 210,
         "diameterMm": 12,
+        "rodLengthM": 5.8,
         "barCount": 4,
         "rebarPrice": 3.2,
         "stirrupMm": 8,
@@ -663,51 +667,51 @@
         },
         {
           "category": "metal",
-          "name": "Арматура рабочая А3 Ø12 (лента 155,7 кг + сваи 216,3 кг): 372,0 кг",
+          "name": "Арматура рабочая А3 Ø12 (лента 154,4 кг + сваи 216,3 кг): 370,7 кг",
           "netLabel": "348,0 кг",
           "net": {
             "displayed": "348,0",
             "unit": "кг"
           },
-          "coefficient": 1.0691230330048254,
-          "orderLabel": "372,0 кг",
+          "coefficient": 1.0652984264038603,
+          "orderLabel": "370,7 кг",
           "order": {
-            "displayed": "372,0",
+            "displayed": "370,7",
             "unit": "кг"
           },
-          "cost": 1190.4910243253235
+          "cost": 1186.2322442883549
         },
         {
           "category": "metal",
-          "name": "Хомуты Ø8 мм + кольца свай Ø6 (лента 156,9 кг + сваи 32,2 кг): 189,1 кг",
+          "name": "Хомуты Ø8 мм + кольца свай Ø6 (лента 155,5 кг + сваи 32,2 кг): 187,7 кг",
           "netLabel": "171,2 кг",
           "net": {
             "displayed": "171,2",
             "unit": "кг"
           },
-          "coefficient": 1.1043042060147177,
-          "orderLabel": "189,1 кг",
+          "coefficient": 1.096474083010051,
+          "orderLabel": "187,7 кг",
           "order": {
-            "displayed": "189,1",
+            "displayed": "187,7",
             "unit": "кг"
           },
-          "cost": 605.0767858793203
+          "cost": 600.7864593235593
         },
         {
           "category": "metal",
-          "name": "Вязальная проволока (лента 3,13 кг + сваи 1,76 кг): 4,89 кг",
-          "netLabel": "4,89 кг",
+          "name": "Вязальная проволока (лента 3,10 кг + сваи 1,76 кг): 4,86 кг",
+          "netLabel": "4,86 кг",
           "net": {
-            "displayed": "4,89",
+            "displayed": "4,86",
             "unit": "кг"
           },
           "coefficient": 1,
-          "orderLabel": "4,89 кг",
+          "orderLabel": "4,86 кг",
           "order": {
-            "displayed": "4,89",
+            "displayed": "4,86",
             "unit": "кг"
           },
-          "cost": 21.985951940850278
+          "cost": 21.865730129390016
         },
         {
           "category": "timber",
@@ -810,7 +814,7 @@
         "meta": "Лента 40,00 × 0,40 × 1,00 м · объём 16,00 м³ · опалубка 80,00 м · сваи 20 шт",
         "categorySubtotals": {
           "concrete": 6609.868368131213,
-          "metal": 1817.553762145494,
+          "metal": 1808.884433741304,
           "timber": 1876,
           "isol": 487.73892516838697
         },
@@ -838,10 +842,10 @@
           }
         }
       },
-      "total": 10791.161055445094,
-      "displayedTotal": "10 791,16 Br",
+      "total": 10782.491727040904,
+      "displayedTotal": "10 782,49 Br",
       "display": {
-        "tableHtml": "<tr><td>Бетон М250 (лента 16,80 м³ + сваи 3,89 м³): 20,69 м³</td><td class=\"num\">19,53 м³</td><td class=\"num\">1,06</td><td class=\"num\">20,69 м³</td><td class=\"num\">4 247,23 Br</td></tr><tr><td>Арматура рабочая А3 Ø12 (лента 155,7 кг + сваи 216,3 кг): 372,0 кг</td><td class=\"num\">348,0 кг</td><td class=\"num\">1,07</td><td class=\"num\">372,0 кг</td><td class=\"num\">1 190,49 Br</td></tr><tr><td>Хомуты Ø8 мм + кольца свай Ø6 (лента 156,9 кг + сваи 32,2 кг): 189,1 кг</td><td class=\"num\">171,2 кг</td><td class=\"num\">1,10</td><td class=\"num\">189,1 кг</td><td class=\"num\">605,08 Br</td></tr><tr><td>Вязальная проволока (лента 3,13 кг + сваи 1,76 кг): 4,89 кг</td><td class=\"num\">4,89 кг</td><td class=\"num\">1,00</td><td class=\"num\">4,89 кг</td><td class=\"num\">21,99 Br</td></tr><tr><td>Доска 25×150×6000 (2,205 м³)</td><td class=\"num\">98 шт</td><td class=\"num\">1,00</td><td class=\"num\">98 шт</td><td class=\"num\">1 372,00 Br</td></tr><tr><td>Брус упоров 50×50×3000 (0,473 м³)</td><td class=\"num\">63 шт</td><td class=\"num\">1,00</td><td class=\"num\">63 шт</td><td class=\"num\">504,00 Br</td></tr><tr><td>Песок</td><td class=\"num\">3,20 м³</td><td class=\"num\">1,10</td><td class=\"num\">3,52 м³</td><td class=\"num\">112,64 Br</td></tr><tr><td>Гидроизоляция, рулон 1×10 м</td><td class=\"num\">96,00 м²</td><td class=\"num\">1,15</td><td class=\"num\">12 рул.</td><td class=\"num\">336,00 Br</td></tr><tr><td>Рубероид гильз свай</td><td class=\"num\">47,12 м²</td><td class=\"num\">1,15</td><td class=\"num\">54,19 м²</td><td class=\"num\">151,74 Br</td></tr><tr><td>Бурение и заливка свай</td><td class=\"num\">50,00 м.п.</td><td class=\"num\">1,00</td><td class=\"num\">50,00 м.п.</td><td class=\"num\">2 250,00 Br</td></tr>",
+        "tableHtml": "<tr><td>Бетон М250 (лента 16,80 м³ + сваи 3,89 м³): 20,69 м³</td><td class=\"num\">19,53 м³</td><td class=\"num\">1,06</td><td class=\"num\">20,69 м³</td><td class=\"num\">4 247,23 Br</td></tr><tr><td>Арматура рабочая А3 Ø12 (лента 154,4 кг + сваи 216,3 кг): 370,7 кг</td><td class=\"num\">348,0 кг</td><td class=\"num\">1,07</td><td class=\"num\">370,7 кг</td><td class=\"num\">1 186,23 Br</td></tr><tr><td>Хомуты Ø8 мм + кольца свай Ø6 (лента 155,5 кг + сваи 32,2 кг): 187,7 кг</td><td class=\"num\">171,2 кг</td><td class=\"num\">1,10</td><td class=\"num\">187,7 кг</td><td class=\"num\">600,79 Br</td></tr><tr><td>Вязальная проволока (лента 3,10 кг + сваи 1,76 кг): 4,86 кг</td><td class=\"num\">4,86 кг</td><td class=\"num\">1,00</td><td class=\"num\">4,86 кг</td><td class=\"num\">21,87 Br</td></tr><tr><td>Доска 25×150×6000 (2,205 м³)</td><td class=\"num\">98 шт</td><td class=\"num\">1,00</td><td class=\"num\">98 шт</td><td class=\"num\">1 372,00 Br</td></tr><tr><td>Брус упоров 50×50×3000 (0,473 м³)</td><td class=\"num\">63 шт</td><td class=\"num\">1,00</td><td class=\"num\">63 шт</td><td class=\"num\">504,00 Br</td></tr><tr><td>Песок</td><td class=\"num\">3,20 м³</td><td class=\"num\">1,10</td><td class=\"num\">3,52 м³</td><td class=\"num\">112,64 Br</td></tr><tr><td>Гидроизоляция, рулон 1×10 м</td><td class=\"num\">96,00 м²</td><td class=\"num\">1,15</td><td class=\"num\">12 рул.</td><td class=\"num\">336,00 Br</td></tr><tr><td>Рубероид гильз свай</td><td class=\"num\">47,12 м²</td><td class=\"num\">1,15</td><td class=\"num\">54,19 м²</td><td class=\"num\">151,74 Br</td></tr><tr><td>Бурение и заливка свай</td><td class=\"num\">50,00 м.п.</td><td class=\"num\">1,00</td><td class=\"num\">50,00 м.п.</td><td class=\"num\">2 250,00 Br</td></tr>",
         "scope": "Рассчитано: ленточный фундамент.",
         "excluded": "Не рассчитано: стены и перегородки, перекрытия, штукатурка, кровля.",
         "meta": "Лента 40,00 × 0,40 × 1,00 м · объём 16,00 м³ · опалубка 80,00 м · сваи 20 шт",
@@ -2052,6 +2056,7 @@
           "grade": "М250",
           "concretePrice": 210,
           "diameterMm": 12,
+          "rodLengthM": 5.8,
           "stepMm": 200,
           "meshCount": 2,
           "rebarPrice": 3.2,
@@ -2071,6 +2076,7 @@
           "grade": "М250",
           "concretePrice": 210,
           "diameterMm": 12,
+          "rodLengthM": 5.8,
           "barCount": 4,
           "rebarPrice": 3.2,
           "stirrupMm": 8,
@@ -2282,35 +2288,35 @@
         },
         {
           "category": "metal",
-          "name": "Арматура Ø12 мм, 140 шт. × 11.7 м",
+          "name": "Арматура Ø12 мм, 298 шт. × 5,8 м",
           "netLabel": "1 451,5 кг",
           "net": {
             "displayed": "1 451,5",
             "unit": "кг"
           },
-          "coefficient": 1.0012224938875305,
-          "orderLabel": "1 453,3 кг",
+          "coefficient": 1.056479217603912,
+          "orderLabel": "1 533,5 кг",
           "order": {
-            "displayed": "1 453,3",
+            "displayed": "1 533,5",
             "unit": "кг"
           },
-          "cost": 4650.587800369685
+          "cost": 4907.250277264325
         },
         {
           "category": "metal",
           "name": "Вязальная проволока",
-          "netLabel": "14,53 кг",
+          "netLabel": "15,34 кг",
           "net": {
-            "displayed": "14,53",
+            "displayed": "15,34",
             "unit": "кг"
           },
           "coefficient": 1,
-          "orderLabel": "14,53 кг",
+          "orderLabel": "15,34 кг",
           "order": {
-            "displayed": "14,53",
+            "displayed": "15,34",
             "unit": "кг"
           },
-          "cost": 65.3988909426987
+          "cost": 69.00820702402956
         },
         {
           "category": "timber",
@@ -2478,21 +2484,21 @@
         "meta": "Объект: плита 10,00 × 8,00 × 0,30 м · стены 40,0 × 3,0 м, проёмы 10,50 м² · штукатурка 109,50 м²",
         "categorySubtotals": {
           "concrete": 6823.200000000001,
-          "metal": 4715.986691312384,
+          "metal": 4976.258484288354,
           "timber": 280,
           "isol": 11217.284320000002
         },
         "sectionSubtotals": {
-          "foundation": 12099.186691312385,
+          "foundation": 12359.458484288356,
           "walls": 8865.784320000002,
           "plaster": 2071.5
         },
         "calculationDetails": null
       },
-      "total": 23036.471011312387,
-      "displayedTotal": "23 036,47 Br",
+      "total": 23296.74280428836,
+      "displayedTotal": "23 296,74 Br",
       "display": {
-        "tableHtml": "<tr class=\"cat-row\"><td colspan=\"5\">Бетон и растворы</td></tr><tr><td>Бетон М250</td><td class=\"num\">24,00 м³</td><td class=\"num\">1,05</td><td class=\"num\">25,20 м³</td><td class=\"num\">5 292,00 Br</td></tr><tr><td>Песок</td><td class=\"num\">16,00 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,60 м³</td><td class=\"num\">563,20 Br</td></tr><tr><td>Щебень</td><td class=\"num\">16,00 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,60 м³</td><td class=\"num\">968,00 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Арматура и металл</td></tr><tr><td>Арматура Ø12 мм, 140 шт. × 11.7 м</td><td class=\"num\">1 451,5 кг</td><td class=\"num\">1,00</td><td class=\"num\">1 453,3 кг</td><td class=\"num\">4 650,59 Br</td></tr><tr><td>Вязальная проволока</td><td class=\"num\">14,53 кг</td><td class=\"num\">1,00</td><td class=\"num\">14,53 кг</td><td class=\"num\">65,40 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Пиломатериалы</td></tr><tr><td>Доска 25×150×6000 (0,270 м³)</td><td class=\"num\">12 шт</td><td class=\"num\">1,00</td><td class=\"num\">12 шт</td><td class=\"num\">168,00 Br</td></tr><tr><td>Брус упоров 50×50×3000 (0,105 м³)</td><td class=\"num\">14 шт</td><td class=\"num\">1,00</td><td class=\"num\">14 шт</td><td class=\"num\">112,00 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Изоляция и расходники</td></tr><tr><td>Гидроизоляция, рулон 1×10 м</td><td class=\"num\">80,00 м²</td><td class=\"num\">1,15</td><td class=\"num\">10 рул.</td><td class=\"num\">280,00 Br</td></tr><tr><td>Стены и перегородки — материалы (газосиликатные 300 мм, чистая кладка 29,81 м³)</td><td class=\"num\">29,81 м³</td><td class=\"num\">1,00</td><td class=\"num\">6 789,33</td><td class=\"num\">6 789,33 Br</td></tr><tr><td>Стены и перегородки — работы (кладка, армопояс, перемычки)</td><td class=\"num\">40,0 м перим.</td><td class=\"num\">1,00</td><td class=\"num\">2 076,45</td><td class=\"num\">2 076,45 Br</td></tr><tr><td>Штукатурка — материалы (гипс, слой 15 мм, 109,50 м²)</td><td class=\"num\">109,50 м²</td><td class=\"num\">1,00</td><td class=\"num\">976,50</td><td class=\"num\">976,50 Br</td></tr><tr><td>Штукатурка — работы (по маякам, 109,50 м²)</td><td class=\"num\">109,50 м²</td><td class=\"num\">1,00</td><td class=\"num\">109,50 м²</td><td class=\"num\">1 095,00 Br</td></tr>",
+        "tableHtml": "<tr class=\"cat-row\"><td colspan=\"5\">Бетон и растворы</td></tr><tr><td>Бетон М250</td><td class=\"num\">24,00 м³</td><td class=\"num\">1,05</td><td class=\"num\">25,20 м³</td><td class=\"num\">5 292,00 Br</td></tr><tr><td>Песок</td><td class=\"num\">16,00 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,60 м³</td><td class=\"num\">563,20 Br</td></tr><tr><td>Щебень</td><td class=\"num\">16,00 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,60 м³</td><td class=\"num\">968,00 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Арматура и металл</td></tr><tr><td>Арматура Ø12 мм, 298 шт. × 5,8 м</td><td class=\"num\">1 451,5 кг</td><td class=\"num\">1,06</td><td class=\"num\">1 533,5 кг</td><td class=\"num\">4 907,25 Br</td></tr><tr><td>Вязальная проволока</td><td class=\"num\">15,34 кг</td><td class=\"num\">1,00</td><td class=\"num\">15,34 кг</td><td class=\"num\">69,01 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Пиломатериалы</td></tr><tr><td>Доска 25×150×6000 (0,270 м³)</td><td class=\"num\">12 шт</td><td class=\"num\">1,00</td><td class=\"num\">12 шт</td><td class=\"num\">168,00 Br</td></tr><tr><td>Брус упоров 50×50×3000 (0,105 м³)</td><td class=\"num\">14 шт</td><td class=\"num\">1,00</td><td class=\"num\">14 шт</td><td class=\"num\">112,00 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Изоляция и расходники</td></tr><tr><td>Гидроизоляция, рулон 1×10 м</td><td class=\"num\">80,00 м²</td><td class=\"num\">1,15</td><td class=\"num\">10 рул.</td><td class=\"num\">280,00 Br</td></tr><tr><td>Стены и перегородки — материалы (газосиликатные 300 мм, чистая кладка 29,81 м³)</td><td class=\"num\">29,81 м³</td><td class=\"num\">1,00</td><td class=\"num\">6 789,33</td><td class=\"num\">6 789,33 Br</td></tr><tr><td>Стены и перегородки — работы (кладка, армопояс, перемычки)</td><td class=\"num\">40,0 м перим.</td><td class=\"num\">1,00</td><td class=\"num\">2 076,45</td><td class=\"num\">2 076,45 Br</td></tr><tr><td>Штукатурка — материалы (гипс, слой 15 мм, 109,50 м²)</td><td class=\"num\">109,50 м²</td><td class=\"num\">1,00</td><td class=\"num\">976,50</td><td class=\"num\">976,50 Br</td></tr><tr><td>Штукатурка — работы (по маякам, 109,50 м²)</td><td class=\"num\">109,50 м²</td><td class=\"num\">1,00</td><td class=\"num\">109,50 м²</td><td class=\"num\">1 095,00 Br</td></tr>",
         "scope": "Рассчитано: плитный фундамент, стены и перегородки, штукатурка.",
         "excluded": "Не рассчитано: перекрытия, кровля.",
         "meta": "Объект: плита 10,00 × 8,00 × 0,30 м · стены 40,0 × 3,0 м, проёмы 10,50 м² · штукатурка 109,50 м²",
@@ -2516,6 +2522,7 @@
           "grade": "М250",
           "concretePrice": 210,
           "diameterMm": 12,
+          "rodLengthM": 5.8,
           "stepMm": 200,
           "meshCount": 2,
           "rebarPrice": 3.2,
@@ -2535,6 +2542,7 @@
           "grade": "М250",
           "concretePrice": 210,
           "diameterMm": 12,
+          "rodLengthM": 5.8,
           "barCount": 4,
           "rebarPrice": 3.2,
           "stirrupMm": 8,
@@ -2746,35 +2754,35 @@
         },
         {
           "category": "metal",
-          "name": "Арматура Ø12 мм, 140 шт. × 11.7 м",
+          "name": "Арматура Ø12 мм, 298 шт. × 5,8 м",
           "netLabel": "1 451,5 кг",
           "net": {
             "displayed": "1 451,5",
             "unit": "кг"
           },
-          "coefficient": 1.0012224938875305,
-          "orderLabel": "1 453,3 кг",
+          "coefficient": 1.056479217603912,
+          "orderLabel": "1 533,5 кг",
           "order": {
-            "displayed": "1 453,3",
+            "displayed": "1 533,5",
             "unit": "кг"
           },
-          "cost": 4650.587800369685
+          "cost": 4907.250277264325
         },
         {
           "category": "metal",
           "name": "Вязальная проволока",
-          "netLabel": "14,53 кг",
+          "netLabel": "15,34 кг",
           "net": {
-            "displayed": "14,53",
+            "displayed": "15,34",
             "unit": "кг"
           },
           "coefficient": 1,
-          "orderLabel": "14,53 кг",
+          "orderLabel": "15,34 кг",
           "order": {
-            "displayed": "14,53",
+            "displayed": "15,34",
             "unit": "кг"
           },
-          "cost": 65.3988909426987
+          "cost": 69.00820702402956
         },
         {
           "category": "timber",
@@ -3014,12 +3022,12 @@
         "meta": "Объект: плита 10,00 × 8,00 × 0,30 м · стены 40,0 × 3,0 м, проёмы 10,50 м² · штукатурка 109,50 м² · кровля двухскатная 8,00 × 10,00 м · перекрытия 10,00 × 8,00 м",
         "categorySubtotals": {
           "concrete": 6823.200000000001,
-          "metal": 4715.986691312384,
+          "metal": 4976.258484288354,
           "timber": 15235.59061480139,
           "isol": 16712.424320000002
         },
         "sectionSubtotals": {
-          "foundation": 12099.186691312385,
+          "foundation": 12359.458484288356,
           "walls": 8865.784320000002,
           "plaster": 2071.5,
           "roof": 14955.59061480139,
@@ -3027,10 +3035,10 @@
         },
         "calculationDetails": null
       },
-      "total": 43487.201626113776,
-      "displayedTotal": "43 487,20 Br",
+      "total": 43747.47341908974,
+      "displayedTotal": "43 747,47 Br",
       "display": {
-        "tableHtml": "<tr class=\"cat-row\"><td colspan=\"5\">Бетон и растворы</td></tr><tr><td>Бетон М250</td><td class=\"num\">24,00 м³</td><td class=\"num\">1,05</td><td class=\"num\">25,20 м³</td><td class=\"num\">5 292,00 Br</td></tr><tr><td>Песок</td><td class=\"num\">16,00 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,60 м³</td><td class=\"num\">563,20 Br</td></tr><tr><td>Щебень</td><td class=\"num\">16,00 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,60 м³</td><td class=\"num\">968,00 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Арматура и металл</td></tr><tr><td>Арматура Ø12 мм, 140 шт. × 11.7 м</td><td class=\"num\">1 451,5 кг</td><td class=\"num\">1,00</td><td class=\"num\">1 453,3 кг</td><td class=\"num\">4 650,59 Br</td></tr><tr><td>Вязальная проволока</td><td class=\"num\">14,53 кг</td><td class=\"num\">1,00</td><td class=\"num\">14,53 кг</td><td class=\"num\">65,40 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Пиломатериалы</td></tr><tr><td>Доска 25×150×6000 (0,270 м³)</td><td class=\"num\">12 шт</td><td class=\"num\">1,00</td><td class=\"num\">12 шт</td><td class=\"num\">168,00 Br</td></tr><tr><td>Брус упоров 50×50×3000 (0,105 м³)</td><td class=\"num\">14 шт</td><td class=\"num\">1,00</td><td class=\"num\">14 шт</td><td class=\"num\">112,00 Br</td></tr><tr><td>Кровля — материалы (скаты 116,75 м², двухскатная)</td><td class=\"num\">116,75 м²</td><td class=\"num\">1,00</td><td class=\"num\">7 367,13</td><td class=\"num\">7 367,13 Br</td></tr><tr><td>Кровля — работы (монтаж под ключ, 116,75 м²)</td><td class=\"num\">116,75 м²</td><td class=\"num\">1,00</td><td class=\"num\">116,75 м²</td><td class=\"num\">7 588,46 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Изоляция и расходники</td></tr><tr><td>Гидроизоляция, рулон 1×10 м</td><td class=\"num\">80,00 м²</td><td class=\"num\">1,15</td><td class=\"num\">10 рул.</td><td class=\"num\">280,00 Br</td></tr><tr><td>Стены и перегородки — материалы (газосиликатные 300 мм, чистая кладка 29,81 м³)</td><td class=\"num\">29,81 м³</td><td class=\"num\">1,00</td><td class=\"num\">6 789,33</td><td class=\"num\">6 789,33 Br</td></tr><tr><td>Стены и перегородки — работы (кладка, армопояс, перемычки)</td><td class=\"num\">40,0 м перим.</td><td class=\"num\">1,00</td><td class=\"num\">2 076,45</td><td class=\"num\">2 076,45 Br</td></tr><tr><td>Штукатурка — материалы (гипс, слой 15 мм, 109,50 м²)</td><td class=\"num\">109,50 м²</td><td class=\"num\">1,00</td><td class=\"num\">976,50</td><td class=\"num\">976,50 Br</td></tr><tr><td>Штукатурка — работы (по маякам, 109,50 м²)</td><td class=\"num\">109,50 м²</td><td class=\"num\">1,00</td><td class=\"num\">109,50 м²</td><td class=\"num\">1 095,00 Br</td></tr><tr><td>Перекрытия — материалы (деревянные балки, 80,00 м²)</td><td class=\"num\">80,00 м²</td><td class=\"num\">1,00</td><td class=\"num\">3 495,14</td><td class=\"num\">3 495,14 Br</td></tr><tr><td>Перекрытия — работы (деревянные балки, 80,00 м²)</td><td class=\"num\">80,00 м²</td><td class=\"num\">1,00</td><td class=\"num\">2 000,00</td><td class=\"num\">2 000,00 Br</td></tr>",
+        "tableHtml": "<tr class=\"cat-row\"><td colspan=\"5\">Бетон и растворы</td></tr><tr><td>Бетон М250</td><td class=\"num\">24,00 м³</td><td class=\"num\">1,05</td><td class=\"num\">25,20 м³</td><td class=\"num\">5 292,00 Br</td></tr><tr><td>Песок</td><td class=\"num\">16,00 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,60 м³</td><td class=\"num\">563,20 Br</td></tr><tr><td>Щебень</td><td class=\"num\">16,00 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,60 м³</td><td class=\"num\">968,00 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Арматура и металл</td></tr><tr><td>Арматура Ø12 мм, 298 шт. × 5,8 м</td><td class=\"num\">1 451,5 кг</td><td class=\"num\">1,06</td><td class=\"num\">1 533,5 кг</td><td class=\"num\">4 907,25 Br</td></tr><tr><td>Вязальная проволока</td><td class=\"num\">15,34 кг</td><td class=\"num\">1,00</td><td class=\"num\">15,34 кг</td><td class=\"num\">69,01 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Пиломатериалы</td></tr><tr><td>Доска 25×150×6000 (0,270 м³)</td><td class=\"num\">12 шт</td><td class=\"num\">1,00</td><td class=\"num\">12 шт</td><td class=\"num\">168,00 Br</td></tr><tr><td>Брус упоров 50×50×3000 (0,105 м³)</td><td class=\"num\">14 шт</td><td class=\"num\">1,00</td><td class=\"num\">14 шт</td><td class=\"num\">112,00 Br</td></tr><tr><td>Кровля — материалы (скаты 116,75 м², двухскатная)</td><td class=\"num\">116,75 м²</td><td class=\"num\">1,00</td><td class=\"num\">7 367,13</td><td class=\"num\">7 367,13 Br</td></tr><tr><td>Кровля — работы (монтаж под ключ, 116,75 м²)</td><td class=\"num\">116,75 м²</td><td class=\"num\">1,00</td><td class=\"num\">116,75 м²</td><td class=\"num\">7 588,46 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Изоляция и расходники</td></tr><tr><td>Гидроизоляция, рулон 1×10 м</td><td class=\"num\">80,00 м²</td><td class=\"num\">1,15</td><td class=\"num\">10 рул.</td><td class=\"num\">280,00 Br</td></tr><tr><td>Стены и перегородки — материалы (газосиликатные 300 мм, чистая кладка 29,81 м³)</td><td class=\"num\">29,81 м³</td><td class=\"num\">1,00</td><td class=\"num\">6 789,33</td><td class=\"num\">6 789,33 Br</td></tr><tr><td>Стены и перегородки — работы (кладка, армопояс, перемычки)</td><td class=\"num\">40,0 м перим.</td><td class=\"num\">1,00</td><td class=\"num\">2 076,45</td><td class=\"num\">2 076,45 Br</td></tr><tr><td>Штукатурка — материалы (гипс, слой 15 мм, 109,50 м²)</td><td class=\"num\">109,50 м²</td><td class=\"num\">1,00</td><td class=\"num\">976,50</td><td class=\"num\">976,50 Br</td></tr><tr><td>Штукатурка — работы (по маякам, 109,50 м²)</td><td class=\"num\">109,50 м²</td><td class=\"num\">1,00</td><td class=\"num\">109,50 м²</td><td class=\"num\">1 095,00 Br</td></tr><tr><td>Перекрытия — материалы (деревянные балки, 80,00 м²)</td><td class=\"num\">80,00 м²</td><td class=\"num\">1,00</td><td class=\"num\">3 495,14</td><td class=\"num\">3 495,14 Br</td></tr><tr><td>Перекрытия — работы (деревянные балки, 80,00 м²)</td><td class=\"num\">80,00 м²</td><td class=\"num\">1,00</td><td class=\"num\">2 000,00</td><td class=\"num\">2 000,00 Br</td></tr>",
         "scope": "Рассчитано: плитный фундамент, стены и перегородки, штукатурка, кровля, перекрытия.",
         "excluded": "Все доступные разделы включены. Другие работы и инженерные системы в ведомость не входят.",
         "meta": "Объект: плита 10,00 × 8,00 × 0,30 м · стены 40,0 × 3,0 м, проёмы 10,50 м² · штукатурка 109,50 м² · кровля двухскатная 8,00 × 10,00 м · перекрытия 10,00 × 8,00 м",
@@ -3054,6 +3062,7 @@
           "grade": "М250",
           "concretePrice": 210,
           "diameterMm": 12,
+          "rodLengthM": 5.8,
           "stepMm": 200,
           "meshCount": 2,
           "rebarPrice": 3.2,
@@ -3073,6 +3082,7 @@
           "grade": "М250",
           "concretePrice": 210,
           "diameterMm": 12,
+          "rodLengthM": 5.8,
           "barCount": 4,
           "rebarPrice": 3.2,
           "stirrupMm": 8,
@@ -3292,51 +3302,51 @@
         },
         {
           "category": "metal",
-          "name": "Арматура рабочая А3 Ø12 (лента 155,7 кг + сваи 216,3 кг): 372,0 кг",
+          "name": "Арматура рабочая А3 Ø12 (лента 154,4 кг + сваи 216,3 кг): 370,7 кг",
           "netLabel": "348,0 кг",
           "net": {
             "displayed": "348,0",
             "unit": "кг"
           },
-          "coefficient": 1.0691230330048254,
-          "orderLabel": "372,0 кг",
+          "coefficient": 1.0652984264038603,
+          "orderLabel": "370,7 кг",
           "order": {
-            "displayed": "372,0",
+            "displayed": "370,7",
             "unit": "кг"
           },
-          "cost": 1190.4910243253235
+          "cost": 1186.2322442883549
         },
         {
           "category": "metal",
-          "name": "Хомуты Ø8 мм + кольца свай Ø6 (лента 156,9 кг + сваи 32,2 кг): 189,1 кг",
+          "name": "Хомуты Ø8 мм + кольца свай Ø6 (лента 155,5 кг + сваи 32,2 кг): 187,7 кг",
           "netLabel": "171,2 кг",
           "net": {
             "displayed": "171,2",
             "unit": "кг"
           },
-          "coefficient": 1.1043042060147177,
-          "orderLabel": "189,1 кг",
+          "coefficient": 1.096474083010051,
+          "orderLabel": "187,7 кг",
           "order": {
-            "displayed": "189,1",
+            "displayed": "187,7",
             "unit": "кг"
           },
-          "cost": 605.0767858793203
+          "cost": 600.7864593235593
         },
         {
           "category": "metal",
-          "name": "Вязальная проволока (лента 3,13 кг + сваи 1,76 кг): 4,89 кг",
-          "netLabel": "4,89 кг",
+          "name": "Вязальная проволока (лента 3,10 кг + сваи 1,76 кг): 4,86 кг",
+          "netLabel": "4,86 кг",
           "net": {
-            "displayed": "4,89",
+            "displayed": "4,86",
             "unit": "кг"
           },
           "coefficient": 1,
-          "orderLabel": "4,89 кг",
+          "orderLabel": "4,86 кг",
           "order": {
-            "displayed": "4,89",
+            "displayed": "4,86",
             "unit": "кг"
           },
-          "cost": 21.985951940850278
+          "cost": 21.865730129390016
         },
         {
           "category": "timber",
@@ -3520,21 +3530,21 @@
         "meta": "Объект: лента 40,00 × 0,40 × 1,00 м · кровля двухскатная 8,00 × 10,00 м · перекрытия 10,00 × 8,00 м",
         "categorySubtotals": {
           "concrete": 6609.868368131213,
-          "metal": 1817.553762145494,
+          "metal": 1808.884433741304,
           "timber": 16831.59061480139,
           "isol": 5531.426125168387
         },
         "sectionSubtotals": {
-          "foundation": 10791.161055445094,
+          "foundation": 10782.491727040904,
           "roof": 14955.59061480139,
           "floor": 5043.6872
         },
         "calculationDetails": null
       },
-      "total": 30790.438870246486,
-      "displayedTotal": "30 790,44 Br",
+      "total": 30781.769541842295,
+      "displayedTotal": "30 781,77 Br",
       "display": {
-        "tableHtml": "<tr class=\"cat-row\"><td colspan=\"5\">Бетон и растворы</td></tr><tr><td>Бетон М250 (лента 16,80 м³ + сваи 3,89 м³): 20,69 м³</td><td class=\"num\">19,53 м³</td><td class=\"num\">1,06</td><td class=\"num\">20,69 м³</td><td class=\"num\">4 247,23 Br</td></tr><tr><td>Песок</td><td class=\"num\">3,20 м³</td><td class=\"num\">1,10</td><td class=\"num\">3,52 м³</td><td class=\"num\">112,64 Br</td></tr><tr><td>Бурение и заливка свай</td><td class=\"num\">50,00 м.п.</td><td class=\"num\">1,00</td><td class=\"num\">50,00 м.п.</td><td class=\"num\">2 250,00 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Арматура и металл</td></tr><tr><td>Арматура рабочая А3 Ø12 (лента 155,7 кг + сваи 216,3 кг): 372,0 кг</td><td class=\"num\">348,0 кг</td><td class=\"num\">1,07</td><td class=\"num\">372,0 кг</td><td class=\"num\">1 190,49 Br</td></tr><tr><td>Хомуты Ø8 мм + кольца свай Ø6 (лента 156,9 кг + сваи 32,2 кг): 189,1 кг</td><td class=\"num\">171,2 кг</td><td class=\"num\">1,10</td><td class=\"num\">189,1 кг</td><td class=\"num\">605,08 Br</td></tr><tr><td>Вязальная проволока (лента 3,13 кг + сваи 1,76 кг): 4,89 кг</td><td class=\"num\">4,89 кг</td><td class=\"num\">1,00</td><td class=\"num\">4,89 кг</td><td class=\"num\">21,99 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Пиломатериалы</td></tr><tr><td>Доска 25×150×6000 (2,205 м³)</td><td class=\"num\">98 шт</td><td class=\"num\">1,00</td><td class=\"num\">98 шт</td><td class=\"num\">1 372,00 Br</td></tr><tr><td>Брус упоров 50×50×3000 (0,473 м³)</td><td class=\"num\">63 шт</td><td class=\"num\">1,00</td><td class=\"num\">63 шт</td><td class=\"num\">504,00 Br</td></tr><tr><td>Кровля — материалы (скаты 116,75 м², двухскатная)</td><td class=\"num\">116,75 м²</td><td class=\"num\">1,00</td><td class=\"num\">7 367,13</td><td class=\"num\">7 367,13 Br</td></tr><tr><td>Кровля — работы (монтаж под ключ, 116,75 м²)</td><td class=\"num\">116,75 м²</td><td class=\"num\">1,00</td><td class=\"num\">116,75 м²</td><td class=\"num\">7 588,46 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Изоляция и расходники</td></tr><tr><td>Гидроизоляция, рулон 1×10 м</td><td class=\"num\">96,00 м²</td><td class=\"num\">1,15</td><td class=\"num\">12 рул.</td><td class=\"num\">336,00 Br</td></tr><tr><td>Рубероид гильз свай</td><td class=\"num\">47,12 м²</td><td class=\"num\">1,15</td><td class=\"num\">54,19 м²</td><td class=\"num\">151,74 Br</td></tr><tr><td>Перекрытия — материалы (ЖБ плиты, 80,00 м²)</td><td class=\"num\">80,00 м²</td><td class=\"num\">1,00</td><td class=\"num\">4 403,69</td><td class=\"num\">4 403,69 Br</td></tr><tr><td>Перекрытия — работы (ЖБ плиты, 80,00 м²)</td><td class=\"num\">80,00 м²</td><td class=\"num\">1,00</td><td class=\"num\">640,00</td><td class=\"num\">640,00 Br</td></tr>",
+        "tableHtml": "<tr class=\"cat-row\"><td colspan=\"5\">Бетон и растворы</td></tr><tr><td>Бетон М250 (лента 16,80 м³ + сваи 3,89 м³): 20,69 м³</td><td class=\"num\">19,53 м³</td><td class=\"num\">1,06</td><td class=\"num\">20,69 м³</td><td class=\"num\">4 247,23 Br</td></tr><tr><td>Песок</td><td class=\"num\">3,20 м³</td><td class=\"num\">1,10</td><td class=\"num\">3,52 м³</td><td class=\"num\">112,64 Br</td></tr><tr><td>Бурение и заливка свай</td><td class=\"num\">50,00 м.п.</td><td class=\"num\">1,00</td><td class=\"num\">50,00 м.п.</td><td class=\"num\">2 250,00 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Арматура и металл</td></tr><tr><td>Арматура рабочая А3 Ø12 (лента 154,4 кг + сваи 216,3 кг): 370,7 кг</td><td class=\"num\">348,0 кг</td><td class=\"num\">1,07</td><td class=\"num\">370,7 кг</td><td class=\"num\">1 186,23 Br</td></tr><tr><td>Хомуты Ø8 мм + кольца свай Ø6 (лента 155,5 кг + сваи 32,2 кг): 187,7 кг</td><td class=\"num\">171,2 кг</td><td class=\"num\">1,10</td><td class=\"num\">187,7 кг</td><td class=\"num\">600,79 Br</td></tr><tr><td>Вязальная проволока (лента 3,10 кг + сваи 1,76 кг): 4,86 кг</td><td class=\"num\">4,86 кг</td><td class=\"num\">1,00</td><td class=\"num\">4,86 кг</td><td class=\"num\">21,87 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Пиломатериалы</td></tr><tr><td>Доска 25×150×6000 (2,205 м³)</td><td class=\"num\">98 шт</td><td class=\"num\">1,00</td><td class=\"num\">98 шт</td><td class=\"num\">1 372,00 Br</td></tr><tr><td>Брус упоров 50×50×3000 (0,473 м³)</td><td class=\"num\">63 шт</td><td class=\"num\">1,00</td><td class=\"num\">63 шт</td><td class=\"num\">504,00 Br</td></tr><tr><td>Кровля — материалы (скаты 116,75 м², двухскатная)</td><td class=\"num\">116,75 м²</td><td class=\"num\">1,00</td><td class=\"num\">7 367,13</td><td class=\"num\">7 367,13 Br</td></tr><tr><td>Кровля — работы (монтаж под ключ, 116,75 м²)</td><td class=\"num\">116,75 м²</td><td class=\"num\">1,00</td><td class=\"num\">116,75 м²</td><td class=\"num\">7 588,46 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Изоляция и расходники</td></tr><tr><td>Гидроизоляция, рулон 1×10 м</td><td class=\"num\">96,00 м²</td><td class=\"num\">1,15</td><td class=\"num\">12 рул.</td><td class=\"num\">336,00 Br</td></tr><tr><td>Рубероид гильз свай</td><td class=\"num\">47,12 м²</td><td class=\"num\">1,15</td><td class=\"num\">54,19 м²</td><td class=\"num\">151,74 Br</td></tr><tr><td>Перекрытия — материалы (ЖБ плиты, 80,00 м²)</td><td class=\"num\">80,00 м²</td><td class=\"num\">1,00</td><td class=\"num\">4 403,69</td><td class=\"num\">4 403,69 Br</td></tr><tr><td>Перекрытия — работы (ЖБ плиты, 80,00 м²)</td><td class=\"num\">80,00 м²</td><td class=\"num\">1,00</td><td class=\"num\">640,00</td><td class=\"num\">640,00 Br</td></tr>",
         "scope": "Рассчитано: ленточный фундамент, кровля, перекрытия.",
         "excluded": "Не рассчитано: стены и перегородки, штукатурка.",
         "meta": "Объект: лента 40,00 × 0,40 × 1,00 м · кровля двухскатная 8,00 × 10,00 м · перекрытия 10,00 × 8,00 м",
@@ -3558,6 +3568,7 @@
           "grade": "М250",
           "concretePrice": 210,
           "diameterMm": 12,
+          "rodLengthM": 5.8,
           "stepMm": 200,
           "meshCount": 2,
           "rebarPrice": 3.2,
@@ -3577,6 +3588,7 @@
           "grade": "М250",
           "concretePrice": 210,
           "diameterMm": 12,
+          "rodLengthM": 5.8,
           "barCount": 4,
           "rebarPrice": 3.2,
           "stirrupMm": 8,
@@ -3788,35 +3800,35 @@
         },
         {
           "category": "metal",
-          "name": "Арматура Ø12 мм, 140 шт. × 11.7 м",
+          "name": "Арматура Ø12 мм, 298 шт. × 5,8 м",
           "netLabel": "1 451,5 кг",
           "net": {
             "displayed": "1 451,5",
             "unit": "кг"
           },
-          "coefficient": 1.0012224938875305,
-          "orderLabel": "1 453,3 кг",
+          "coefficient": 1.056479217603912,
+          "orderLabel": "1 533,5 кг",
           "order": {
-            "displayed": "1 453,3",
+            "displayed": "1 533,5",
             "unit": "кг"
           },
-          "cost": 4650.587800369685
+          "cost": 4907.250277264325
         },
         {
           "category": "metal",
           "name": "Вязальная проволока",
-          "netLabel": "14,53 кг",
+          "netLabel": "15,34 кг",
           "net": {
-            "displayed": "14,53",
+            "displayed": "15,34",
             "unit": "кг"
           },
           "coefficient": 1,
-          "orderLabel": "14,53 кг",
+          "orderLabel": "15,34 кг",
           "order": {
-            "displayed": "14,53",
+            "displayed": "15,34",
             "unit": "кг"
           },
-          "cost": 65.3988909426987
+          "cost": 69.00820702402956
         },
         {
           "category": "timber",
@@ -3984,21 +3996,21 @@
         "meta": "Объект: плита 10,00 × 8,00 × 0,30 м · стены 40,0 × 3,0 м, проёмы 10,50 м² · штукатурка 120,00 м²",
         "categorySubtotals": {
           "concrete": 6823.200000000001,
-          "metal": 4715.986691312384,
+          "metal": 4976.258484288354,
           "timber": 280,
           "isol": 11417.584308000001
         },
         "sectionSubtotals": {
-          "foundation": 12099.186691312385,
+          "foundation": 12359.458484288356,
           "walls": 8865.784320000002,
           "plaster": 2271.7999879999998
         },
         "calculationDetails": null
       },
-      "total": 23236.770999312386,
-      "displayedTotal": "23 236,77 Br",
+      "total": 23497.042792288357,
+      "displayedTotal": "23 497,04 Br",
       "display": {
-        "tableHtml": "<tr class=\"cat-row\"><td colspan=\"5\">Бетон и растворы</td></tr><tr><td>Бетон М250</td><td class=\"num\">24,00 м³</td><td class=\"num\">1,05</td><td class=\"num\">25,20 м³</td><td class=\"num\">5 292,00 Br</td></tr><tr><td>Песок</td><td class=\"num\">16,00 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,60 м³</td><td class=\"num\">563,20 Br</td></tr><tr><td>Щебень</td><td class=\"num\">16,00 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,60 м³</td><td class=\"num\">968,00 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Арматура и металл</td></tr><tr><td>Арматура Ø12 мм, 140 шт. × 11.7 м</td><td class=\"num\">1 451,5 кг</td><td class=\"num\">1,00</td><td class=\"num\">1 453,3 кг</td><td class=\"num\">4 650,59 Br</td></tr><tr><td>Вязальная проволока</td><td class=\"num\">14,53 кг</td><td class=\"num\">1,00</td><td class=\"num\">14,53 кг</td><td class=\"num\">65,40 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Пиломатериалы</td></tr><tr><td>Доска 25×150×6000 (0,270 м³)</td><td class=\"num\">12 шт</td><td class=\"num\">1,00</td><td class=\"num\">12 шт</td><td class=\"num\">168,00 Br</td></tr><tr><td>Брус упоров 50×50×3000 (0,105 м³)</td><td class=\"num\">14 шт</td><td class=\"num\">1,00</td><td class=\"num\">14 шт</td><td class=\"num\">112,00 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Изоляция и расходники</td></tr><tr><td>Гидроизоляция, рулон 1×10 м</td><td class=\"num\">80,00 м²</td><td class=\"num\">1,15</td><td class=\"num\">10 рул.</td><td class=\"num\">280,00 Br</td></tr><tr><td>Стены и перегородки — материалы (газосиликатные 300 мм, чистая кладка 29,81 м³)</td><td class=\"num\">29,81 м³</td><td class=\"num\">1,00</td><td class=\"num\">6 789,33</td><td class=\"num\">6 789,33 Br</td></tr><tr><td>Стены и перегородки — работы (кладка, армопояс, перемычки)</td><td class=\"num\">40,0 м перим.</td><td class=\"num\">1,00</td><td class=\"num\">2 076,45</td><td class=\"num\">2 076,45 Br</td></tr><tr><td>Штукатурка — материалы (гипс, слой 15 мм, 120,00 м²)</td><td class=\"num\">120,00 м²</td><td class=\"num\">1,00</td><td class=\"num\">1 071,80</td><td class=\"num\">1 071,80 Br</td></tr><tr><td>Штукатурка — работы (по маякам, 120,00 м²)</td><td class=\"num\">120,00 м²</td><td class=\"num\">1,00</td><td class=\"num\">120,00 м²</td><td class=\"num\">1 200,00 Br</td></tr>",
+        "tableHtml": "<tr class=\"cat-row\"><td colspan=\"5\">Бетон и растворы</td></tr><tr><td>Бетон М250</td><td class=\"num\">24,00 м³</td><td class=\"num\">1,05</td><td class=\"num\">25,20 м³</td><td class=\"num\">5 292,00 Br</td></tr><tr><td>Песок</td><td class=\"num\">16,00 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,60 м³</td><td class=\"num\">563,20 Br</td></tr><tr><td>Щебень</td><td class=\"num\">16,00 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,60 м³</td><td class=\"num\">968,00 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Арматура и металл</td></tr><tr><td>Арматура Ø12 мм, 298 шт. × 5,8 м</td><td class=\"num\">1 451,5 кг</td><td class=\"num\">1,06</td><td class=\"num\">1 533,5 кг</td><td class=\"num\">4 907,25 Br</td></tr><tr><td>Вязальная проволока</td><td class=\"num\">15,34 кг</td><td class=\"num\">1,00</td><td class=\"num\">15,34 кг</td><td class=\"num\">69,01 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Пиломатериалы</td></tr><tr><td>Доска 25×150×6000 (0,270 м³)</td><td class=\"num\">12 шт</td><td class=\"num\">1,00</td><td class=\"num\">12 шт</td><td class=\"num\">168,00 Br</td></tr><tr><td>Брус упоров 50×50×3000 (0,105 м³)</td><td class=\"num\">14 шт</td><td class=\"num\">1,00</td><td class=\"num\">14 шт</td><td class=\"num\">112,00 Br</td></tr><tr class=\"cat-row\"><td colspan=\"5\">Изоляция и расходники</td></tr><tr><td>Гидроизоляция, рулон 1×10 м</td><td class=\"num\">80,00 м²</td><td class=\"num\">1,15</td><td class=\"num\">10 рул.</td><td class=\"num\">280,00 Br</td></tr><tr><td>Стены и перегородки — материалы (газосиликатные 300 мм, чистая кладка 29,81 м³)</td><td class=\"num\">29,81 м³</td><td class=\"num\">1,00</td><td class=\"num\">6 789,33</td><td class=\"num\">6 789,33 Br</td></tr><tr><td>Стены и перегородки — работы (кладка, армопояс, перемычки)</td><td class=\"num\">40,0 м перим.</td><td class=\"num\">1,00</td><td class=\"num\">2 076,45</td><td class=\"num\">2 076,45 Br</td></tr><tr><td>Штукатурка — материалы (гипс, слой 15 мм, 120,00 м²)</td><td class=\"num\">120,00 м²</td><td class=\"num\">1,00</td><td class=\"num\">1 071,80</td><td class=\"num\">1 071,80 Br</td></tr><tr><td>Штукатурка — работы (по маякам, 120,00 м²)</td><td class=\"num\">120,00 м²</td><td class=\"num\">1,00</td><td class=\"num\">120,00 м²</td><td class=\"num\">1 200,00 Br</td></tr>",
         "scope": "Рассчитано: плитный фундамент, стены и перегородки, штукатурка.",
         "excluded": "Не рассчитано: перекрытия, кровля.",
         "meta": "Объект: плита 10,00 × 8,00 × 0,30 м · стены 40,0 × 3,0 м, проёмы 10,50 м² · штукатурка 120,00 м²",
@@ -4021,6 +4033,7 @@
         "grade": "М250",
         "concretePrice": 210,
         "diameterMm": 12,
+        "rodLengthM": 5.8,
         "stepMm": 200,
         "meshCount": 2,
         "rebarPrice": 3.2,
@@ -4078,6 +4091,7 @@
         "grade": "М250",
         "concretePrice": 210,
         "diameterMm": 12,
+        "rodLengthM": 5.8,
         "stepMm": 200,
         "meshCount": 2,
         "rebarPrice": 3.2,
@@ -4121,35 +4135,35 @@
         },
         {
           "category": "metal",
-          "name": "Арматура Ø12 мм, 143 шт. × 11.7 м",
+          "name": "Арматура Ø12 мм, 303 шт. × 5,8 м",
           "netLabel": "1 478,3 кг",
           "net": {
             "displayed": "1 478,3",
             "unit": "кг"
           },
-          "coefficient": 1.004141159524667,
-          "orderLabel": "1 484,5 кг",
+          "coefficient": 1.0547353258912495,
+          "orderLabel": "1 559,2 кг",
           "order": {
-            "displayed": "1 484,5",
+            "displayed": "1 559,2",
             "unit": "кг"
           },
-          "cost": 4750.24325323475
+          "cost": 4989.586691312384
         },
         {
           "category": "metal",
           "name": "Вязальная проволока",
-          "netLabel": "14,84 кг",
+          "netLabel": "15,59 кг",
           "net": {
-            "displayed": "14,84",
+            "displayed": "15,59",
             "unit": "кг"
           },
           "coefficient": 1,
-          "orderLabel": "14,84 кг",
+          "orderLabel": "15,59 кг",
           "order": {
-            "displayed": "14,84",
+            "displayed": "15,59",
             "unit": "кг"
           },
-          "cost": 66.80029574861368
+          "cost": 70.16606284658039
         },
         {
           "category": "timber",
@@ -4236,7 +4250,7 @@
         "meta": "Плита 10,00 × 8,10 × 0,30 м · периметр 36,20 м",
         "categorySubtotals": {
           "concrete": 6908.490000000001,
-          "metal": 4817.0435489833635,
+          "metal": 5059.752754158964,
           "timber": 316,
           "isol": 280
         },
@@ -4246,10 +4260,10 @@
           "area": 81
         }
       },
-      "total": 12321.533548983363,
-      "displayedTotal": "12 321,53 Br",
+      "total": 12564.242754158964,
+      "displayedTotal": "12 564,24 Br",
       "display": {
-        "tableHtml": "<tr><td>Бетон М250</td><td class=\"num\">24,30 м³</td><td class=\"num\">1,05</td><td class=\"num\">25,52 м³</td><td class=\"num\">5 358,15 Br</td></tr><tr><td>Арматура Ø12 мм, 143 шт. × 11.7 м</td><td class=\"num\">1 478,3 кг</td><td class=\"num\">1,00</td><td class=\"num\">1 484,5 кг</td><td class=\"num\">4 750,24 Br</td></tr><tr><td>Вязальная проволока</td><td class=\"num\">14,84 кг</td><td class=\"num\">1,00</td><td class=\"num\">14,84 кг</td><td class=\"num\">66,80 Br</td></tr><tr><td>Доска 25×150×6000 (0,315 м³)</td><td class=\"num\">14 шт</td><td class=\"num\">1,00</td><td class=\"num\">14 шт</td><td class=\"num\">196,00 Br</td></tr><tr><td>Брус упоров 50×50×3000 (0,113 м³)</td><td class=\"num\">15 шт</td><td class=\"num\">1,00</td><td class=\"num\">15 шт</td><td class=\"num\">120,00 Br</td></tr><tr><td>Песок</td><td class=\"num\">16,20 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,82 м³</td><td class=\"num\">570,24 Br</td></tr><tr><td>Щебень</td><td class=\"num\">16,20 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,82 м³</td><td class=\"num\">980,10 Br</td></tr><tr><td>Гидроизоляция, рулон 1×10 м</td><td class=\"num\">81,00 м²</td><td class=\"num\">1,15</td><td class=\"num\">10 рул.</td><td class=\"num\">280,00 Br</td></tr>",
+        "tableHtml": "<tr><td>Бетон М250</td><td class=\"num\">24,30 м³</td><td class=\"num\">1,05</td><td class=\"num\">25,52 м³</td><td class=\"num\">5 358,15 Br</td></tr><tr><td>Арматура Ø12 мм, 303 шт. × 5,8 м</td><td class=\"num\">1 478,3 кг</td><td class=\"num\">1,05</td><td class=\"num\">1 559,2 кг</td><td class=\"num\">4 989,59 Br</td></tr><tr><td>Вязальная проволока</td><td class=\"num\">15,59 кг</td><td class=\"num\">1,00</td><td class=\"num\">15,59 кг</td><td class=\"num\">70,17 Br</td></tr><tr><td>Доска 25×150×6000 (0,315 м³)</td><td class=\"num\">14 шт</td><td class=\"num\">1,00</td><td class=\"num\">14 шт</td><td class=\"num\">196,00 Br</td></tr><tr><td>Брус упоров 50×50×3000 (0,113 м³)</td><td class=\"num\">15 шт</td><td class=\"num\">1,00</td><td class=\"num\">15 шт</td><td class=\"num\">120,00 Br</td></tr><tr><td>Песок</td><td class=\"num\">16,20 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,82 м³</td><td class=\"num\">570,24 Br</td></tr><tr><td>Щебень</td><td class=\"num\">16,20 м³</td><td class=\"num\">1,10</td><td class=\"num\">17,82 м³</td><td class=\"num\">980,10 Br</td></tr><tr><td>Гидроизоляция, рулон 1×10 м</td><td class=\"num\">81,00 м²</td><td class=\"num\">1,15</td><td class=\"num\">10 рул.</td><td class=\"num\">280,00 Br</td></tr>",
         "scope": "Рассчитано: плитный фундамент.",
         "excluded": "Не рассчитано: стены и перегородки, перекрытия, штукатурка, кровля.",
         "meta": "Плита 10,00 × 8,10 × 0,30 м · периметр 36,20 м",
@@ -4272,6 +4286,7 @@
         "grade": "М250",
         "concretePrice": 210,
         "diameterMm": 12,
+        "rodLengthM": 5.8,
         "stepMm": 0,
         "meshCount": 2,
         "rebarPrice": 3.2,
@@ -4306,7 +4321,7 @@
         "excluded": "",
         "meta": "",
         "empty": "Заполните размеры и цены слева.",
-        "error": "Введите шаг сетки и диаметр арматуры больше нуля.",
+        "error": "Введите шаг сетки, диаметр арматуры и длину прутка больше нуля.",
         "printTitle": "Предварительная ведомость выбранных материалов",
         "printNodes": ""
       }
@@ -4324,6 +4339,7 @@
         "grade": "М250",
         "concretePrice": 210,
         "diameterMm": 12,
+        "rodLengthM": 5.8,
         "barCount": 4,
         "rebarPrice": 3.2,
         "stirrupMm": 8,
@@ -4508,6 +4524,7 @@
         "grade": "М250",
         "concrete-price": "210",
         "bar-diameter": "12",
+        "rod-length": "5.8",
         "bar-step": "200",
         "slab-mesh-count": "2",
         "rebar-price": "3.2",
@@ -4525,6 +4542,7 @@
         "strip-grade": "М250",
         "strip-concrete-price": "210",
         "strip-bar-diameter": "12",
+        "strip-rod-length": "5.8",
         "strip-bar-count": "4",
         "strip-rebar-price": "3.2",
         "strip-stirrup-diameter": "8",
@@ -4603,12 +4621,12 @@
         "roof-work-price": "65"
       },
       "checks": {
+        "strip-piles-enabled": true,
         "summary-include-found": true,
         "summary-include-walls": true,
         "summary-include-plaster": true,
         "summary-include-roof": true,
         "summary-include-floor": true,
-        "strip-piles-enabled": true,
         "walls-reinforce-mesh": true,
         "walls-armopoyas": true,
         "walls-lintels": true,
@@ -4651,6 +4669,8 @@
         }
       ],
       "flags": {
+        "rodLengthManual": false,
+        "stripRodLengthManual": false,
         "roofWidthManual": true,
         "roofLengthManual": false,
         "floorLengthManual": true,
@@ -4683,6 +4703,7 @@
         "grade": "М250",
         "concrete-price": "210",
         "bar-diameter": "12",
+        "rod-length": "5.8",
         "bar-step": "200",
         "slab-mesh-count": "2",
         "rebar-price": "3.2",
@@ -4700,6 +4721,7 @@
         "strip-grade": "М250",
         "strip-concrete-price": "210",
         "strip-bar-diameter": "12",
+        "strip-rod-length": "5.8",
         "strip-bar-count": "4",
         "strip-rebar-price": "3.2",
         "strip-stirrup-diameter": "8",
@@ -4778,12 +4800,12 @@
         "roof-work-price": "65"
       },
       "checks": {
+        "strip-piles-enabled": true,
         "summary-include-found": true,
         "summary-include-walls": true,
         "summary-include-plaster": true,
         "summary-include-roof": true,
         "summary-include-floor": true,
-        "strip-piles-enabled": true,
         "walls-reinforce-mesh": true,
         "walls-armopoyas": true,
         "walls-lintels": true,
@@ -4826,6 +4848,8 @@
         }
       ],
       "flags": {
+        "rodLengthManual": false,
+        "stripRodLengthManual": false,
         "roofWidthManual": true,
         "roofLengthManual": false,
         "floorLengthManual": true,
@@ -4838,7 +4862,7 @@
         "floorNeedsCalc": false
       }
     },
-    "appliedFields": 115,
+    "appliedFields": 117,
     "summaryBefore": {
       "rows": [
         {
@@ -4849,25 +4873,25 @@
           "cost": 4247.228368131213
         },
         {
-          "name": "Арматура рабочая А3 Ø12 (лента 155,7 кг + сваи 216,3 кг): 372,0 кг",
+          "name": "Арматура рабочая А3 Ø12 (лента 154,4 кг + сваи 216,3 кг): 370,7 кг",
           "netLabel": "348,0 кг",
-          "k": 1.0691230330048254,
-          "orderLabel": "372,0 кг",
-          "cost": 1190.4910243253235
+          "k": 1.0652984264038603,
+          "orderLabel": "370,7 кг",
+          "cost": 1186.2322442883549
         },
         {
-          "name": "Хомуты Ø8 мм + кольца свай Ø6 (лента 156,9 кг + сваи 32,2 кг): 189,1 кг",
+          "name": "Хомуты Ø8 мм + кольца свай Ø6 (лента 155,5 кг + сваи 32,2 кг): 187,7 кг",
           "netLabel": "171,2 кг",
-          "k": 1.1043042060147177,
-          "orderLabel": "189,1 кг",
-          "cost": 605.0767858793203
+          "k": 1.096474083010051,
+          "orderLabel": "187,7 кг",
+          "cost": 600.7864593235593
         },
         {
-          "name": "Вязальная проволока (лента 3,13 кг + сваи 1,76 кг): 4,89 кг",
-          "netLabel": "4,89 кг",
+          "name": "Вязальная проволока (лента 3,10 кг + сваи 1,76 кг): 4,86 кг",
+          "netLabel": "4,86 кг",
           "k": 1,
-          "orderLabel": "4,89 кг",
-          "cost": 21.985951940850278
+          "orderLabel": "4,86 кг",
+          "cost": 21.865730129390016
         },
         {
           "name": "Доска 25×150×6000 (2,205 м³)",
@@ -4970,7 +4994,7 @@
           "cost": 2000
         }
       ],
-      "total": 42179.175990246484,
+      "total": 42170.50666184229,
       "meta": "Объект: лента 40,00 × 0,40 × 1,00 м · стены 40,0 × 3,0 м, проёмы 10,50 м² · штукатурка 109,50 м² · кровля двухскатная 8,00 × 10,00 м · перекрытия 10,00 × 8,00 м",
       "options": {
         "grouped": true,
@@ -4999,7 +5023,7 @@
         "printTitle": "Предварительная ведомость выбранных частей",
         "printNodes": "Узлы: лента 40,00 × 0,40 × 1,00 м · стены 40,0 × 3,0 м, проёмы 10,50 м² · штукатурка 109,50 м² · кровля двухскатная 8,00 × 10,00 м · перекрытия 10,00 × 8,00 м"
       },
-      "displayedTotal": "42 179,18 Br",
+      "displayedTotal": "42 170,51 Br",
       "scope": "Рассчитано: ленточный фундамент, стены и перегородки, штукатурка, кровля, перекрытия.",
       "excluded": "Все доступные разделы включены. Другие работы и инженерные системы в ведомость не входят."
     },
@@ -5013,25 +5037,25 @@
           "cost": 4247.228368131213
         },
         {
-          "name": "Арматура рабочая А3 Ø12 (лента 155,7 кг + сваи 216,3 кг): 372,0 кг",
+          "name": "Арматура рабочая А3 Ø12 (лента 154,4 кг + сваи 216,3 кг): 370,7 кг",
           "netLabel": "348,0 кг",
-          "k": 1.0691230330048254,
-          "orderLabel": "372,0 кг",
-          "cost": 1190.4910243253235
+          "k": 1.0652984264038603,
+          "orderLabel": "370,7 кг",
+          "cost": 1186.2322442883549
         },
         {
-          "name": "Хомуты Ø8 мм + кольца свай Ø6 (лента 156,9 кг + сваи 32,2 кг): 189,1 кг",
+          "name": "Хомуты Ø8 мм + кольца свай Ø6 (лента 155,5 кг + сваи 32,2 кг): 187,7 кг",
           "netLabel": "171,2 кг",
-          "k": 1.1043042060147177,
-          "orderLabel": "189,1 кг",
-          "cost": 605.0767858793203
+          "k": 1.096474083010051,
+          "orderLabel": "187,7 кг",
+          "cost": 600.7864593235593
         },
         {
-          "name": "Вязальная проволока (лента 3,13 кг + сваи 1,76 кг): 4,89 кг",
-          "netLabel": "4,89 кг",
+          "name": "Вязальная проволока (лента 3,10 кг + сваи 1,76 кг): 4,86 кг",
+          "netLabel": "4,86 кг",
           "k": 1,
-          "orderLabel": "4,89 кг",
-          "cost": 21.985951940850278
+          "orderLabel": "4,86 кг",
+          "cost": 21.865730129390016
         },
         {
           "name": "Доска 25×150×6000 (2,205 м³)",
@@ -5134,7 +5158,7 @@
           "cost": 2000
         }
       ],
-      "total": 42179.175990246484,
+      "total": 42170.50666184229,
       "meta": "Объект: лента 40,00 × 0,40 × 1,00 м · стены 40,0 × 3,0 м, проёмы 10,50 м² · штукатурка 109,50 м² · кровля двухскатная 8,00 × 10,00 м · перекрытия 10,00 × 8,00 м",
       "options": {
         "grouped": true,
@@ -5163,7 +5187,7 @@
         "printTitle": "Предварительная ведомость выбранных частей",
         "printNodes": "Узлы: лента 40,00 × 0,40 × 1,00 м · стены 40,0 × 3,0 м, проёмы 10,50 м² · штукатурка 109,50 м² · кровля двухскатная 8,00 × 10,00 м · перекрытия 10,00 × 8,00 м"
       },
-      "displayedTotal": "42 179,18 Br",
+      "displayedTotal": "42 170,51 Br",
       "scope": "Рассчитано: ленточный фундамент, стены и перегородки, штукатурка, кровля, перекрытия.",
       "excluded": "Все доступные разделы включены. Другие работы и инженерные системы в ведомость не входят."
     }
@@ -5178,6 +5202,7 @@
         "grade": "М250",
         "concretePrice": 210,
         "diameterMm": 12,
+        "rodLengthM": 5.8,
         "stepMm": 200,
         "meshCount": 2,
         "rebarPrice": 3.2,
@@ -5256,7 +5281,7 @@
       }
     },
     "components": {
-      "slab": 12099.186691312385,
+      "slab": 12359.458484288356,
       "legacyWalls": 6507.302957486137,
       "plasterMaterials": 1071.8,
       "plasterWorkExcluded": 1199.999988
@@ -5271,18 +5296,18 @@
           "cost": 5292.000000000001
         },
         {
-          "name": "Арматура Ø12 мм, 140 шт. × 11.7 м",
+          "name": "Арматура Ø12 мм, 298 шт. × 5,8 м",
           "netLabel": "1 451,5 кг",
-          "k": 1.0012224938875305,
-          "orderLabel": "1 453,3 кг",
-          "cost": 4650.587800369685
+          "k": 1.056479217603912,
+          "orderLabel": "1 533,5 кг",
+          "cost": 4907.250277264325
         },
         {
           "name": "Вязальная проволока",
-          "netLabel": "14,53 кг",
+          "netLabel": "15,34 кг",
           "k": 1,
-          "orderLabel": "14,53 кг",
-          "cost": 65.3988909426987
+          "orderLabel": "15,34 кг",
+          "cost": 69.00820702402956
         },
         {
           "name": "Доска 25×150×6000 (0,270 м³)",
@@ -5381,7 +5406,7 @@
         }
       ]
     },
-    "total": 19678.28964879852,
-    "displayedTotal": "19 678,29 Br"
+    "total": 19938.56144177449,
+    "displayedTotal": "19 938,56 Br"
   }
 }

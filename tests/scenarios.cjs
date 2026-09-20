@@ -2,14 +2,14 @@
 // Expected outputs are generated separately from the unchanged index.html, never typed here.
 const slab = {
   length: 10, width: 8, height: 0.3, grade: 'М250', concretePrice: 210,
-  diameterMm: 12, stepMm: 200, meshCount: 2, rebarPrice: 3.2,
+  diameterMm: 12, rodLengthM: 5.8, stepMm: 200, meshCount: 2, rebarPrice: 3.2,
   wirePrice: 4.5, boardPrice: 14, timberPrice: 8,
   sandHeight: 0.2, sandPrice: 32, stoneHeight: 0.2, stonePrice: 55,
   hydroPrice: 28,
 };
 const strip = {
   length: 40, width: 0.4, height: 1, grade: 'М250', concretePrice: 210,
-  diameterMm: 12, barCount: 4, rebarPrice: 3.2,
+  diameterMm: 12, rodLengthM: 5.8, barCount: 4, rebarPrice: 3.2,
   stirrupMm: 8, stirrupStepMm: 300, wirePrice: 4.5,
   boardPrice: 14, timberPrice: 8, sandHeight: 0.2, sandPrice: 32,
   hydroPrice: 28, pilesEnabled: false, pileConcretePrice: 185,

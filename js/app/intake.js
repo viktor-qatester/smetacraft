@@ -126,6 +126,8 @@
         setRegressionField("height", String(input.slabThick));
         setRegressionField("walls-height", String(input.wallHeight));
 
+        rodLengthManual = false;
+        stripRodLengthManual = false;
         wallsPerimeterManual = false;
         plasterLengthManual = false;
         plasterHeightManual = false;

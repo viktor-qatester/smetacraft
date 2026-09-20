@@ -8,6 +8,8 @@
       let floorNeedsCalc = true;
       let floorLengthManual = false;
       let floorWidthManual = false;
+      let rodLengthManual = false;
+      let stripRodLengthManual = false;
       let wallsPerimeterManual = false;
       let plasterLengthManual = false;
       let plasterHeightManual = false;
@@ -28,8 +30,12 @@
       const intakeRoofBoxEl = document.getElementById("intake-roof-box");
       const gradeEl = document.getElementById("grade");
       const concretePriceEl = document.getElementById("concrete-price");
+      const barDiameterEl = document.getElementById("bar-diameter");
+      const rodLengthEl = document.getElementById("rod-length");
       const stripGradeEl = document.getElementById("strip-grade");
       const stripConcretePriceEl = document.getElementById("strip-concrete-price");
+      const stripBarDiameterEl = document.getElementById("strip-bar-diameter");
+      const stripRodLengthEl = document.getElementById("strip-rod-length");
       const errorEl = document.getElementById("error");
       const stripErrorEl = document.getElementById("strip-error");
       const wallsErrorEl = document.getElementById("walls-error");
