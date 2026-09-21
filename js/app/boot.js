@@ -27,6 +27,7 @@
       bindProjectEvents();
       bindBackendCheck();
       bindProjectMigration();
+      bindDocumentImport();
 
       projectFileEl.addEventListener("change", handleProjectFileChange);
 

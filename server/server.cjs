@@ -3,13 +3,16 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const {
-  ROOT, DB_PATH, MAX_BODY, RECORD_VERSION, IDEMPOTENCY_KEY_PATTERN, PROJECT_ID_PATTERN,
+  ROOT, DB_PATH, BLOB_ROOT, MAX_BODY, RECORD_VERSION, IDEMPOTENCY_KEY_PATTERN, PROJECT_ID_PATTERN,
 } = require('./config.cjs');
 const { validProject } = require('./project-validator.cjs');
 const { isStorageReady } = require('./db.cjs');
 const {
   createProjectRepository, ConflictError, StorageError,
 } = require('./project-repository.cjs');
+const { createFileStore } = require('./file-store.cjs');
+const { createFileMetadataRepository } = require('./file-metadata-repository.cjs');
+const { createFileHandlers } = require('./file-http.cjs');
 
 function sendJson(res, status, value) {
   res.writeHead(status, {
@@ -256,8 +259,24 @@ function handleStatic(req, res, pathname) {
 
 function createServer(options = {}) {
   const dbPath = options.dbPath || DB_PATH;
+  const blobRoot = options.blobRoot || (options.dbPath
+    ? path.join(path.dirname(options.dbPath), 'blobs')
+    : BLOB_ROOT);
   const storageReady = isStorageReady(dbPath);
   const repository = storageReady ? createProjectRepository({ dbPath }) : null;
+  const fileStore = storageReady ? createFileStore({ blobRoot }) : null;
+  const fileMeta = storageReady ? createFileMetadataRepository({ dbPath }) : null;
+  const fileHandlers = storageReady ? createFileHandlers({
+    fail,
+    validLocalAuthority,
+    parseBearerToken,
+    timingSafeHashEqual,
+    capabilityHash,
+    projectRepository: repository,
+    fileStore,
+    fileMeta,
+  }) : null;
+  if (fileStore) fileStore.cleanupTemps();
 
   return http.createServer((req, res) => {
     let pathname;
@@ -271,6 +290,7 @@ function createServer(options = {}) {
       if (!repository) return fail(res, 503, 'storage_unavailable');
       return handleMigrate(req, res, repository);
     }
+    if (fileHandlers && fileHandlers.tryHandle(req, res, pathname)) return;
     const projectMatch = pathname.match(/^\/api\/projects\/([0-9a-f]{32})$/);
     if (projectMatch) {
       if (!repository) return fail(res, 503, 'storage_unavailable');

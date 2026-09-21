@@ -621,6 +621,71 @@
         color: var(--error);
       }
 
+      .document-guide {
+        margin: 0 0 14px;
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.45;
+      }
+
+      .document-guide h3 {
+        margin: 14px 0 6px;
+        font-size: 13px;
+        font-weight: 650;
+        color: var(--ink);
+      }
+
+      .document-guide h3:first-child {
+        margin-top: 0;
+      }
+
+      .document-guide ul {
+        margin: 6px 0 8px 18px;
+        padding: 0;
+      }
+
+      .document-guide table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 8px 0;
+        font-size: 13px;
+      }
+
+      .document-guide th,
+      .document-guide td,
+      .document-preview-table th,
+      .document-preview-table td {
+        text-align: left;
+        padding: 6px 8px 6px 0;
+        border-bottom: 1px solid var(--line);
+        vertical-align: top;
+      }
+
+      .document-viewer-frame {
+        width: 100%;
+        height: 360px;
+        border: 1px solid var(--line);
+        background: #fff;
+      }
+
+      .document-text-preview {
+        margin: 0;
+        max-height: 220px;
+        overflow: auto;
+        padding: 8px;
+        border: 1px solid var(--line);
+        background: #fff;
+        font: 12px/1.4 inherit;
+        white-space: pre-wrap;
+      }
+
+      .document-preview-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 8px 0 12px;
+        font-size: 13px;
+      }
+
       .intake-intro {
         margin: 0 0 14px;
         font-size: 13px;
@@ -2067,7 +2132,79 @@
                   </label>
                   <span id="project-file-name" class="file-name">Файл не выбран</span>
                 </div>
-                <p class="note">Смета пересчитывается сразу после чтения файла. Файл никуда не отправляется — он читается в браузере.</p>
+                <p class="note">Смета пересчитывается сразу после чтения файла. Файл никуда не отправляется — он читается в браузере. Это JSON-проект SmetaCraft: восстанавливаются все поля и цены из файла.</p>
+              </fieldset>
+
+              <fieldset id="project-document-import-fieldset" hidden>
+                <legend>Загрузить PDF или DOCX</legend>
+                <div class="document-guide">
+                  <h3>Загрузите файл проекта</h3>
+                  <p>Поддерживаются <strong>PDF</strong> и <strong>DOCX</strong> — как вы привыкли: листы чертежей, пояснительная записка, комплект дома.</p>
+                  <p>После загрузки файл <strong>сохраняется у вашей сметы</strong> и <strong>открывается в окне просмотра</strong> — можно листать листы, как на столе.</p>
+                  <h3>Автоподстановка размеров — по возможности</h3>
+                  <p>SmetaCraft <strong>пытается автоматически</strong> перенести в калькулятор <strong>только то, что явно написано в файле</strong> — словами, с подписью:</p>
+                  <ul>
+                    <li>«лента», «ленточный фундамент», периметр, длина…</li>
+                    <li>«стены», высота, толщина…</li>
+                    <li>«хомуты», шаг, диаметр…</li>
+                    <li>и другие параметры, если они <strong>названы рядом с числом</strong> в тексте документа</li>
+                  </ul>
+                  <p><strong>Цены не подставляются</strong> — у каждого свои поставщики и магазины; цены вы вводите сами.</p>
+                  <h3>Перед применением — всегда «Предпросмотр»</h3>
+                  <p>Вы видите таблицу:</p>
+                  <table>
+                    <thead>
+                      <tr><th>Поле</th><th>Статус</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>Найдено в файле</td><td>будет подставлено после «Применить»</td></tr>
+                      <tr><td>Не найдено</td><td>введите вручную по чертежу</td></tr>
+                    </tbody>
+                  </table>
+                  <p>Ничего не меняется <strong>молча</strong> — только после вашей кнопки <strong>«Применить»</strong>.</p>
+                  <h3>Если файл — чертежи AutoCAD (как на стройке)</h3>
+                  <p>Частый случай: PDF из AutoCAD — <strong>картинки листов А3</strong> с размерами на чертеже, <strong>без текстовых подписей</strong> «лента 40 м».</p>
+                  <p>В этом случае:</p>
+                  <ul>
+                    <li>файл <strong>виден</strong> в приложении, листаете 1…16;</li>
+                    <li>смета считается как обычно;</li>
+                    <li><strong>автоподстановка размеров — 0</strong> — вводите параметры <strong>вручную</strong>, глядя на PDF рядом.</li>
+                  </ul>
+                  <p>Это <strong>нормально</strong>, не ошибка. Программа не «смотрит глазами» на чертёж — только читает <strong>явный текст</strong>.</p>
+                  <h3>Кратко</h3>
+                  <ol>
+                    <li><strong>PDF/DOCX</strong> — проект виден + автоподстановка <strong>где есть явный текст</strong>.</li>
+                    <li><strong>Чертежи без подписей</strong> — проект виден, размеры <strong>вручную</strong>.</li>
+                    <li><strong>Preview</strong> — всегда показывает, что подставится.</li>
+                    <li><strong>Цены</strong> — всегда ваши.</li>
+                  </ol>
+                </div>
+                <div class="project-actions">
+                  <label class="btn-action file-btn">
+                    Загрузить PDF или DOCX
+                    <input id="project-document-file" type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+                  </label>
+                  <span id="project-document-file-name" class="file-name">Файл не выбран</span>
+                </div>
+                <div id="project-document-viewer-wrap" hidden>
+                  <p id="project-document-viewer-meta" class="note"></p>
+                  <iframe id="project-document-viewer" class="document-viewer-frame" title="Просмотр загруженного PDF" hidden></iframe>
+                  <pre id="project-document-text-preview" class="document-text-preview" hidden></pre>
+                </div>
+                <div id="project-document-preview-wrap" hidden>
+                  <h3>Предпросмотр подстановки</h3>
+                  <p id="project-document-preview-message" class="note"></p>
+                  <table class="document-preview-table">
+                    <thead>
+                      <tr><th>Поле</th><th>Статус</th></tr>
+                    </thead>
+                    <tbody id="project-document-preview-body"></tbody>
+                  </table>
+                  <div class="project-actions">
+                    <button type="button" class="btn-action" id="project-document-apply" disabled>Применить распознанные параметры</button>
+                  </div>
+                </div>
+                <p id="project-document-status" class="project-status" role="status" aria-live="polite"></p>
               </fieldset>
 
               <fieldset id="project-migration-fieldset">
@@ -2165,6 +2302,7 @@
     <script src="js/app/file-import.js"></script>
     <script src="js/app/backend-check.js"></script>
     <script src="js/app/project-migration.js"></script>
+    <script src="js/app/document-import.js"></script>
     <script src="js/app/boot.js"></script>
   </body>
 </html>
