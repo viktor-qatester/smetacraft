@@ -686,6 +686,23 @@
         font-size: 13px;
       }
 
+      .document-viewer-banner {
+        margin: 0 0 8px;
+        padding: 8px 10px;
+        border: 1px solid var(--line);
+        background: #f4f4f4;
+        font-size: 13px;
+        color: var(--ink);
+      }
+
+      .preview-status-found {
+        color: #2d5a2d;
+      }
+
+      .preview-status-manual {
+        color: var(--muted);
+      }
+
       .intake-intro {
         margin: 0 0 14px;
         font-size: 13px;
@@ -2188,6 +2205,7 @@
                 </div>
                 <div id="project-document-viewer-wrap" hidden>
                   <p id="project-document-viewer-meta" class="note"></p>
+                  <p id="project-document-viewer-banner" class="document-viewer-banner" hidden>Файл загружен. Для чертежей без текстовых меток используйте просмотрщик для ручного ввода параметров.</p>
                   <iframe id="project-document-viewer" class="document-viewer-frame" title="Просмотр загруженного PDF" hidden></iframe>
                   <pre id="project-document-text-preview" class="document-text-preview" hidden></pre>
                 </div>

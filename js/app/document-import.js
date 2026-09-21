@@ -83,10 +83,12 @@
           nameCell.textContent = field.label || field.fieldId;
           const statusCell = document.createElement("td");
           if (field.status === "found") {
-            statusCell.textContent = "Найдено в файле — будет подставлено: " +
+            statusCell.className = "preview-status-found";
+            statusCell.textContent = "Найдено автоматически — будет подставлено: " +
               String(field.value) + (field.unit ? " " + field.unit : "");
           } else {
-            statusCell.textContent = "Не найдено — введите вручную по чертежу";
+            statusCell.className = "preview-status-manual";
+            statusCell.textContent = "Требуется ввод вручную";
           }
           row.appendChild(nameCell);
           row.appendChild(statusCell);
@@ -110,12 +112,15 @@
       function showDocumentViewer(file, mediaType, preview, objectUrl) {
         const wrap = document.getElementById("project-document-viewer-wrap");
         const meta = document.getElementById("project-document-viewer-meta");
+        const banner = document.getElementById("project-document-viewer-banner");
         const iframe = document.getElementById("project-document-viewer");
         const textEl = document.getElementById("project-document-text-preview");
         if (!wrap || !meta || !iframe || !textEl) return;
         revokeDocumentViewerUrl();
         const pages = preview && preview.pageCount ? preview.pageCount : 1;
         const name = file && file.name ? file.name : "файл";
+        const isDrawingPlot = preview && preview.sourceKind === "drawing-plot";
+        if (banner) banner.hidden = !isDrawingPlot;
         if (mediaType === "application/pdf") {
           iframe.hidden = false;
           textEl.hidden = true;
