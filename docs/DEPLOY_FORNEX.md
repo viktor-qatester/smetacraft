@@ -11,6 +11,12 @@ VPS (Cloud NVMe 1, Ubuntu 24.04):
 
 SSH: `ssh root@31.172.78.193` (пароль только в панели Fornex, не в git).
 
+Веб-консоль Fornex **не вставляет** буфер (это ограничение панели, не ошибка). Либо SSH с ПК, либо одна строка ниже — её можно набрать руками:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/viktor-qatester/smetacraft/master/scripts/install-fornex.sh | sh
+```
+
 ## Env (обязательно)
 
 Создайте `/etc/smetacraft.env` **на сервере**, не коммитьте:
