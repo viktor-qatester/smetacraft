@@ -3,8 +3,7 @@
       const MIGRATION_TIMEOUT_MS = 8000;
 
       function isMigrationLoopbackHost() {
-        const host = window.location.hostname;
-        return host === "localhost" || host === "127.0.0.1";
+        return isAllowedServerOrigin();
       }
 
       async function sha256HexFromString(text) {

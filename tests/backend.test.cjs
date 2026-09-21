@@ -5,8 +5,8 @@ const http = require('node:http');
 const { createServer } = require('../server/server.cjs');
 const golden = require('./golden.json');
 
-async function withServer(run) {
-  const server = createServer();
+async function withServer(run, options = {}) {
+  const server = createServer(options);
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   try {
     await run(`http://127.0.0.1:${server.address().port}`);
@@ -102,6 +102,38 @@ test('API accepts only the actual loopback Host and matching browser Origin', as
       assert.deepEqual(JSON.parse(response.body), { ok: false, error: 'origin_forbidden' });
     }
   });
+});
+
+test('configured public origin is allowed and GitHub Pages origin is forbidden', async () => {
+  const publicOrigins = ['http://31.172.78.193', 'http://333428.fornex.cloud'];
+  await withServer(async base => {
+    const body = JSON.stringify({ format: 'smetacraft-project', version: 1 });
+    const ipOk = await rawPost(base, body, {
+      Host: '31.172.78.193',
+      Origin: 'http://31.172.78.193',
+    });
+    assert.equal(ipOk.status, 200);
+    const hostOk = await rawPost(base, body, {
+      Host: '333428.fornex.cloud',
+      Origin: 'http://333428.fornex.cloud',
+    });
+    assert.equal(hostOk.status, 200);
+    const pages = await rawPost(base, body, {
+      Host: 'viktor-qatester.github.io',
+      Origin: 'https://viktor-qatester.github.io',
+    });
+    assert.equal(pages.status, 403);
+    assert.deepEqual(JSON.parse(pages.body), { ok: false, error: 'origin_forbidden' });
+    const pagesHostOnly = await rawPost(base, body, {
+      Host: 'viktor-qatester.github.io',
+    });
+    assert.equal(pagesHostOnly.status, 403);
+    const mixed = await rawPost(base, body, {
+      Host: '31.172.78.193',
+      Origin: 'https://viktor-qatester.github.io',
+    });
+    assert.equal(mixed.status, 403);
+  }, { publicOrigins });
 });
 
 test('API rejects invalid JSON and v1 structure without keeping project state', async () => {

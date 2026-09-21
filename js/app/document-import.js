@@ -12,8 +12,11 @@
       }());
 
       function isDocumentImportLoopback() {
-        const host = window.location.hostname;
-        return host === "localhost" || host === "127.0.0.1";
+        return isLoopbackHost();
+      }
+
+      function isDocumentImportHostAllowed() {
+        return isAllowedServerOrigin();
       }
 
       function guessDocumentMediaType(file) {
@@ -103,9 +106,19 @@
 
       function revokeDocumentViewerUrl() {
         const iframe = document.getElementById("project-document-viewer");
-        if (iframe && iframe.dataset && iframe.dataset.blobUrl) {
+        if (!iframe) return;
+        if (!iframe.dataset) iframe.dataset = {};
+        if (iframe.dataset.blobUrl) {
           try { URL.revokeObjectURL(iframe.dataset.blobUrl); } catch (error) {}
           iframe.dataset.blobUrl = "";
+        }
+      }
+
+      function createPdfObjectUrl(file) {
+        try {
+          return URL.createObjectURL(file);
+        } catch (error) {
+          return "";
         }
       }
 
@@ -116,6 +129,7 @@
         const iframe = document.getElementById("project-document-viewer");
         const textEl = document.getElementById("project-document-text-preview");
         if (!wrap || !meta || !iframe || !textEl) return;
+        if (!iframe.dataset) iframe.dataset = {};
         revokeDocumentViewerUrl();
         const pages = preview && preview.pageCount ? preview.pageCount : 1;
         const name = file && file.name ? file.name : "файл";
@@ -125,17 +139,20 @@
           iframe.hidden = false;
           textEl.hidden = true;
           textEl.textContent = "";
-          iframe.src = objectUrl;
-          iframe.dataset.blobUrl = objectUrl;
+          if (objectUrl) {
+            iframe.src = objectUrl;
+            iframe.dataset.blobUrl = objectUrl;
+          }
           meta.textContent = "Просмотр PDF «" + name + "», листов: " + pages + ".";
         } else {
           iframe.hidden = true;
           iframe.removeAttribute("src");
           textEl.hidden = false;
-          textEl.textContent = preview && preview.message
-            ? preview.message + "\n\nDOCX хранится у сметы. Предпросмотр подстановки — в таблице ниже."
-            : "DOCX хранится у сметы.";
-          meta.textContent = "Просмотр DOCX «" + name + "». Листы PDF-вьюера недоступны; текст разобран для подписей.";
+          const extracted = preview && preview.extractedText
+            ? String(preview.extractedText).replace(/^\s+|\s+$/g, "")
+            : "";
+          textEl.textContent = extracted || (preview && preview.message ? preview.message : "Текст DOCX не найден.");
+          meta.textContent = "Просмотр текста DOCX «" + name + "».";
           if (objectUrl) {
             try { URL.revokeObjectURL(objectUrl); } catch (error) {}
           }
@@ -171,32 +188,24 @@
 
       let documentImportState = null;
 
-      async function handleDocumentFileChange() {
-        const input = document.getElementById("project-document-file");
-        const nameEl = document.getElementById("project-document-file-name");
-        const applyBtn = document.getElementById("project-document-apply");
-        const file = input && input.files && input.files[0];
-        if (!file) return;
-        if (nameEl) nameEl.textContent = file.name;
-        documentImportState = null;
-        if (applyBtn) applyBtn.disabled = true;
-        const mediaType = guessDocumentMediaType(file);
-        if (!mediaType) {
-          setDocumentImportStatus("Нужен файл PDF или DOCX.", true);
-          input.value = "";
-          return;
+      async function readFileBytes(file) {
+        if (file && typeof file.arrayBuffer === "function") {
+          return new Uint8Array(await file.arrayBuffer());
         }
-        if (file.size > DOCUMENT_MAX_BYTES) {
-          setDocumentImportStatus("Файл больше 5 МиБ. Загрузка не выполнена.", true);
-          input.value = "";
-          return;
-        }
-        const localProjectBefore = window.localStorage.getItem(STORAGE_KEY);
-        setDocumentImportStatus("Загрузка файла на сервер…", false);
+        throw new Error("invalid_file");
+      }
+
+      function parseSelectedDocument(bytes, declaredType) {
+        const detected = detectMediaType(bytes, declaredType);
+        if (!detected) throw new Error("unsupported_media_type");
+        return { mediaType: detected, preview: parseDocument(bytes, detected) };
+      }
+
+      async function tryServerDocumentUpload(file, mediaType, localProjectBefore) {
+        const capability = await ensureDocumentProjectCapability();
         const timeout = new AbortController();
         const timer = setTimeout(function () { timeout.abort(); }, DOCUMENT_UPLOAD_TIMEOUT_MS);
         try {
-          const capability = await ensureDocumentProjectCapability();
           const response = await fetch("/api/projects/" + capability.projectId + "/files", {
             method: "POST",
             headers: {
@@ -220,45 +229,115 @@
           if (afterStorage !== localProjectBefore && localProjectBefore !== null) {
             try { window.localStorage.setItem(STORAGE_KEY, localProjectBefore); } catch (error) {}
           }
-          const objectUrl = mediaType === "application/pdf" ? URL.createObjectURL(file) : "";
-          showDocumentViewer(file, mediaType, payload.preview, objectUrl);
-          renderDocumentPreview(payload.preview);
-          documentImportState = {
+          return {
             projectId: capability.projectId,
             capabilityToken: capability.capabilityToken,
             objectId: payload.objectId,
             preview: payload.preview,
           };
-          const found = Object.keys(payload.preview.parameters || {}).length;
-          if (found === 0) {
-            setDocumentImportStatus(
-              "Файл сохранён у сметы. Автоподстановка 0 — введите параметры вручную по чертежу. Цены не менялись.",
-              false
-            );
-          } else {
-            setDocumentImportStatus(
-              "Файл сохранён. Предпросмотр: будет подставлено полей — " + found +
-                ". Нажмите «Применить», чтобы перенести их в калькулятор. Цены не подставляются.",
-              false
-            );
+        } finally {
+          clearTimeout(timer);
+        }
+      }
+
+      function setDocumentImportOutcome(file, mediaType, preview, storedOnServer) {
+        const objectUrl = mediaType === "application/pdf" ? createPdfObjectUrl(file) : "";
+        showDocumentViewer(file, mediaType, preview, objectUrl);
+        renderDocumentPreview(preview);
+        const found = Object.keys(preview.parameters || {}).length;
+        if (found === 0) {
+          setDocumentImportStatus(
+            storedOnServer
+              ? "Файл сохранён у сметы. Автоподстановка 0 — введите параметры вручную по чертежу. Цены не менялись."
+              : "Сервер недоступен. Файл открыт в браузере и на сервер не записан. Автоподстановка 0 — введите параметры вручную по чертежу. Цены не менялись.",
+            false
+          );
+        } else {
+          setDocumentImportStatus(
+            storedOnServer
+              ? "Файл сохранён. Предпросмотр: будет подставлено полей — " + found +
+                ". Нажмите «Применить», чтобы перенести их в калькулятор. Цены не подставляются."
+              : "Сервер недоступен. Файл на сервер не записан. Предпросмотр: будет подставлено полей — " +
+                found + ". Нажмите «Применить», чтобы перенести их в калькулятор. Цены не подставляются.",
+            false
+          );
+        }
+      }
+
+      async function handleDocumentFileChange() {
+        const input = document.getElementById("project-document-file");
+        const nameEl = document.getElementById("project-document-file-name");
+        const applyBtn = document.getElementById("project-document-apply");
+        const file = input && input.files && input.files[0];
+        if (!file) return;
+        if (nameEl) nameEl.textContent = file.name;
+        documentImportState = null;
+        if (applyBtn) applyBtn.disabled = true;
+        const mediaType = guessDocumentMediaType(file);
+        if (!mediaType) {
+          setDocumentImportStatus("Нужен файл PDF или DOCX.", true);
+          input.value = "";
+          return;
+        }
+        if (file.size > DOCUMENT_MAX_BYTES) {
+          setDocumentImportStatus("Файл больше 5 МиБ. Загрузка не выполнена.", true);
+          input.value = "";
+          return;
+        }
+        if (!isDocumentImportHostAllowed()) {
+          setDocumentImportStatus("Загрузка PDF/DOCX доступна на сервере сметы, не на статическом сайте.", true);
+          input.value = "";
+          return;
+        }
+        const localProjectBefore = window.localStorage.getItem(STORAGE_KEY);
+        let storedOnServer = false;
+        let preview = null;
+        let parsedMediaType = mediaType;
+        try {
+          if (isDocumentImportHostAllowed()) {
+            setDocumentImportStatus("Загрузка файла на сервер…", false);
+            try {
+              const uploaded = await tryServerDocumentUpload(file, mediaType, localProjectBefore);
+              storedOnServer = true;
+              preview = uploaded.preview;
+              documentImportState = {
+                storedOnServer: true,
+                projectId: uploaded.projectId,
+                capabilityToken: uploaded.capabilityToken,
+                objectId: uploaded.objectId,
+                preview: uploaded.preview,
+              };
+            } catch (serverError) {
+              storedOnServer = false;
+              setDocumentImportStatus(
+                "Сервер недоступен. Разбираем файл в браузере; на сервер он не записан.",
+                false
+              );
+            }
           }
+          if (!preview) {
+            setDocumentImportStatus("Сервер недоступен. Чтение файла в браузере…", false);
+            const bytes = await readFileBytes(file);
+            const parsed = parseSelectedDocument(bytes, mediaType);
+            parsedMediaType = parsed.mediaType;
+            preview = parsed.preview;
+            const afterStorage = window.localStorage.getItem(STORAGE_KEY);
+            if (afterStorage !== localProjectBefore && localProjectBefore !== null) {
+              try { window.localStorage.setItem(STORAGE_KEY, localProjectBefore); } catch (error) {}
+            }
+            documentImportState = {
+              storedOnServer: false,
+              preview: preview,
+            };
+          }
+          setDocumentImportOutcome(file, parsedMediaType, preview, storedOnServer);
         } catch (error) {
           const current = window.localStorage.getItem(STORAGE_KEY);
           if (current !== localProjectBefore && localProjectBefore !== null) {
             try { window.localStorage.setItem(STORAGE_KEY, localProjectBefore); } catch (restoreError) {}
           }
-          if (error && error.name === "AbortError") {
-            setDocumentImportStatus("Сервер не ответил. Локальный проект не изменён.", true);
-          } else if (error && error.message === "need_server_copy") {
-            setDocumentImportStatus(
-              "Сначала перенесите копию сметы на сервер кнопкой «Перенести копию на сервер».",
-              true
-            );
-          } else {
-            setDocumentImportStatus("Загрузка не выполнена. Локальный проект не изменён.", true);
-          }
+          setDocumentImportStatus("Файл не разобран. Локальный проект не изменён.", true);
         } finally {
-          clearTimeout(timer);
           if (input) input.value = "";
         }
       }
@@ -270,28 +349,32 @@
         const localProjectBefore = window.localStorage.getItem(STORAGE_KEY);
         try {
           applyDocumentImportParameters(parameters);
-          const ackTimeout = new AbortController();
-          const timer = setTimeout(function () { ackTimeout.abort(); }, DOCUMENT_UPLOAD_TIMEOUT_MS);
-          try {
-            await fetch(
-              "/api/projects/" + documentImportState.projectId + "/files/" +
-                documentImportState.objectId + "/apply",
-              {
-                method: "POST",
-                headers: { Authorization: "Bearer " + documentImportState.capabilityToken },
-                signal: ackTimeout.signal,
-              }
-            );
-          } catch (ackError) {
-            // Params already applied locally; original file remains stored.
-          } finally {
-            clearTimeout(timer);
+          if (documentImportState.storedOnServer && documentImportState.projectId && documentImportState.objectId) {
+            const ackTimeout = new AbortController();
+            const timer = setTimeout(function () { ackTimeout.abort(); }, DOCUMENT_UPLOAD_TIMEOUT_MS);
+            try {
+              await fetch(
+                "/api/projects/" + documentImportState.projectId + "/files/" +
+                  documentImportState.objectId + "/apply",
+                {
+                  method: "POST",
+                  headers: { Authorization: "Bearer " + documentImportState.capabilityToken },
+                  signal: ackTimeout.signal,
+                }
+              );
+            } catch (ackError) {
+              // Params already applied locally; original file remains stored if the server kept it.
+            } finally {
+              clearTimeout(timer);
+            }
           }
           setDocumentImportStatus(
             foundCount
               ? "Параметры из файла применены (" + foundCount +
-                "). Цены прайс-листа не менялись. Файл сохранён у сметы."
-              : "Применять было нечего: в файле нет явных подписей. Файл сохранён.",
+                "). Цены прайс-листа не менялись." +
+                (documentImportState.storedOnServer ? " Файл сохранён у сметы." : " Файл на сервер не отправлялся.")
+              : "Применять было нечего: в файле нет явных подписей." +
+                (documentImportState.storedOnServer ? " Файл сохранён." : " Файл открыт в браузере."),
             false
           );
         } catch (error) {
@@ -307,7 +390,7 @@
         const fieldset = document.getElementById("project-document-import-fieldset");
         const input = document.getElementById("project-document-file");
         const applyBtn = document.getElementById("project-document-apply");
-        if (!isDocumentImportLoopback()) {
+        if (!isDocumentImportHostAllowed()) {
           if (fieldset) fieldset.hidden = true;
           return;
         }

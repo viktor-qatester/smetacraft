@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="smetacraft-public-origin" content="http://31.172.78.193,http://333428.fornex.cloud" />
     <title>Smetacraft — конструктор смет</title>
     <style>
       :root {
@@ -2157,7 +2158,7 @@
                 <div class="document-guide">
                   <h3>Загрузите файл проекта</h3>
                   <p>Поддерживаются <strong>PDF</strong> и <strong>DOCX</strong> — как вы привыкли: листы чертежей, пояснительная записка, комплект дома.</p>
-                  <p>После загрузки файл <strong>сохраняется у вашей сметы</strong> и <strong>открывается в окне просмотра</strong> — можно листать листы, как на столе.</p>
+                  <p>После выбора файл <strong>открывается в окне просмотра</strong> рядом со сметой и <strong>сохраняется у вашей сметы</strong> на этом сервере. Если сервер не ответил — так и напишем: чертёж можно смотреть, параметры ввести вручную. Цены не подставляются.</p>
                   <h3>Автоподстановка размеров — по возможности</h3>
                   <p>SmetaCraft <strong>пытается автоматически</strong> перенести в калькулятор <strong>только то, что явно написано в файле</strong> — словами, с подписью:</p>
                   <ul>
@@ -2230,7 +2231,7 @@
                 <div class="project-actions">
                   <button type="button" class="btn-action" id="project-migrate">Перенести копию на сервер</button>
                 </div>
-                <p class="note">Только по нажатию: копия текущего JSON-проекта сохраняется на локальном сервере. Локальный проект в браузере не удаляется и не заменяется.</p>
+                <p class="note">Только по нажатию: копия текущего JSON-проекта сохраняется на сервере. Локальный проект в браузере не удаляется и не заменяется.</p>
                 <p id="project-migration-status" class="project-status" role="status" aria-live="polite"></p>
               </fieldset>
 
@@ -2318,8 +2319,10 @@
     <script src="js/app/project.js"></script>
     <script src="js/app/reset.js"></script>
     <script src="js/app/file-import.js"></script>
+    <script src="js/app/server-access.js"></script>
     <script src="js/app/backend-check.js"></script>
     <script src="js/app/project-migration.js"></script>
+    <script src="js/app/explicit-text.js"></script>
     <script src="js/app/document-import.js"></script>
     <script src="js/app/boot.js"></script>
   </body>

@@ -22,7 +22,7 @@ JSON-проект по-прежнему загружается кнопкой «
 
 ## Neutral import model
 
-Parser (`server/import/explicit-text.cjs`) читает текст PDF (литералы / UTF-16BE hex / FlateDecode) или `word/document.xml` в DOCX и возвращает:
+Parser (`js/app/explicit-text.js`, сервер реэкспортирует `server/import/explicit-text.cjs`) читает текст PDF (литералы / UTF-16BE hex / FlateDecode) или `word/document.xml` в DOCX и возвращает:
 
 ```json
 {
@@ -124,5 +124,7 @@ PDF из AutoCAD — **картинки листов** с размерами н�
 | POST | `/api/projects/:projectId/files/:objectId/apply` | status `available` |
 
 Ошибки: `unsupported_media_type`, `body_too_large`, `invalid_file`, `origin_forbidden`, `capability_required`, `not_found`, `file_limit_exceeded`.
+
+`origin_forbidden` — Host/Origin вне loopback и вне `SMETACRAFT_PUBLIC_ORIGIN`. GitHub Pages в allowlist не входит. Публичный bind: `SMETACRAFT_BIND=0.0.0.0`. Инструкция testers: [`DEPLOY_FORNEX.md`](DEPLOY_FORNEX.md).
 
 Фикстуры тестов: `tests/phase8-fixtures.cjs` (явные подписи и AutoCAD-like без подписей). Живой 16-листовый plot владельца не требуется: автоподстановка из него = 0.

@@ -57,8 +57,8 @@ Browser smoke: upload → preview → apply / отказ; static URL не отд
 - `localStorage` ключ `smetacraft_project` — не удалять автоматически.
 - Расчёты остаются в браузере; backend не считает смету.
 - SQLite в `data/`; PostgreSQL не использовать.
-- Loopback-only до явного решения о публичном хосте.
-- Commit/push/PR — по разрешению владельца; merge в `master` (= Pages) — только «лей».
+- Loopback (`127.0.0.1` / `localhost`) — разработка. Публичный хост — только из `SMETACRAFT_PUBLIC_ORIGIN` (сейчас Fornex `http://31.172.78.193` и `http://333428.fornex.cloud`). GitHub Pages не прод и не в allowlist.
+- Commit/push/PR — по разрешению владельца; merge в `master` (= Pages static) — только «лей». Deploy Fornex — [`docs/DEPLOY_FORNEX.md`](../../../docs/DEPLOY_FORNEX.md), без секретов в git.
 
 ## После приёмки Phase 8
 

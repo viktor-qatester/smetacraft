@@ -24,12 +24,12 @@ function canonicalBody() {
   return JSON.stringify(context.parseProjectText(JSON.stringify(golden.jsonRoundTrip.exported)));
 }
 
-async function withServer(run) {
+async function withServer(run, serverOptions = {}) {
   const dir = tempDir();
   const dbPath = path.join(dir, 'db.sqlite');
   const blobRoot = path.join(dir, 'blobs');
   applyMigrations(dbPath);
-  const server = createServer({ dbPath, blobRoot });
+  const server = createServer({ dbPath, blobRoot, ...serverOptions });
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   const base = `http://127.0.0.1:${server.address().port}`;
   try {
@@ -250,6 +250,41 @@ test('foreign origin cannot upload files', async () => {
     assert.equal(result.status, 403);
     assert.deepEqual(JSON.parse(result.body), { ok: false, error: 'origin_forbidden' });
   });
+});
+
+test('GitHub Pages Host/Origin cannot upload files even when Fornex origins are configured', async () => {
+  const publicOrigins = ['http://31.172.78.193', 'http://333428.fornex.cloud'];
+  await withServer(async ({ base }) => {
+    const receipt = await migrate(base);
+    const target = new URL(base);
+    const pdf = autocadLikePdf();
+    const result = await new Promise((resolve, reject) => {
+      const request = http.request({
+        hostname: target.hostname,
+        port: target.port,
+        path: `/api/projects/${receipt.projectId}/files`,
+        method: 'POST',
+        headers: {
+          Host: 'viktor-qatester.github.io',
+          Origin: 'https://viktor-qatester.github.io',
+          'Content-Type': PDF_MEDIA_TYPE,
+          Authorization: `Bearer ${receipt.capabilityToken}`,
+          'Content-Length': pdf.length,
+        },
+      }, response => {
+        const chunks = [];
+        response.on('data', chunk => chunks.push(chunk));
+        response.on('end', () => resolve({
+          status: response.statusCode,
+          body: Buffer.concat(chunks).toString('utf8'),
+        }));
+      });
+      request.on('error', reject);
+      request.end(pdf);
+    });
+    assert.equal(result.status, 403);
+    assert.deepEqual(JSON.parse(result.body), { ok: false, error: 'origin_forbidden' });
+  }, { publicOrigins });
 });
 
 test('DOCX upload returns preview and is not served as static', async () => {

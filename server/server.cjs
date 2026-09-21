@@ -13,6 +13,9 @@ const {
 const { createFileStore } = require('./file-store.cjs');
 const { createFileMetadataRepository } = require('./file-metadata-repository.cjs');
 const { createFileHandlers } = require('./file-http.cjs');
+const {
+  parsePublicOrigins, parseBind, createAuthorityChecker, DEFAULT_BIND,
+} = require('./allowed-origins.cjs');
 
 function sendJson(res, status, value) {
   res.writeHead(status, {
@@ -36,24 +39,9 @@ function fail(res, status, code) {
   sendJson(res, status, { ok: false, error: code });
 }
 
-function validLocalAuthority(req) {
-  const port = req.socket.localPort;
-  if (!Number.isSafeInteger(port) || port <= 0) return false;
-  const suffix = port === 80 ? '' : `:${port}`;
-  const authorities = new Map([
-    [`127.0.0.1${suffix}`, `http://127.0.0.1${suffix}`],
-    [`localhost${suffix}`, `http://localhost${suffix}`],
-  ]);
-  if (port === 80) {
-    authorities.set('127.0.0.1:80', 'http://127.0.0.1');
-    authorities.set('localhost:80', 'http://localhost');
-  }
-  const host = typeof req.headers.host === 'string' ? req.headers.host.toLowerCase() : '';
-  const expectedOrigin = authorities.get(host);
-  if (!expectedOrigin) return false;
-  const origin = req.headers.origin;
-  return origin === undefined ||
-    (typeof origin === 'string' && origin.toLowerCase() === expectedOrigin);
+function resolvePublicOrigins(options = {}) {
+  if (Array.isArray(options.publicOrigins)) return options.publicOrigins;
+  return parsePublicOrigins(process.env.SMETACRAFT_PUBLIC_ORIGIN || '');
 }
 
 function hashIdempotencyKey(key) {
@@ -72,7 +60,7 @@ function generateCapabilityToken() {
   return crypto.randomBytes(32).toString('base64url');
 }
 
-function readJsonBody(req, res, onBody) {
+function readJsonBody(req, res, validLocalAuthority, onBody) {
   if (!/^application\/json(?:\s*;\s*charset=utf-8)?$/i.test(req.headers['content-type'] || '')) {
     fail(res, 415, 'unsupported_media_type');
     return;
@@ -149,9 +137,9 @@ function timingSafeHashEqual(left, right) {
   return crypto.timingSafeEqual(leftBuffer, rightBuffer);
 }
 
-function handleCheck(req, res) {
+function handleCheck(req, res, validLocalAuthority) {
   if (req.method !== 'POST') return fail(res, 405, 'method_not_allowed');
-  readJsonBody(req, res, body => {
+  readJsonBody(req, res, validLocalAuthority, body => {
     let project;
     try {
       project = JSON.parse(body.toString('utf8'));
@@ -167,14 +155,14 @@ function handleCheck(req, res) {
   });
 }
 
-function handleMigrate(req, res, repository) {
+function handleMigrate(req, res, repository, validLocalAuthority) {
   if (req.method !== 'POST') return fail(res, 405, 'method_not_allowed');
   const idempotencyKey = req.headers['idempotency-key'];
   if (idempotencyKey === undefined) return fail(res, 400, 'idempotency_key_required');
   if (typeof idempotencyKey !== 'string' || !IDEMPOTENCY_KEY_PATTERN.test(idempotencyKey)) {
     return fail(res, 400, 'invalid_idempotency_key');
   }
-  readJsonBody(req, res, body => {
+  readJsonBody(req, res, validLocalAuthority, body => {
     let project;
     try {
       project = JSON.parse(body.toString('utf8'));
@@ -211,7 +199,7 @@ function handleMigrate(req, res, repository) {
   });
 }
 
-function handleGetProject(req, res, projectId, repository) {
+function handleGetProject(req, res, projectId, repository, validLocalAuthority) {
   if (req.method !== 'GET' && req.method !== 'HEAD') return fail(res, 405, 'method_not_allowed');
   if (!validLocalAuthority(req)) return fail(res, 403, 'origin_forbidden');
   const token = parseBearerToken(req);
@@ -262,6 +250,7 @@ function createServer(options = {}) {
   const blobRoot = options.blobRoot || (options.dbPath
     ? path.join(path.dirname(options.dbPath), 'blobs')
     : BLOB_ROOT);
+  const validLocalAuthority = createAuthorityChecker(resolvePublicOrigins(options));
   const storageReady = isStorageReady(dbPath);
   const repository = storageReady ? createProjectRepository({ dbPath }) : null;
   const fileStore = storageReady ? createFileStore({ blobRoot }) : null;
@@ -285,16 +274,16 @@ function createServer(options = {}) {
     } catch {
       return fail(res, 400, 'bad_url');
     }
-    if (pathname === '/api/project-check') return handleCheck(req, res);
+    if (pathname === '/api/project-check') return handleCheck(req, res, validLocalAuthority);
     if (pathname === '/api/projects/migrate') {
       if (!repository) return fail(res, 503, 'storage_unavailable');
-      return handleMigrate(req, res, repository);
+      return handleMigrate(req, res, repository, validLocalAuthority);
     }
     if (fileHandlers && fileHandlers.tryHandle(req, res, pathname)) return;
     const projectMatch = pathname.match(/^\/api\/projects\/([0-9a-f]{32})$/);
     if (projectMatch) {
       if (!repository) return fail(res, 503, 'storage_unavailable');
-      return handleGetProject(req, res, projectMatch[1], repository);
+      return handleGetProject(req, res, projectMatch[1], repository, validLocalAuthority);
     }
     if (pathname.startsWith('/api/')) return fail(res, 404, 'not_found');
     handleStatic(req, res, pathname);
@@ -303,13 +292,28 @@ function createServer(options = {}) {
 
 if (require.main === module) {
   const port = Number(process.env.PORT || 8000);
+  const bind = parseBind(process.env.SMETACRAFT_BIND);
+  if (!bind) {
+    process.stderr.write('Invalid SMETACRAFT_BIND: use 127.0.0.1 or 0.0.0.0.\n');
+    process.exit(1);
+  }
+  if (!Number.isSafeInteger(port) || port <= 0) {
+    process.stderr.write('Invalid PORT.\n');
+    process.exit(1);
+  }
   if (!isStorageReady(DB_PATH)) {
     process.stderr.write('Storage unavailable: run node server/db-migrate.cjs before starting the server.\n');
     process.exit(1);
   }
-  createServer().listen(port, '127.0.0.1', () => {
-    process.stdout.write(`SmetaCraft: http://127.0.0.1:${port}/\n`);
+  createServer().listen(port, bind, () => {
+    const shown = bind === DEFAULT_BIND ? `http://127.0.0.1:${port}/` : `${bind}:${port}`;
+    process.stdout.write(`SmetaCraft listening on ${shown}\n`);
   });
 }
 
-module.exports = { createServer };
+module.exports = {
+  createServer,
+  parsePublicOrigins,
+  parseBind,
+  createAuthorityChecker,
+};

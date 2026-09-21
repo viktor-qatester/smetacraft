@@ -1,13 +1,8 @@
-      function isLoopbackHost() {
-        const host = window.location.hostname;
-        return host === "localhost" || host === "127.0.0.1";
-      }
-
       function bindBackendCheck() {
         const fieldset = document.getElementById("project-server-check-fieldset");
         const button = document.getElementById("project-server-check");
         const status = document.getElementById("project-server-status");
-        if (!isLoopbackHost()) {
+        if (!isAllowedServerOrigin()) {
           if (fieldset) {
             fieldset.hidden = true;
           }

@@ -24,8 +24,13 @@ function digest(body) {
 function createMigrationApp(options = {}) {
   const { context: app, get } = createApp();
   const hostname = options.hostname || '127.0.0.1';
+  const origin = options.origin || ('http://' + hostname);
   const fetchCalls = [];
-  app.window.location = { hostname };
+  app.window.location = { hostname, origin };
+  app.window.SMETACRAFT_PUBLIC_ORIGINS = options.publicOrigins || [
+    'http://31.172.78.193',
+    'http://333428.fornex.cloud',
+  ];
   app.window.crypto = {
     subtle: {
       digest: async (_algo, bytes) => crypto.createHash('sha256').update(Buffer.from(bytes)).digest(),
@@ -82,8 +87,9 @@ test('project-migration loads in the documented script order', () => {
   const bootIndex = scripts.indexOf('js/app/boot.js');
   assert.notEqual(migrationIndex, -1);
   assert.ok(migrationIndex < bootIndex);
-  assert.equal(scripts[migrationIndex + 1], 'js/app/document-import.js');
-  assert.equal(scripts[migrationIndex + 2], 'js/app/boot.js');
+  assert.equal(scripts[migrationIndex + 1], 'js/app/explicit-text.js');
+  assert.equal(scripts[migrationIndex + 2], 'js/app/document-import.js');
+  assert.equal(scripts[migrationIndex + 3], 'js/app/boot.js');
 });
 
 test('no request is issued on bindProjectMigration', async () => {
@@ -314,10 +320,19 @@ test('status text is written through textContent', async () => {
   assert.equal(get('project-migration-status').innerHTML, '');
 });
 
-test('migration block is hidden on a non-loopback host', () => {
+test('migration block is hidden on GitHub Pages', () => {
   const { app, fieldset } = createMigrationApp({ hostname: 'pages.github.io' });
   app.bindProjectMigration();
   assert.equal(fieldset.hidden, true);
+});
+
+test('migration block is visible on Fornex public origin', () => {
+  const { app, fieldset } = createMigrationApp({
+    hostname: '31.172.78.193',
+    origin: 'http://31.172.78.193',
+  });
+  app.bindProjectMigration();
+  assert.equal(fieldset.hidden, false);
 });
 
 test('201 migrate saves capabilityToken to receipt before readback fetch', async () => {
