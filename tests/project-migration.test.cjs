@@ -410,6 +410,6 @@ test('migrations apply idempotently and record their version', () => {
   assert.equal(isStorageReady(dbPath), true);
   applyMigrations(dbPath);
   assert.equal(isStorageReady(dbPath), true);
-  assert.equal(expectedSchemaVersion(), 1);
+  assert.equal(expectedSchemaVersion(), 2);
   fs.rmSync(dbPath, { force: true });
 });

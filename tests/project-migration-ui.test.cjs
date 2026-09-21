@@ -82,7 +82,8 @@ test('project-migration loads in the documented script order', () => {
   const bootIndex = scripts.indexOf('js/app/boot.js');
   assert.notEqual(migrationIndex, -1);
   assert.ok(migrationIndex < bootIndex);
-  assert.equal(scripts[migrationIndex + 1], 'js/app/boot.js');
+  assert.equal(scripts[migrationIndex + 1], 'js/app/document-import.js');
+  assert.equal(scripts[migrationIndex + 2], 'js/app/boot.js');
 });
 
 test('no request is issued on bindProjectMigration', async () => {
