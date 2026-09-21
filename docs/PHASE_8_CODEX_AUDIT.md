@@ -2,7 +2,7 @@
 
 Обновлено: 2026-09-21  
 **Диапазон:** `5ee8135..f512a5f` (merge PR #16)  
-**Статус:** ⚠️ **Условно готов к приёмке** — security surface в целом соблюдён; нужны Gemini Notebook (поведение) и явная приёмка владельца.
+**Статус:** ✅ **Готов к формальной приёмке** — Codex security OK; Gemini Notebook **PASSED** ([PHASE_8_GEMINI_AUDIT.md](PHASE_8_GEMINI_AUDIT.md)). Осталось: browser smoke владельца + явное «принято».
 
 Код в этом аудите **не менялся**. Golden и `js/core/*` не трогались.
 
