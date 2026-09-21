@@ -5,10 +5,18 @@ set -eu
 
 apt-get update
 apt-get install -y ca-certificates curl git
-if ! command -v node >/dev/null 2>&1; then
-  curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+need_node22=1
+if command -v node >/dev/null 2>&1; then
+  major=$(node -p "process.versions.node.split('.')[0]" 2>/dev/null || echo 0)
+  if [ "$major" -ge 22 ]; then
+    need_node22=0
+  fi
+fi
+if [ "$need_node22" -eq 1 ]; then
+  curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
   apt-get install -y nodejs
 fi
+node -v
 
 mkdir -p /opt
 if [ ! -d /opt/smetacraft/.git ]; then
