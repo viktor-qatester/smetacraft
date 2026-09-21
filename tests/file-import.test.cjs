@@ -302,3 +302,31 @@ test('DOCX upload returns preview and is not served as static', async () => {
     assert.equal(fs.existsSync(path.join(blobRoot, payload.objectId)), true);
   });
 });
+
+test('DELETE removes blob and rejects a second delete', async () => {
+  await withServer(async ({ base, blobRoot }) => {
+    const receipt = await migrate(base);
+    const post = await upload(
+      base, receipt.projectId, receipt.capabilityToken, autocadLikePdf(), PDF_MEDIA_TYPE, 'plot.pdf',
+    );
+    const created = await post.json();
+    assert.equal(fs.existsSync(path.join(blobRoot, created.objectId)), true);
+    const removed = await fetch(
+      `${base}/api/projects/${receipt.projectId}/files/${created.objectId}`,
+      { method: 'DELETE', headers: { Authorization: `Bearer ${receipt.capabilityToken}` } },
+    );
+    assert.equal(removed.status, 200);
+    assert.equal((await removed.json()).status, 'rejected');
+    assert.equal(fs.existsSync(path.join(blobRoot, created.objectId)), false);
+    const again = await fetch(
+      `${base}/api/projects/${receipt.projectId}/files/${created.objectId}`,
+      { method: 'DELETE', headers: { Authorization: `Bearer ${receipt.capabilityToken}` } },
+    );
+    assert.equal(again.status, 404);
+    const noAuth = await fetch(
+      `${base}/api/projects/${receipt.projectId}/files/${created.objectId}`,
+      { method: 'DELETE' },
+    );
+    assert.equal(noAuth.status, 401);
+  });
+});
