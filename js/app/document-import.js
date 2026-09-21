@@ -261,9 +261,10 @@
       async function handleDocumentApply() {
         if (!documentImportState || !documentImportState.preview) return;
         const parameters = documentImportState.preview.parameters || {};
+        const foundCount = Object.keys(parameters).length;
         const localProjectBefore = window.localStorage.getItem(STORAGE_KEY);
         try {
-          const applied = applyDocumentImportParameters(parameters);
+          applyDocumentImportParameters(parameters);
           const ackTimeout = new AbortController();
           const timer = setTimeout(function () { ackTimeout.abort(); }, DOCUMENT_UPLOAD_TIMEOUT_MS);
           try {
@@ -282,8 +283,9 @@
             clearTimeout(timer);
           }
           setDocumentImportStatus(
-            applied
-              ? "Параметры из файла применены (" + applied + "). Цены прайс-листа не менялись. Файл сохранён у сметы."
+            foundCount
+              ? "Параметры из файла применены (" + foundCount +
+                "). Цены прайс-листа не менялись. Файл сохранён у сметы."
               : "Применять было нечего: в файле нет явных подписей. Файл сохранён.",
             false
           );
