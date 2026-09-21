@@ -68,8 +68,8 @@ Parser (`js/app/explicit-text.js`, сервер реэкспортирует `se
 
 ## Preview и apply
 
-1. Upload → storage + preview JSON. DOM и `smetacraft_project` не меняются.
-2. UI показывает таблицу «найдено / введите вручную» и viewer (PDF: blob URL в iframe; DOCX: текст).
+1. Upload → на allowed origin (loopback / Fornex) клиент сам создаёт server project через `POST /api/projects/migrate`, без кнопки «Перенести копию». Storage + preview JSON. DOM и `smetacraft_project` не меняются.
+2. UI показывает таблицу «найдено / введите вручную» и viewer (PDF: blob URL в iframe; DOCX: текст). «Удалить файл» снимает preview, iframe и object URL; при `objectId` вызывает `DELETE /api/projects/:id/files/:objectId`.
 3. «Применить» накладывает `parameters` на текущий `collectProject()`, гоняет `validateProjectV1` и `applyProject`. Цены текущей сметы сохраняются.
 4. `POST .../files/:objectId/apply` только ставит `available`. Расчёт сметы на сервере не выполняется.
 
@@ -104,7 +104,7 @@ PDF из AutoCAD — **картинки листов** с размерами н�
 
 - файл **виден** в просмотрщике, листы листаются;
 - смета считается как обычно;
-- **автоподстановка размеров — 0** — вводите параметры **вручную**, глядя на PDF рядом;
+- **автоподстановка размеров — 0** — вводите параметры **вручную**, глядя на PDF рядом. Это не «сервер недоступен»;
 - над PDF показывается баннер: «Для чертежей без текстовых меток используйте просмотрщик для ручного ввода параметров».
 
 Это **нормально**, не ошибка. Программа не «смотрит глазами» на чертёж — только читает **явный текст**.
@@ -120,6 +120,7 @@ PDF из AutoCAD — **картинки листов** с размерами н�
 | POST | `/api/projects/:projectId/files` | raw body PDF/DOCX, заголовок `X-Smetacraft-Filename` |
 | GET | `/api/projects/:projectId/files` | список metadata |
 | GET/HEAD | `/api/projects/:projectId/files/:objectId` | скачать blob |
+| DELETE | `/api/projects/:projectId/files/:objectId` | убрать blob, status `rejected` |
 | GET | `/api/projects/:projectId/files/:objectId/preview` | повторный preview |
 | POST | `/api/projects/:projectId/files/:objectId/apply` | status `available` |
 

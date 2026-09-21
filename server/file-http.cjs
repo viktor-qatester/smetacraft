@@ -241,6 +241,26 @@ function createFileHandlers({
     }
   }
 
+  function handleDelete(req, res, projectId, objectId) {
+    if (!authorize(req, res, projectId)) return;
+    try {
+      const record = fileMeta.getFileObject({ objectId, projectId });
+      if (!record || record.status === 'rejected') return fail(res, 404, 'not_found');
+      try {
+        fileStore.remove(objectId);
+      } catch (error) {
+        if (!error || error.code !== 'ENOENT') throw error;
+      }
+      fileMeta.updateStatus({
+        objectId, projectId, status: 'rejected', now: new Date().toISOString(),
+      });
+      sendJson(res, 200, { ok: true, objectId, status: 'rejected' });
+    } catch (error) {
+      if (error instanceof StorageError) return fail(res, 503, 'storage_unavailable');
+      return fail(res, 503, 'storage_unavailable');
+    }
+  }
+
   function handleList(req, res, projectId) {
     if (req.method !== 'GET') return fail(res, 405, 'method_not_allowed');
     if (!authorize(req, res, projectId)) return;
@@ -287,6 +307,10 @@ function createFileHandlers({
     }
     if (action === 'apply') {
       handleApply(req, res, projectId, objectId);
+      return true;
+    }
+    if (req.method === 'DELETE') {
+      handleDelete(req, res, projectId, objectId);
       return true;
     }
     handleGetBlob(req, res, projectId, objectId);

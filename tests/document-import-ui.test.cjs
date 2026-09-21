@@ -1,5 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const fixtures = require('./scenarios.cjs');
@@ -29,6 +30,8 @@ test('document-import loads immediately before boot', () => {
   assert.match(html, /Автоподстановка размеров/);
   assert.match(html, /Цены не подставляются/);
   assert.match(html, /id="project-document-import-fieldset" hidden/);
+  assert.match(html, /id="project-document-clear"/);
+  assert.match(html, /Удалить файл/);
 });
 
 test('apply overlays labeled params and leaves prices untouched', () => {
@@ -122,7 +125,7 @@ function stubPreviewTable(get) {
   return rows;
 }
 
-function setupDocumentImportHost(hostname, origin) {
+function setupDocumentImportHost(hostname, origin, fetchImpl) {
   const { app, get } = setupApplyApp();
   app.window.location = {
     hostname: hostname,
@@ -132,17 +135,99 @@ function setupDocumentImportHost(hostname, origin) {
     'http://31.172.78.193',
     'http://333428.fornex.cloud',
   ];
+  app.window.crypto = {
+    subtle: {
+      digest: async (_algo, bytes) => crypto.createHash('sha256').update(Buffer.from(bytes)).digest(),
+    },
+  };
+  app.crypto = crypto;
+  app.TextEncoder = TextEncoder;
+  app.AbortController = AbortController;
+  app.setTimeout = setTimeout;
+  app.clearTimeout = clearTimeout;
+  app.Date = Date;
+  const revoked = [];
+  app.URL = {
+    createObjectURL(file) { return 'blob:test:' + (file && file.name || 'file'); },
+    revokeObjectURL(url) { revoked.push(url); },
+  };
+  const iframe = get('project-document-viewer');
+  iframe.dataset = {};
+  iframe.src = '';
+  iframe.removeAttribute = function (name) { if (name === 'src') this.src = ''; };
   const fetches = [];
   let migrated = 0;
-  app.fetch = async (url, init) => {
+  app.fetch = async (url, init = {}) => {
     fetches.push({ url, init });
+    if (fetchImpl) return fetchImpl(url, init, fetches);
     throw new Error('Failed to fetch');
   };
   app.runProjectMigration = async () => { migrated += 1; };
   get('project-document-file').addEventListener = function () {};
   get('project-document-apply').addEventListener = function () {};
+  get('project-document-clear').addEventListener = function () {};
+  get('project-document-clear').hidden = true;
   stubPreviewTable(get);
-  return { app, get, fetches, migrated: () => migrated };
+  return { app, get, fetches, migrated: () => migrated, revoked };
+}
+
+function pdfFile(name, bytes) {
+  return {
+    name,
+    type: 'application/pdf',
+    size: bytes.length,
+    arrayBuffer: async () => bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength),
+  };
+}
+
+function successfulFornexFetch(app, fetches) {
+  return async (url, init = {}) => {
+    if (url === '/api/projects/migrate') {
+      const sha = crypto.createHash('sha256').update(String(init.body || '')).digest('hex');
+      return {
+        ok: true,
+        status: 201,
+        json: async () => ({
+          ok: true,
+          projectId: 'a'.repeat(32),
+          revision: 1,
+          sha256: sha,
+          capabilityToken: 'tok-' + 'b'.repeat(40),
+        }),
+      };
+    }
+    if (String(url) === '/api/projects/' + 'a'.repeat(32) && (!init.method || init.method === 'GET')) {
+      const migrate = fetches.find(item => item.url === '/api/projects/migrate');
+      return {
+        ok: true,
+        status: 200,
+        json: async () => ({
+          ok: true,
+          project: JSON.parse(migrate.init.body),
+        }),
+      };
+    }
+    if (String(url).endsWith('/files') && init.method === 'POST') {
+      const preview = app.parseDocument(autocadLikePdf(), PDF_MEDIA_TYPE);
+      return {
+        ok: true,
+        status: 201,
+        json: async () => ({
+          ok: true,
+          objectId: 'c'.repeat(32),
+          preview,
+        }),
+      };
+    }
+    if (init.method === 'DELETE') {
+      return {
+        ok: true,
+        status: 200,
+        json: async () => ({ ok: true, objectId: 'c'.repeat(32), status: 'rejected' }),
+      };
+    }
+    throw new Error('Failed to fetch');
+  };
 }
 
 test('document import fieldset is hidden on GitHub Pages', () => {
@@ -203,12 +288,7 @@ test('GitHub Pages does not POST, migrate, or parse on bind', async () => {
   );
   const storageBefore = app.window.localStorage.getItem('smetacraft_project');
   const pdf = explicitLabelsPdf();
-  get('project-document-file').files = [{
-    name: 'labels.pdf',
-    type: 'application/pdf',
-    size: pdf.length,
-    arrayBuffer: async () => pdf.buffer.slice(pdf.byteOffset, pdf.byteOffset + pdf.byteLength),
-  }];
+  get('project-document-file').files = [pdfFile('labels.pdf', pdf)];
   get('project-document-file').value = 'labels.pdf';
   app.bindDocumentImport();
   await app.handleDocumentFileChange();
@@ -216,4 +296,128 @@ test('GitHub Pages does not POST, migrate, or parse on bind', async () => {
   assert.equal(migrated(), 0);
   assert.equal(app.window.localStorage.getItem('smetacraft_project'), storageBefore);
   assert.match(get('project-document-status').textContent, /статическом сайте/);
+});
+
+test('Fornex PDF upload without migrate click does not say server unavailable', async () => {
+  const { app, get, fetches } = setupDocumentImportHost(
+    '31.172.78.193',
+    'http://31.172.78.193',
+  );
+  app.fetch = async (url, init = {}) => {
+    fetches.push({ url, init });
+    return successfulFornexFetch(app, fetches)(url, init);
+  };
+  assert.equal(app.window.localStorage.getItem('smetacraft_project_migration_v1'), null);
+  const pdf = autocadLikePdf();
+  get('project-document-file').files = [pdfFile('plot.pdf', pdf)];
+  get('project-document-file').value = 'plot.pdf';
+  app.bindDocumentImport();
+  await app.handleDocumentFileChange();
+  const status = get('project-document-status').textContent;
+  assert.equal(/сервер недоступен/i.test(status), false);
+  assert.match(status, /Автоподстановка 0/);
+  assert.match(status, /вручную/);
+  assert.match(status, /сохранён/);
+  assert.ok(fetches.some(item => item.url === '/api/projects/migrate'));
+  assert.ok(fetches.some(item => /\/files$/.test(String(item.url)) && item.init.method === 'POST'));
+  assert.equal(get('project-document-clear').hidden, false);
+  assert.equal(get('project-document-viewer-wrap').hidden, false);
+  assert.equal(get('project-document-viewer').src, 'blob:test:plot.pdf');
+});
+
+test('AutoCAD fallback without migrate does not say server unavailable', async () => {
+  const { app, get, fetches, migrated } = setupDocumentImportHost(
+    '31.172.78.193',
+    'http://31.172.78.193',
+  );
+  assert.equal(app.window.localStorage.getItem('smetacraft_project_migration_v1'), null);
+  const pdf = autocadLikePdf();
+  get('project-document-file').files = [pdfFile('plot.pdf', pdf)];
+  get('project-document-file').value = 'plot.pdf';
+  app.bindDocumentImport();
+  await app.handleDocumentFileChange();
+  const status = get('project-document-status').textContent;
+  assert.equal(/сервер недоступен/i.test(status), false);
+  assert.match(status, /Автоподстановка 0/);
+  assert.match(status, /вручную/);
+  assert.match(status, /\(network\)/);
+  assert.ok(fetches.some(item => item.url === '/api/projects/migrate'));
+  assert.equal(migrated(), 0);
+  assert.equal(get('project-document-viewer-wrap').hidden, false);
+  assert.equal(get('project-document-clear').hidden, false);
+});
+
+test('real fetch HTTP error is shown as a short code, not server unavailable', async () => {
+  const { app, get } = setupDocumentImportHost(
+    '31.172.78.193',
+    'http://31.172.78.193',
+    async () => ({
+      ok: false,
+      status: 403,
+      json: async () => ({ ok: false, error: 'origin_forbidden' }),
+    }),
+  );
+  const pdf = autocadLikePdf();
+  get('project-document-file').files = [pdfFile('plot.pdf', pdf)];
+  get('project-document-file').value = 'plot.pdf';
+  app.bindDocumentImport();
+  await app.handleDocumentFileChange();
+  const status = get('project-document-status').textContent;
+  assert.equal(/сервер недоступен/i.test(status), false);
+  assert.match(status, /\(403\)/);
+  assert.match(status, /Автоподстановка 0/);
+});
+
+test('delete file clears viewer, preview, object URL, state and input', async () => {
+  const { app, get, fetches, revoked } = setupDocumentImportHost(
+    '31.172.78.193',
+    'http://31.172.78.193',
+  );
+  app.fetch = async (url, init = {}) => {
+    fetches.push({ url, init });
+    return successfulFornexFetch(app, fetches)(url, init);
+  };
+  const pdf = autocadLikePdf();
+  get('project-document-file').files = [pdfFile('plot.pdf', pdf)];
+  get('project-document-file').value = 'plot.pdf';
+  app.bindDocumentImport();
+  await app.handleDocumentFileChange();
+  assert.equal(get('project-document-viewer-wrap').hidden, false);
+  assert.equal(get('project-document-clear').hidden, false);
+  await app.handleDocumentClear();
+  assert.equal(get('project-document-viewer-wrap').hidden, true);
+  assert.equal(get('project-document-preview-wrap').hidden, true);
+  assert.equal(get('project-document-viewer').src, '');
+  assert.equal(get('project-document-file').value, '');
+  assert.equal(get('project-document-file-name').textContent, 'Файл не выбран');
+  assert.equal(get('project-document-clear').hidden, true);
+  assert.equal(get('project-document-apply').disabled, true);
+  assert.ok(revoked.includes('blob:test:plot.pdf'));
+  assert.ok(fetches.some(item => item.init.method === 'DELETE' && /\/files\/c{32}$/.test(String(item.url))));
+  assert.match(get('project-document-status').textContent, /убран/);
+  get('project-document-file').files = [pdfFile('other.pdf', pdf)];
+  get('project-document-file').value = 'other.pdf';
+  await app.handleDocumentFileChange();
+  assert.equal(get('project-document-viewer-wrap').hidden, false);
+  assert.equal(get('project-document-file-name').textContent, 'other.pdf');
+});
+
+test('delete without objectId still clears the client UI', async () => {
+  const { app, get, fetches, revoked } = setupDocumentImportHost(
+    '31.172.78.193',
+    'http://31.172.78.193',
+  );
+  const pdf = autocadLikePdf();
+  get('project-document-file').files = [pdfFile('plot.pdf', pdf)];
+  get('project-document-file').value = 'plot.pdf';
+  app.bindDocumentImport();
+  await app.handleDocumentFileChange();
+  const fetchCount = fetches.length;
+  await app.handleDocumentClear();
+  assert.equal(fetches.filter(item => item.init && item.init.method === 'DELETE').length, 0);
+  assert.equal(fetches.length, fetchCount);
+  assert.equal(get('project-document-viewer-wrap').hidden, true);
+  assert.equal(get('project-document-file').value, '');
+  assert.equal(get('project-document-file-name').textContent, 'Файл не выбран');
+  assert.ok(revoked.includes('blob:test:plot.pdf'));
 });

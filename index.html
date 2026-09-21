@@ -2158,7 +2158,7 @@
                 <div class="document-guide">
                   <h3>Загрузите файл проекта</h3>
                   <p>Поддерживаются <strong>PDF</strong> и <strong>DOCX</strong> — как вы привыкли: листы чертежей, пояснительная записка, комплект дома.</p>
-                  <p>После выбора файл <strong>открывается в окне просмотра</strong> рядом со сметой и <strong>сохраняется у вашей сметы</strong> на этом сервере. Если сервер не ответил — так и напишем: чертёж можно смотреть, параметры ввести вручную. Цены не подставляются.</p>
+                  <p>После выбора файл <strong>открывается в окне просмотра</strong> рядом со сметой и <strong>сохраняется у вашей сметы</strong> на этом сервере (копия проекта создаётся сама, без кнопки «Перенести»). Если запись на сервер не вышла — покажем код ошибки: чертёж можно смотреть, параметры ввести вручную. Цены не подставляются.</p>
                   <h3>Автоподстановка размеров — по возможности</h3>
                   <p>SmetaCraft <strong>пытается автоматически</strong> перенести в калькулятор <strong>только то, что явно написано в файле</strong> — словами, с подписью:</p>
                   <ul>
@@ -2203,6 +2203,7 @@
                     <input id="project-document-file" type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
                   </label>
                   <span id="project-document-file-name" class="file-name">Файл не выбран</span>
+                  <button type="button" class="btn-action" id="project-document-clear" hidden>Удалить файл</button>
                 </div>
                 <div id="project-document-viewer-wrap" hidden>
                   <p id="project-document-viewer-meta" class="note"></p>
