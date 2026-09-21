@@ -264,9 +264,13 @@ function createFileHandlers({
   function tryHandle(req, res, pathname) {
     const listMatch = pathname.match(/^\/api\/projects\/([0-9a-f]{32})\/files$/);
     if (listMatch) {
-      if (!PROJECT_ID_PATTERN.test(listMatch[1])) return fail(res, 404, 'not_found');
-      if (req.method === 'POST') return handleUpload(req, res, listMatch[1]);
-      return handleList(req, res, listMatch[1]);
+      if (!PROJECT_ID_PATTERN.test(listMatch[1])) {
+        fail(res, 404, 'not_found');
+        return true;
+      }
+      if (req.method === 'POST') handleUpload(req, res, listMatch[1]);
+      else handleList(req, res, listMatch[1]);
+      return true;
     }
     const fileMatch = pathname.match(/^\/api\/projects\/([0-9a-f]{32})\/files\/([0-9a-f]{32})(?:\/(preview|apply))?$/);
     if (!fileMatch) return false;

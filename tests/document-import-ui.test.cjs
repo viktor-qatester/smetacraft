@@ -11,21 +11,7 @@ const { explicitLabelsPdf, autocadLikePdf, PDF_MEDIA_TYPE } = require('./phase8-
 function setupApplyApp() {
   const { app, get } = projectFixture(fixtures);
   app.applyProject(app.parseProjectText(JSON.stringify(golden.jsonRoundTrip.exported)));
-  const rows = [];
-  const body = get('project-document-preview-body');
-  body.firstChild = null;
-  body.removeChild = function () { this.firstChild = null; };
-  body.appendChild = function (row) { rows.push(row); return row; };
-  app.document.createElement = function (tag) {
-    const children = [];
-    return {
-      tagName: String(tag).toUpperCase(),
-      textContent: '',
-      children,
-      appendChild(child) { children.push(child); return child; },
-    };
-  };
-  return { app, get, rows };
+  return { app, get };
 }
 
 test('document-import loads immediately before boot', () => {
@@ -85,13 +71,32 @@ test('price keys in overlay are ignored', () => {
 });
 
 test('preview table uses textContent and lists manual AutoCAD fields', () => {
-  const { app, get, rows } = setupApplyApp();
-  const preview = parseDocument(autocadLikePdf(), PDF_MEDIA_TYPE);
-  app.renderDocumentPreview(preview);
-  assert.ok(rows.length > 0);
-  assert.ok(rows.every(row => /вручную/.test(row.children[1].textContent)));
-  assert.equal(get('project-document-apply').disabled, true);
-  assert.match(get('project-document-preview-message').textContent, /вручную/);
+  const { app, get } = setupApplyApp();
+  const rows = [];
+  const body = get('project-document-preview-body');
+  body.firstChild = null;
+  body.removeChild = function () { this.firstChild = null; };
+  body.appendChild = function (row) { rows.push(row); return row; };
+  const originalCreate = app.document.createElement;
+  app.document.createElement = function (tag) {
+    const children = [];
+    return {
+      tagName: String(tag).toUpperCase(),
+      textContent: '',
+      children,
+      appendChild(child) { children.push(child); return child; },
+    };
+  };
+  try {
+    const preview = parseDocument(autocadLikePdf(), PDF_MEDIA_TYPE);
+    app.renderDocumentPreview(preview);
+    assert.ok(rows.length > 0);
+    assert.ok(rows.every(row => /вручную/.test(row.children[1].textContent)));
+    assert.equal(get('project-document-apply').disabled, true);
+    assert.match(get('project-document-preview-message').textContent, /вручную/);
+  } finally {
+    app.document.createElement = originalCreate;
+  }
 });
 
 test('failed apply overlay does not keep a partial candidate', () => {
