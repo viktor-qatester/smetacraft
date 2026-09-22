@@ -12,10 +12,45 @@
         });
       }
 
+      const CURRENCY_OPTIONS = Object.freeze({
+        BYN: Object.freeze({ code: "BYN", symbol: "Br", heading: "BYN (Br)" }),
+        RUB: Object.freeze({ code: "RUB", symbol: "₽", heading: "RUB (₽)" }),
+        USD: Object.freeze({ code: "USD", symbol: "$", heading: "USD ($)" }),
+        EUR: Object.freeze({ code: "EUR", symbol: "€", heading: "EUR (€)" }),
+        PLN: Object.freeze({ code: "PLN", symbol: "zł", heading: "PLN (zł)" }),
+        UAH: Object.freeze({ code: "UAH", symbol: "₴", heading: "UAH (₴)" }),
+        KZT: Object.freeze({ code: "KZT", symbol: "₸", heading: "KZT (₸)" }),
+        GBP: Object.freeze({ code: "GBP", symbol: "£", heading: "GBP (£)" }),
+      });
+
+      function getCurrency() {
+        const el = document.getElementById("currency");
+        const code = el && Object.prototype.hasOwnProperty.call(CURRENCY_OPTIONS, el.value)
+          ? el.value
+          : "BYN";
+        return CURRENCY_OPTIONS[code];
+      }
+
+      function formatMoneyValue(n) {
+        return n.toLocaleString("ru-BY", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+
       function formatMoney(n) {
-        return (
-          n.toLocaleString("ru-BY", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " Br"
-        );
+        return formatMoneyValue(n) + " " + getCurrency().symbol;
+      }
+
+      function syncCurrencyUi() {
+        const currency = getCurrency();
+        const el = document.getElementById("currency");
+        if (el && el.value !== currency.code) {
+          el.value = currency.code;
+        }
+        document.querySelectorAll(".js-currency-heading").forEach(function (node) {
+          node.textContent = currency.heading;
+        });
+        document.querySelectorAll(".js-currency-symbol").forEach(function (node) {
+          node.textContent = currency.symbol;
+        });
       }
 
       function isZeroSize(value) {

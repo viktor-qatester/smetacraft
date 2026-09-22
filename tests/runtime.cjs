@@ -263,7 +263,7 @@ function runScenario(scenario) {
 function projectFixture(fixtures) {
   const { context: app, get } = createApp();
   const { slab, strip, walls, plaster, floor, roof, openings } = fixtures;
-  const fields = {};
+  const fields = { currency: 'BYN' };
   const assign = (source, mapping) => {
     for (const [key, id] of Object.entries(mapping)) fields[id] = source[key];
   };

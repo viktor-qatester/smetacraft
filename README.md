@@ -35,6 +35,10 @@ Testers PDF/DOCX: http://31.172.78.193/
 
 Независимый golden-набор запускается из корня репозитория одной командой: `node --test tests/golden.test.cjs`. Он сравнивает действующие строки ведомости, количества, цены и итоги, включая JSON export/import. Сценарии и ограничения описаны в [docs/regression-baseline.md](docs/regression-baseline.md).
 
+В прайс-листе можно выбрать BYN, RUB, USD, EUR, PLN, UAH, KZT или GBP. Выбор сохраняется в JSON-проекте и меняет обозначение валюты в ведомости; автоматической конвертации по курсу нет, поэтому все цены вводятся сразу в одной выбранной валюте.
+
+Эталонная разметка PDF для развития автоподстановки хранится в [`data/training/annotations/v0.1`](data/training/annotations/v0.1). Готовый промт для следующего автономного этапа Cursor — [`docs/CURSOR_AUTONOMOUS_DEVELOPMENT_PROMPT.md`](docs/CURSOR_AUTONOMOUS_DEVELOPMENT_PROMPT.md).
+
 ## Дальнейшее развитие
 
 Порядок и текущий статус запланированных фаз 1–9 приведены в [дорожной карте](docs/ROADMAP.md).

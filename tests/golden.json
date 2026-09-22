@@ -1,6 +1,6 @@
 {
   "description": "Observed outputs from the unchanged index.html calculation and render functions",
-  "sourceSha256": "623117f0da4209d31bffb0f6964284913edfaae4fed5b85eb83ab2b034ab2e1a",
+  "sourceSha256": "112239f87bec332f1abf7080aeddf62fa79285eb432069bba1a14b773c7db7fd",
   "projectSchemaVersion": 1,
   "cases": [
     {
@@ -4518,6 +4518,7 @@
       "block": "summary",
       "billBlock": "summary",
       "fields": {
+        "currency": "BYN",
         "length": "10",
         "width": "8",
         "height": "0.3",
@@ -4697,6 +4698,7 @@
       "block": "summary",
       "billBlock": "summary",
       "fields": {
+        "currency": "BYN",
         "length": "10",
         "width": "8",
         "height": "0.3",
@@ -4862,7 +4864,7 @@
         "floorNeedsCalc": false
       }
     },
-    "appliedFields": 117,
+    "appliedFields": 118,
     "summaryBefore": {
       "rows": [
         {

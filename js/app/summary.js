@@ -34,7 +34,7 @@
               " м³)",
             netLabel: formatQty(bill.vNet, 2) + " м³",
             k: 1,
-            orderLabel: formatMoney(materialsCost).replace(" Br", ""),
+            orderLabel: formatMoneyValue(materialsCost),
             cost: materialsCost,
           },
           {
@@ -44,7 +44,7 @@
               ")",
             netLabel: formatQty(input.perimeter, 1) + " м перим.",
             k: 1,
-            orderLabel: formatMoney(workCost).replace(" Br", ""),
+            orderLabel: formatMoneyValue(workCost),
             cost: workCost,
           },
         ];
@@ -64,7 +64,7 @@
               " м²)",
             netLabel: formatQty(bill.area, 2) + " м²",
             k: 1,
-            orderLabel: formatMoney(bill.materialsCost).replace(" Br", ""),
+            orderLabel: formatMoneyValue(bill.materialsCost),
             cost: bill.materialsCost,
           },
           {
@@ -99,7 +99,7 @@
               ")",
             netLabel: formatQty(bill.area, 2) + " м²",
             k: 1,
-            orderLabel: formatMoney(materialsCost).replace(" Br", ""),
+            orderLabel: formatMoneyValue(materialsCost),
             cost: materialsCost,
           },
           {
@@ -138,7 +138,7 @@
               " м²)",
             netLabel: formatQty(bill.area, 2) + " м²",
             k: 1,
-            orderLabel: formatMoney(materialsCost).replace(" Br", ""),
+            orderLabel: formatMoneyValue(materialsCost),
             cost: materialsCost,
           },
           {
@@ -150,7 +150,7 @@
               " м²)",
             netLabel: formatQty(bill.area, 2) + " м²",
             k: 1,
-            orderLabel: formatMoney(workCost).replace(" Br", ""),
+            orderLabel: formatMoneyValue(workCost),
             cost: workCost,
           },
         ];

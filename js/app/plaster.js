@@ -50,7 +50,7 @@
 
       // Phase 4C: use the extracted plaster calculator.
       var calculatePlaster = SmetaCraftPlasterCore.createCalculator({
-        BEACON_LENGTH, CPS_BAG_KG, CPS_RATE, GYPSUM_BAG_KG, GYPSUM_RATE, MESH_OVERLAP, MESH_ROLL_M2, PLASTER_LOSS, PRIMER_CAN_L, PRIMER_L_PER_M2, PRIMER_RESERVE, isZeroSize, computePlasterArea, zeroPlasterBill, barCount, formatQty
+        BEACON_LENGTH, CPS_BAG_KG, CPS_RATE, GYPSUM_BAG_KG, GYPSUM_RATE, MESH_OVERLAP, MESH_ROLL_M2, PLASTER_LOSS, PRIMER_CAN_L, PRIMER_L_PER_M2, PRIMER_RESERVE, isZeroSize, computePlasterArea, zeroPlasterBill, barCount, formatQty, getCurrency
       });
 
       function readPlasterForm() {

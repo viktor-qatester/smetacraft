@@ -3,7 +3,7 @@
   "use strict";
   root.SmetaCraftPlasterCore = Object.freeze({
     createCalculator: function (deps) {
-      const { BEACON_LENGTH, CPS_BAG_KG, CPS_RATE, GYPSUM_BAG_KG, GYPSUM_RATE, MESH_OVERLAP, MESH_ROLL_M2, PLASTER_LOSS, PRIMER_CAN_L, PRIMER_L_PER_M2, PRIMER_RESERVE, isZeroSize, computePlasterArea, zeroPlasterBill, barCount, formatQty } = deps;
+      const { BEACON_LENGTH, CPS_BAG_KG, CPS_RATE, GYPSUM_BAG_KG, GYPSUM_RATE, MESH_OVERLAP, MESH_ROLL_M2, PLASTER_LOSS, PRIMER_CAN_L, PRIMER_L_PER_M2, PRIMER_RESERVE, isZeroSize, computePlasterArea, zeroPlasterBill, barCount, formatQty, getCurrency } = deps;
 
       function calculatePlaster(input) {
         if (
@@ -85,7 +85,7 @@
             formatQty(area, 2) +
             " м² × " +
             formatQty(input.workPrice, 2) +
-            " Br/м²",
+            " " + getCurrency().symbol + "/м²",
           netLabel: formatQty(area, 2) + " м²",
           k: 1,
           orderLabel: formatQty(area, 2) + " м²",

@@ -825,7 +825,7 @@
     <div class="app">
       <header>
         <h1>Smetacraft</h1>
-        <p id="lead" class="lead">Плитный фундамент: бетон, арматура, опалубка, подушка, гидроизоляция. Цены в Br — ориентир, правьте под поставщика.</p>
+        <p id="lead" class="lead">Плитный фундамент: бетон, арматура, опалубка, подушка, гидроизоляция. Цены в выбранной валюте — ориентир, правьте под поставщика.</p>
         <nav class="tabs" aria-label="Блоки проекта">
           <button type="button" class="tab" data-block="intake">Мой дом</button>
           <button type="button" class="tab is-active" data-block="slab" aria-current="page">Плита</button>
@@ -1726,6 +1726,23 @@
           <section class="panel" id="panel-price" hidden>
             <h2>Прайс-лист</h2>
             <form id="price-form">
+              <fieldset>
+                <legend>Валюта прайс-листа</legend>
+                <label>
+                  Валюта цен и сметы
+                  <select id="currency" name="currency">
+                    <option value="BYN" selected>Белорусский рубль — BYN (Br)</option>
+                    <option value="RUB">Российский рубль — RUB (₽)</option>
+                    <option value="USD">Доллар США — USD ($)</option>
+                    <option value="EUR">Евро — EUR (€)</option>
+                    <option value="PLN">Польский злотый — PLN (zł)</option>
+                    <option value="UAH">Украинская гривна — UAH (₴)</option>
+                    <option value="KZT">Казахстанский тенге — KZT (₸)</option>
+                    <option value="GBP">Британский фунт — GBP (£)</option>
+                  </select>
+                </label>
+                <p class="note"><strong>Важно:</strong> смена валюты меняет обозначение в прайс-листе и смете, но не пересчитывает числа по курсу. Вводите все цены сразу в выбранной валюте.</p>
+              </fieldset>
               <div class="price-group">
                 <p class="price-cat">Плитный фундамент</p>
                 <table class="price-table">
@@ -1733,7 +1750,7 @@
                     <tr>
                       <th>Позиция</th>
                       <th>Единица</th>
-                      <th class="num">Цена, Br</th>
+                      <th class="num">Цена, <span class="js-currency-heading">BYN (Br)</span></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1788,7 +1805,7 @@
                     <tr>
                       <th>Позиция</th>
                       <th>Единица</th>
-                      <th class="num">Цена, Br</th>
+                      <th class="num">Цена, <span class="js-currency-heading">BYN (Br)</span></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1838,7 +1855,7 @@
                     <tr>
                       <th>Позиция</th>
                       <th>Единица</th>
-                      <th class="num">Цена, Br</th>
+                      <th class="num">Цена, <span class="js-currency-heading">BYN (Br)</span></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1871,7 +1888,7 @@
                     <tr>
                       <th>Позиция</th>
                       <th>Единица</th>
-                      <th class="num">Цена, Br</th>
+                      <th class="num">Цена, <span class="js-currency-heading">BYN (Br)</span></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1926,7 +1943,7 @@
                     <tr>
                       <th>Позиция</th>
                       <th>Единица</th>
-                      <th class="num">Цена, Br</th>
+                      <th class="num">Цена, <span class="js-currency-heading">BYN (Br)</span></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1981,7 +1998,7 @@
                     <tr>
                       <th>Позиция</th>
                       <th>Единица</th>
-                      <th class="num">Цена, Br</th>
+                      <th class="num">Цена, <span class="js-currency-heading">BYN (Br)</span></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -2021,7 +2038,7 @@
                     <tr>
                       <th>Позиция</th>
                       <th>Единица</th>
-                      <th class="num">Цена, Br</th>
+                      <th class="num">Цена, <span class="js-currency-heading">BYN (Br)</span></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -2071,7 +2088,7 @@
                     <tr>
                       <th>Позиция</th>
                       <th>Единица</th>
-                      <th class="num">Цена, Br</th>
+                      <th class="num">Цена, <span class="js-currency-heading">BYN (Br)</span></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -2287,7 +2304,7 @@
           </div>
           <button type="button" class="btn-text" id="bill-next" hidden>Добавить части → Сводная смета</button>
           <button type="button" class="btn-print" id="bill-print" hidden>Распечатать смету / PDF</button>
-          <p class="note">Стоимость ориентировочная, по ценам прайс-листа в Br. Это не полная стоимость дома и не замена проекту. Остатки хлыстов выбранной длины входят в заказ целиком.</p>
+          <p class="note">Стоимость ориентировочная, по ценам прайс-листа в <span class="js-currency-heading">BYN (Br)</span>. Это не полная стоимость дома и не замена проекту. Остатки хлыстов выбранной длины входят в заказ целиком.</p>
         </aside>
       </div>
     </div>

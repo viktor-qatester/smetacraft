@@ -9,6 +9,7 @@
       }
 
       function render() {
+        syncCurrencyUi();
         if (billBlock === "strip") {
           renderStrip();
         } else if (billBlock === "walls") {

@@ -1,4 +1,10 @@
-data/
+data/*
+!data/training/
+data/training/*
+!data/training/annotations/
+data/training/annotations/*
+!data/training/annotations/v0.1/
+!data/training/annotations/v0.1/**
 .env
 *.env
 smetacraft.env

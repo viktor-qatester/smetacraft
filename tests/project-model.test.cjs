@@ -11,8 +11,8 @@ function setup() {
 test('Phase 3A mapping covers the complete JSON v1 allowlist', () => {
   const { app, project } = setup();
   const entries = plain(app.modelFieldEntries());
-  assert.equal(entries.length, 101);
-  assert.equal(new Set(entries.map(entry => entry.id)).size, 101);
+  assert.equal(entries.length, 102);
+  assert.equal(new Set(entries.map(entry => entry.id)).size, 102);
   assert.deepStrictEqual(entries.map(entry => entry.id).sort(), Object.keys(project.fields).sort());
   assert.ok(entries.every(entry => entry.unit && entry.group));
 });
@@ -21,12 +21,14 @@ test('representative v1 project round-trips with exact strings, rows and UI stat
   const { app, project } = setup();
   project.fields.length = '10.0';
   project.fields['rebar-price'] = '3,20';
+  project.fields.currency = 'EUR';
   project.openings[0].locked = false;
   project.openings[1].locked = true;
   const model = app.projectV1ToModel(project);
   assert.equal(model.slab.length.value, 10);
   assert.equal(model.slab.length.raw, '10.0');
   assert.equal(model.prices['rebar-price'].value, 3.2);
+  assert.equal(model.prices.currency.value, 'EUR');
   assert.deepStrictEqual(plain(app.modelToProjectV1(model)), project);
 });
 

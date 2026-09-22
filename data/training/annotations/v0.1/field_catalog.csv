@@ -1,0 +1,66 @@
+field_id,type,unit,scope,description
+document.language,string,,document,Язык документа
+document.page_count,integer,page,document,Количество страниц PDF
+document.kind,string,,document,Тип комплекта документации
+document.text_layer,string,,document,Качество машинного текстового слоя
+document.ocr_required,boolean,,document,Нужен ли OCR
+project.title,string,,project,Название проекта без адреса и персональных данных
+foundation.type,string,,foundation,Тип фундамента
+foundation.top_elevation_m,number,m,foundation,Отметка верха конструкции
+foundation.slab.thickness_mm,number,mm,slab,Толщина плиты
+foundation.slab.area_m2,number,m2,slab,Площадь плиты
+foundation.slab.concrete_volume_m3,number,m3,slab,Объём бетона плиты
+foundation.slab.concrete_class,string,,slab,Класс бетона плиты
+foundation.slab.frost_class,string,,slab,Марка морозостойкости
+foundation.slab.waterproof_class,string,,slab,Марка водонепроницаемости
+foundation.slab.rebar_grade,string,,slab,Класс арматуры плиты
+foundation.slab.rebar_layers,integer,layer,slab,Количество уровней сетки
+foundation.slab.rebar_top_diameter_mm,number,mm,slab,Диаметр верхней сетки
+foundation.slab.rebar_top_spacing_mm,number,mm,slab,Шаг верхней сетки
+foundation.slab.rebar_bottom_diameter_mm,number,mm,slab,Диаметр нижней сетки
+foundation.slab.rebar_bottom_spacing_mm,number,mm,slab,Шаг нижней сетки
+foundation.slab.rebar_vertical_diameter_mm,number,mm,slab,Диаметр вертикальной арматуры
+foundation.slab.rebar_vertical_spacing_mm,number,mm,slab,Шаг вертикальной арматуры
+foundation.slab.rebar_lap_diameters,number,diameter,slab,Минимальный нахлёст в диаметрах
+foundation.slab.rebar_mass_d12_kg,number,kg,slab,Масса арматуры диаметром 12 мм
+foundation.slab.rebar_mass_d8_kg,number,kg,slab,Масса арматуры диаметром 8 мм
+foundation.slab.rebar_mass_total_kg,number,kg,slab,Общая масса арматуры плиты
+foundation.slab.single_pour,boolean,,slab,Требование бетонировать за один приём
+foundation.slab.vibration_required,boolean,,slab,Требование виброуплотнения
+foundation.rib.width_mm,number,mm,rib,Ширина ребра
+foundation.rib.height_mm,number,mm,rib,Высота ребра
+foundation.base.material,string,,base,Материал подготовки
+foundation.base.thickness_mm,number,mm,base,Толщина подготовки
+foundation.base.geotextile,boolean,,base,Наличие геотекстиля
+foundation.waterproofing.type,string,,foundation,Тип гидроизоляции
+foundation.waterproofing.layers,integer,layer,foundation,Количество слоёв гидроизоляции
+foundation.pile.primary.type,string,,pile,Тип основных свай
+foundation.pile.primary.count,integer,piece,pile,Количество основных свай
+foundation.pile.primary.section_mm,string,mm,pile,Сечение сваи
+foundation.pile.primary.diameter_mm,number,mm,pile,Диаметр сваи
+foundation.pile.primary.length_mm,number,mm,pile,Длина сваи
+foundation.pile.primary.top_elevation_m,number,m,pile,Отметка верха сваи
+foundation.pile.primary.bottom_elevation_m,number,m,pile,Отметка низа сваи
+foundation.pile.secondary.type,string,,pile,Тип дополнительных свай
+foundation.pile.secondary.count,integer,piece,pile,Количество дополнительных свай
+foundation.pile.secondary.diameter_mm,number,mm,pile,Диаметр дополнительных свай
+foundation.pile.secondary.length_mm,number,mm,pile,Длина дополнительных свай
+foundation.pile.secondary.fill_material,string,,pile,Заполнение дополнительных свай
+foundation.grillage.widths_mm,array,mm,grillage,Варианты ширины ростверка
+foundation.grillage.height_mm,number,mm,grillage,Высота ростверка
+foundation.grillage.concrete_class,string,,grillage,Класс бетона ростверка
+foundation.grillage.frost_class,string,,grillage,Морозостойкость ростверка
+foundation.grillage.concrete_volume_m3,number,m3,grillage,Объём бетона ростверка
+foundation.grillage.rebar_mass_d12_kg,number,kg,grillage,Масса арматуры D12
+foundation.grillage.rebar_mass_d6_kg,number,kg,grillage,Масса арматуры D6
+foundation.grillage.rebar_mass_total_kg,number,kg,grillage,Общая масса стали ростверка
+foundation.concrete.cover_mm,number,mm,foundation,Защитный слой бетона фундамента
+foundation.concrete.strength_mpa,number,MPa,foundation,Прочность бетона фундамента
+foundation.blinding.strength_mpa,number,MPa,foundation,Прочность бетонной подготовки
+foundation.water_cement_ratio_max,number,ratio,foundation,Максимальное В/Ц
+steel.primary_profile,string,,steel,Основной стальной профиль
+steel.secondary_profile,string,,steel,Дополнительный стальной профиль
+steel.fin_plate_thickness_mm,number,mm,steel,Толщина торцевой пластины
+steel.anchor_diameter_mm,number,mm,steel,Диаметр анкера
+steel.anchor_product,string,,steel,Марка анкера или состава
+steel.concrete_wall_thickness_mm,number,mm,steel,Толщина существующей бетонной стены

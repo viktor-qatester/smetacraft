@@ -22,17 +22,17 @@
       const ZERO_SIZE = 1e-9;
 
       const SLAB_LEAD =
-        "Плитный фундамент: бетон, арматура, опалубка, подушка, гидроизоляция. Цены в Br — ориентир, правьте под поставщика.";
+        "Плитный фундамент: бетон, арматура, опалубка, подушка, гидроизоляция. Цены в выбранной валюте — ориентир, правьте под поставщика.";
       const STRIP_LEAD =
-        "Ленточный фундамент: бетон, рабочие стержни, хомуты с гибами, опалубка с двух сторон, песчаная подушка, гидроизоляция. Цены в Br — ориентир, правьте под поставщика.";
+        "Ленточный фундамент: бетон, рабочие стержни, хомуты с гибами, опалубка с двух сторон, песчаная подушка, гидроизоляция. Цены в выбранной валюте — ориентир, правьте под поставщика.";
       const WALLS_LEAD =
-        "Стены и перегородки: несущие стены, проёмы, армопояс, перемычки, внутренние перегородки. Цены в Br — ориентир, правьте под прайс-лист.";
+        "Стены и перегородки: несущие стены, проёмы, армопояс, перемычки, внутренние перегородки. Цены в выбранной валюте — ориентир, правьте под прайс-лист.";
       const PLASTER_LEAD =
-        "Штукатурка стен: гипсовая или ЦПС, грунтовка глубокого проникновения, маяки 6 мм, стеклосетка. Цены в Br — ориентир, правьте под поставщика.";
+        "Штукатурка стен: гипсовая или ЦПС, грунтовка глубокого проникновения, маяки 6 мм, стеклосетка. Цены в выбранной валюте — ориентир, правьте под поставщика.";
       const ROOF_LEAD =
-        "Кровля: стропила, мауэрлат, обрешётка, утепление и покрытие. Покрытие в ведомости — м² скатов с запасом, без раскроя листов и доборов. Цены в Br — ориентир, правьте под поставщика.";
+        "Кровля: стропила, мауэрлат, обрешётка, утепление и покрытие. Покрытие в ведомости — м² скатов с запасом, без раскроя листов и доборов. Цены в выбранной валюте — ориентир, правьте под поставщика.";
       const FLOOR_LEAD =
-        "Перекрытия: деревянные балки или железобетонные плиты, утепление, пароизоляция, черновой накат. Цены в Br — ориентир, правьте под поставщика.";
+        "Перекрытия: деревянные балки или железобетонные плиты, утепление, пароизоляция, черновой накат. Цены в выбранной валюте — ориентир, правьте под поставщика.";
       const SUMMARY_LEAD =
         "Сводная смета объекта: включите узлы, параметры читаются из их форм. Итоговая ведомость закупки по категориям, 0 токенов.";
       const PRICE_LEAD =
@@ -65,7 +65,7 @@
       const PROJECT_MAX_FILE_BYTES = 1024 * 1024;
       const PROJECT_MAX_ROWS = 500;
       const PROJECT_FIELD_IDS = new Set((
-        "length width height grade concrete-price bar-diameter bar-step rod-length slab-mesh-count rebar-price wire-price board-price timber-price sand-height sand-price stone-height stone-price hydro-price " +
+        "currency length width height grade concrete-price bar-diameter bar-step rod-length slab-mesh-count rebar-price wire-price board-price timber-price sand-height sand-price stone-height stone-price hydro-price " +
         "strip-length strip-width strip-height strip-grade strip-concrete-price strip-bar-diameter strip-bar-count strip-rod-length strip-rebar-price strip-stirrup-diameter strip-stirrup-step strip-wire-price strip-board-price strip-timber-price strip-sand-height strip-sand-price strip-hydro-price pile-concrete-price pile-work-drilling-price pile-hydro-price " +
         "walls-perimeter walls-load-bearing-material walls-height walls-joint-mm wall-armopoyas-width wall-armopoyas-height walls-armopoyas-rebar walls-partition-material walls-partition-length walls-partition-height wall-block-price wall-adhesive-price wall-mesh-price partition-block-price wall-concrete-price wall-work-masonry-price wall-work-partition-price wall-work-armopoyas-price " +
         "plaster-length plaster-height plaster-sides plaster-mix plaster-thick plaster-mix-price plaster-primer-layers plaster-primer-price plaster-beacon-step plaster-beacon-price plaster-mesh-price plaster-work-price " +
@@ -87,7 +87,7 @@
         plaster: "plaster-length:m plaster-height:m plaster-sides:count plaster-mix:text plaster-thick:mm plaster-primer-layers:count plaster-beacon-step:m",
         floor: "floor-type:text floor-length:m floor-width:m floor-beam-section:text floor-beam-step:m floor-insulation-mm:mm floor-slab-width:m",
         roof: "roof-type:text roof-width:m roof-length:m roof-ridge-height:m roof-eave:m roof-rafter-section:text roof-rafter-step:mm roof-mauerlat-section:text roof-batten-step:mm roof-batten-section:text roof-insulation-mm:mm roof-covering:text",
-        prices: "concrete-price:m3 rebar-price:kg wire-price:kg board-price:piece timber-price:piece sand-price:m3 stone-price:m3 hydro-price:roll strip-concrete-price:m3 strip-rebar-price:kg strip-wire-price:kg strip-board-price:piece strip-timber-price:piece strip-sand-price:m3 strip-hydro-price:roll pile-concrete-price:m3 pile-work-drilling-price:m pile-hydro-price:m2 wall-block-price:m3 wall-adhesive-price:bag wall-mesh-price:m partition-block-price:m3 wall-concrete-price:m3 wall-work-masonry-price:m3 wall-work-partition-price:m2 wall-work-armopoyas-price:m plaster-mix-price:bag plaster-primer-price:can plaster-beacon-price:piece plaster-mesh-price:roll plaster-work-price:m2 floor-wood-beam-price:m3 floor-insulation-price:m3 floor-membrane-price:m2 floor-board-price:m3 floor-concrete-slab-price:piece floor-work-wood-price:m2 floor-work-concrete-price:piece roof-timber-price:m3 roof-board-price:m3 roof-metal-price:m2 roof-insulation-price:m3 roof-membrane-price:roll roof-vapor-price:roll roof-work-price:m2"
+        prices: "currency:text concrete-price:m3 rebar-price:kg wire-price:kg board-price:piece timber-price:piece sand-price:m3 stone-price:m3 hydro-price:roll strip-concrete-price:m3 strip-rebar-price:kg strip-wire-price:kg strip-board-price:piece strip-timber-price:piece strip-sand-price:m3 strip-hydro-price:roll pile-concrete-price:m3 pile-work-drilling-price:m pile-hydro-price:m2 wall-block-price:m3 wall-adhesive-price:bag wall-mesh-price:m partition-block-price:m3 wall-concrete-price:m3 wall-work-masonry-price:m3 wall-work-partition-price:m2 wall-work-armopoyas-price:m plaster-mix-price:bag plaster-primer-price:can plaster-beacon-price:piece plaster-mesh-price:roll plaster-work-price:m2 floor-wood-beam-price:m3 floor-insulation-price:m3 floor-membrane-price:m2 floor-board-price:m3 floor-concrete-slab-price:piece floor-work-wood-price:m2 floor-work-concrete-price:piece roof-timber-price:m3 roof-board-price:m3 roof-metal-price:m2 roof-insulation-price:m3 roof-membrane-price:roll roof-vapor-price:roll roof-work-price:m2"
       };
 
       function modelFieldEntries() {
