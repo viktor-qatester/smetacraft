@@ -23,6 +23,7 @@ test('document-import loads immediately before boot', () => {
   const bootIndex = scripts.indexOf('js/app/boot.js');
   assert.equal(scripts[bootIndex - 1], 'js/app/document-import.js');
   assert.equal(scripts[bootIndex - 2], 'js/app/explicit-text.js');
+  assert.equal(scripts[bootIndex - 3], 'js/app/extracted-facts.js');
   assert.equal(importIndex, bootIndex - 1);
   assert.equal(parserIndex, importIndex - 1);
   assert.match(html, /project-document-import-fieldset/);
@@ -99,7 +100,8 @@ test('preview table uses textContent and lists manual AutoCAD fields', () => {
     const preview = parseDocument(autocadLikePdf(), PDF_MEDIA_TYPE);
     app.renderDocumentPreview(preview);
     assert.ok(rows.length > 0);
-    assert.ok(rows.every(row => /вручную/.test(row.children[1].textContent)));
+    assert.ok(rows.every(row => row.children[6].textContent === "Не найдено"));
+    assert.ok(rows.every(row => typeof row.children[1].textContent === "string" && !row.children[1].innerHTML));
     assert.equal(get('project-document-apply').disabled, true);
     assert.match(get('project-document-preview-message').textContent, /вручную/);
   } finally {

@@ -16,7 +16,7 @@ const slabUiSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'ui', 'sla
 const stripUiSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'ui', 'strip.js'), 'utf8');
 const appNames = ['config', 'state', 'utils', 'bill', 'price', 'piles', 'foundations', 'walls', 'plaster',
   'roof', 'floor', 'links', 'summary', 'render', 'intake', 'regression', 'project',
-  'reset', 'file-import', 'server-access', 'backend-check', 'project-migration', 'explicit-text', 'document-import', 'boot'];
+  'reset', 'file-import', 'server-access', 'backend-check', 'project-migration', 'extracted-facts', 'explicit-text', 'document-import', 'boot'];
 const scriptPaths = ['js/core/slab.js', 'js/core/strip.js', 'js/core/walls.js',
   'js/core/plaster.js', 'js/core/roof.js', 'js/core/floor.js',
   'js/ui/slab.js', 'js/ui/strip.js', ...appNames.map(name => `js/app/${name}.js`)];
@@ -61,13 +61,22 @@ function templateRow(tag) {
     remove() { const at = this.parent.indexOf(this); if (at !== -1) this.parent.splice(at, 1); },
     appendChild(child) { child.parent = children; children.push(child); return child; },
     querySelector(selector) {
-      const cls = selector.slice(1);
+      const cls = selector.slice(selector.lastIndexOf('.') + 1);
       for (const child of children) {
         if (child.className.split(' ').includes(cls)) return child;
-        const nested = child.querySelector(selector);
+        const nested = child.querySelector && child.querySelector(selector);
         if (nested) return nested;
       }
       return null;
+    },
+    querySelectorAll(selector) {
+      const cls = selector.slice(selector.lastIndexOf('.') + 1);
+      const found = [];
+      for (const child of children) {
+        if (child.className && child.className.split(' ').includes(cls)) found.push(child);
+        if (child.querySelectorAll) found.push(...child.querySelectorAll(selector));
+      }
+      return found;
     },
   };
 }

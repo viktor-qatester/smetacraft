@@ -19,6 +19,8 @@
 | Phase 8 | Закрытое файловое хранилище и импорт по одному доказанному формату | **Принята владельцем 2026-09-21:** PDF/DOCX explicit-text, storage + viewer + preview + apply params; merge `f512a5f`, 154/154; аудиты [PHASE_8_CODEX_AUDIT.md](PHASE_8_CODEX_AUDIT.md) + [PHASE_8_GEMINI_AUDIT.md](PHASE_8_GEMINI_AUDIT.md). После приёмки: публичный origin Fornex, GitHub Pages не прод API; см. [DEPLOY_FORNEX.md](DEPLOY_FORNEX.md). |
 | Phase 9 | Entitlements, usage, audit, backups и commercial readiness | Не начиналась. |
 
+После приёмки Phase 8 отдельным разрешением добавлен контракт извлечённых фактов: `js/app/extracted-facts.js`, preview с evidence и apply только отмеченных строк. Формулы и `tests/golden.json` этим шагом не меняются. Ограничения полей — в [`IMPORT_PDF.md`](IMPORT_PDF.md). Phase 9 не начата.
+
 Phase 10 — AI Gateway и maintenance-agent при наличии бюджета и необходимости — обозначена в исходной карте как последующее возможное направление, за пределами девяти основных фаз.
 
 ## Точка перехода после Phase 2

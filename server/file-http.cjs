@@ -18,6 +18,16 @@ function sanitizeOriginalName(raw, mediaType) {
   return base.slice(0, 255);
 }
 
+function attachFactObjectId(preview, objectId) {
+  if (!preview || !Array.isArray(preview.facts)) return preview;
+  for (const fact of preview.facts) {
+    if (fact && fact.source && typeof fact.source === 'object' && !fact.source.objectId) {
+      fact.source.objectId = objectId;
+    }
+  }
+  return preview;
+}
+
 function downloadFilename(originalName, mediaType) {
   const ext = mediaType === DOCX_MEDIA_TYPE ? 'docx' : 'pdf';
   const ascii = String(originalName || 'upload')
@@ -139,7 +149,7 @@ function createFileHandlers({
         if (existing) {
           const bytes = fileStore.read(existing.objectId);
           const preview = parseDocument(bytes, existing.mediaType);
-          return sendJson(res, 200, previewPayload(existing, preview));
+          return sendJson(res, 200, previewPayload(existing, attachFactObjectId(preview, existing.objectId)));
         }
         if (fileMeta.countByProject({ projectId }) >= MAX_FILES_PER_PROJECT) {
           return fail(res, 409, 'file_limit_exceeded');
@@ -164,7 +174,7 @@ function createFileHandlers({
         }
         let preview;
         try {
-          preview = parseDocument(body, detected);
+          preview = attachFactObjectId(parseDocument(body, detected), objectId);
         } catch {
           fileMeta.updateStatus({ objectId, projectId, status: 'rejected', now: new Date().toISOString() });
           fileStore.remove(objectId);
@@ -212,7 +222,7 @@ function createFileHandlers({
       const record = fileMeta.getFileObject({ objectId, projectId });
       if (!record || record.status === 'rejected') return fail(res, 404, 'not_found');
       const bytes = fileStore.read(objectId);
-      const preview = parseDocument(bytes, record.mediaType);
+      const preview = attachFactObjectId(parseDocument(bytes, record.mediaType), objectId);
       sendJson(res, 200, previewPayload(record, preview));
     } catch (error) {
       if (error && error.code === 'ENOENT') return fail(res, 404, 'not_found');
