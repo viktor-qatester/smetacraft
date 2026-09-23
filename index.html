@@ -696,8 +696,17 @@
         color: var(--ink);
       }
 
-      .preview-status-found {
+      .preview-status-found,
+      .preview-status-confirmed {
         color: #2d5a2d;
+      }
+
+      .preview-status-review {
+        color: #6a4a12;
+      }
+
+      .preview-status-conflict {
+        color: #7a2e2e;
       }
 
       .preview-status-manual {
@@ -2186,17 +2195,18 @@
                   </ul>
                   <p><strong>Цены не подставляются</strong> — у каждого свои поставщики и магазины; цены вы вводите сами.</p>
                   <h3>Перед применением — всегда «Предпросмотр»</h3>
-                  <p>Вы видите таблицу:</p>
+                  <p>Таблица показывает значение, единицу, страницу, короткий фрагмент текста и поле калькулятора:</p>
                   <table>
                     <thead>
-                      <tr><th>Поле</th><th>Статус</th></tr>
+                      <tr><th>Статус</th><th>Что происходит</th></tr>
                     </thead>
                     <tbody>
-                      <tr><td>Найдено в файле</td><td>будет подставлено после «Применить»</td></tr>
-                      <tr><td>Не найдено</td><td>введите вручную по чертежу</td></tr>
+                      <tr><td>Подтверждено</td><td>галочка стоит; попадёт в калькулятор после «Применить»</td></tr>
+                      <tr><td>Проверить / конфликт</td><td>галочка снята, само не применяется</td></tr>
+                      <tr><td>Не найдено / нужен OCR</td><td>введите вручную; пустое значение не становится нулём</td></tr>
                     </tbody>
                   </table>
-                  <p>Ничего не меняется <strong>молча</strong> — только после вашей кнопки <strong>«Применить»</strong>.</p>
+                  <p>Ничего не меняется <strong>молча</strong> — только отмеченные строки и только после кнопки <strong>«Применить»</strong>. Цены и валюта прайса из PDF не берутся.</p>
                   <h3>Если файл — чертежи AutoCAD (как на стройке)</h3>
                   <p>Частый случай: PDF из AutoCAD — <strong>картинки листов А3</strong> с размерами на чертеже, <strong>без текстовых подписей</strong> «лента 40 м».</p>
                   <p>В этом случае:</p>
@@ -2210,7 +2220,7 @@
                   <ol>
                     <li><strong>PDF/DOCX</strong> — проект виден + автоподстановка <strong>где есть явный текст</strong>.</li>
                     <li><strong>Чертежи без подписей</strong> — проект виден, размеры <strong>вручную</strong>.</li>
-                    <li><strong>Preview</strong> — всегда показывает, что подставится.</li>
+                    <li><strong>Preview</strong> — показывает значение, страницу, доказательство и куда оно пойдёт. Галочка стоит только у подтверждённых размеров. Сомнительное, конфликт и цены не отмечены. В калькулятор попадает только отмеченное после «Применить».</li>
                     <li><strong>Цены</strong> — всегда ваши.</li>
                   </ol>
                 </div>
@@ -2233,7 +2243,15 @@
                   <p id="project-document-preview-message" class="note"></p>
                   <table class="document-preview-table">
                     <thead>
-                      <tr><th>Поле</th><th>Статус</th></tr>
+                      <tr>
+                        <th>Применить</th>
+                        <th>Поле</th>
+                        <th>Значение</th>
+                        <th>Стр.</th>
+                        <th>Доказательство</th>
+                        <th>Куда</th>
+                        <th>Статус</th>
+                      </tr>
                     </thead>
                     <tbody id="project-document-preview-body"></tbody>
                   </table>
@@ -2340,6 +2358,7 @@
     <script src="js/app/server-access.js"></script>
     <script src="js/app/backend-check.js"></script>
     <script src="js/app/project-migration.js"></script>
+    <script src="js/app/extracted-facts.js"></script>
     <script src="js/app/explicit-text.js"></script>
     <script src="js/app/document-import.js"></script>
     <script src="js/app/boot.js"></script>

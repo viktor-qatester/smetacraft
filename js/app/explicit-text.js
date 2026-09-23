@@ -618,10 +618,10 @@
         return parts.join(" ");
       }
 
-      function extractPdfText(buffer) {
+      function extractPdfStreamText(buffer) {
         const bytes = asUint8(buffer);
         const latin = bytesToLatin1(bytes);
-        const parts = [stringsFromPdfContent(bytes)];
+        const parts = [];
         const streamRe = /<<([\s\S]*?)>>\s*stream\r?\n([\s\S]*?)\r?\nendstream/g;
         let match;
         while ((match = streamRe.exec(latin))) {
@@ -634,6 +634,23 @@
           parts.push(stringsFromPdfContent(inflated));
         }
         return parts.join(" ");
+      }
+
+      function extractPdfText(buffer) {
+        const bytes = asUint8(buffer);
+        return [stringsFromPdfContent(bytes), extractPdfStreamText(bytes)].join(" ");
+      }
+
+      function factsApi() {
+        if (typeof module !== "undefined" && module.exports) {
+          return require("./extracted-facts.js");
+        }
+        return {
+          extractDocumentFacts: extractDocumentFacts,
+          factsFromRuleHits: factsFromRuleHits,
+          mergeFactLists: mergeFactLists,
+          syncFactParameters: syncFactParameters,
+        };
       }
 
       function countPdfPages(buffer) {
@@ -783,11 +800,39 @@
             snippet: hit.snippet,
           };
         });
-        const foundCount = fields.filter(function (field) { return field.status === "found"; }).length;
+        const api = factsApi();
+        const extracted = api.extractDocumentFacts({
+          text: extractedText,
+          format: format,
+          pageCount: pageCount,
+          contentChars: options.contentChars,
+          objectId: options.objectId || null,
+        });
+        const mirrored = api.factsFromRuleHits(matched.found, CHECKLIST, {
+          pageCount: pageCount,
+          objectId: options.objectId || null,
+        });
+        const facts = api.mergeFactLists(mirrored, extracted.facts);
+        api.syncFactParameters(parameters, facts);
+        fields.forEach(function (field) {
+          if (parameters[field.fieldId] !== undefined && field.status !== "found") {
+            const numeric = Number(parameters[field.fieldId]);
+            field.status = "found";
+            field.value = Number.isFinite(numeric) ? numeric : parameters[field.fieldId];
+          } else if (field.status === "found" && parameters[field.fieldId] === undefined) {
+            field.status = "manual";
+            field.value = null;
+            field.snippet = null;
+          }
+        });
+        const foundCount = Object.keys(parameters).length;
         const sourceKind = foundCount === 0 ? "drawing-plot" : "explicit-text";
-        const message = sourceKind === "drawing-plot"
+        let message = sourceKind === "drawing-plot"
           ? "Явных подписей к размерам нет. Файл можно смотреть; параметры введите вручную."
           : "Найдено полей с явными подписями: " + foundCount + ". Цены не подставляются.";
+        if (facts.some(function (fact) { return fact.status === "ocr_required"; })) {
+          message += " Текстовый слой не найден: нужен OCR. Платные сервисы не вызываются.";
+        }
         const preview = {
           format: format,
           pageCount: pageCount,
@@ -795,6 +840,8 @@
           sourceKind: sourceKind,
           message: message,
           fields: fields,
+          facts: facts,
+          factsSchema: extracted.schema,
           parameters: parameters,
           warnings: allWarnings,
           errors: [],
@@ -809,11 +856,13 @@
           throw new Error("invalid_pdf");
         }
         const extractedText = extractPdfText(bytes);
+        const streamText = extractPdfStreamText(bytes);
         const counted = countPdfPages(bytes);
         return buildPreview({
           format: "pdf",
           pageCount: Math.max(counted, 1),
           extractedText: extractedText,
+          contentChars: streamText.replace(/\s+/g, "").length,
         });
       }
 

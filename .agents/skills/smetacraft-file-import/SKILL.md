@@ -12,7 +12,7 @@ description: "Реализовывать Phase 8 SmetaCraft — закрытое
 1. Прочитай `docs/ROADMAP.md`, `docs/PHASES_6_9_EXECUTION_PLAN.md` §6, `AGENTS.md`, `docs/PROJECT_MIGRATION.md` (граница Phase 7/8).
 2. Сверь Agent Store plan: `docs/phase-8-plan.md` в Project store.
 3. Убедись, что Phase 7 принята: migrate/readback работает. Baseline Phase 8 accepted: **154/154** на `master` @ `f512a5f`.
-4. **Без образца и mapping-contract владельца** — только 8.1 storage (формат-агностично). Не выбирай CSV/XLSX/PDF сам. Не пиши parser и upload UI для конкретного формата.
+4. **Без образца и mapping-contract владельца** — только 8.1 storage (формат-агностично). Не выбирай новый CSV/XLSX/PDF сам. Не пиши parser нового формата. Уже принятый PDF/DOCX (`docs/IMPORT_PDF.md`) и факты с evidence/annotations v0.1 веди по [smetacraft-pdf-facts](../smetacraft-pdf-facts/SKILL.md), если владелец разрешил этот этап. Не подставляй значения без доказательства и не меняй формулы.
 
 ## Решения владельца (блокер parser)
 

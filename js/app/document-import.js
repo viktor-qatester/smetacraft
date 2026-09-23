@@ -72,6 +72,13 @@
         while (body.firstChild) body.removeChild(body.firstChild);
       }
 
+      function factStatusClass(status) {
+        if (status === "confirmed") return "preview-status-confirmed";
+        if (status === "needs_review") return "preview-status-review";
+        if (status === "conflict") return "preview-status-conflict";
+        return "preview-status-manual";
+      }
+
       function renderDocumentPreview(preview) {
         const wrap = document.getElementById("project-document-preview-wrap");
         const message = document.getElementById("project-document-preview-message");
@@ -79,29 +86,98 @@
         const body = document.getElementById("project-document-preview-body");
         if (!wrap || !message || !applyBtn || !body) return;
         clearDocumentPreviewTable();
-        const fields = preview && Array.isArray(preview.fields) ? preview.fields : [];
-        fields.forEach(function (field) {
+        const rows = previewRows(preview || {});
+        rows.forEach(function (item) {
           const row = document.createElement("tr");
+          const checkCell = document.createElement("td");
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.className = "js-fact-apply";
+          checkbox.value = item.fieldId;
+          checkbox.checked = item.defaultSelected === true;
+          checkbox.disabled = item.selectable !== true;
+          checkCell.appendChild(checkbox);
           const nameCell = document.createElement("td");
-          nameCell.textContent = field.label || field.fieldId;
+          nameCell.textContent = item.label;
+          const valueCell = document.createElement("td");
+          valueCell.textContent = item.valueText;
+          const pageCell = document.createElement("td");
+          pageCell.textContent = item.pageText;
+          const evidenceCell = document.createElement("td");
+          evidenceCell.className = "js-fact-evidence";
+          evidenceCell.textContent = item.evidence;
+          const targetCell = document.createElement("td");
+          targetCell.textContent = item.targetText;
           const statusCell = document.createElement("td");
-          if (field.status === "found") {
-            statusCell.className = "preview-status-found";
-            statusCell.textContent = "Найдено автоматически — будет подставлено: " +
-              String(field.value) + (field.unit ? " " + field.unit : "");
-          } else {
-            statusCell.className = "preview-status-manual";
-            statusCell.textContent = "Требуется ввод вручную";
-          }
+          statusCell.className = factStatusClass(item.status);
+          statusCell.textContent = item.warning ? item.statusLabel + ". " + item.warning : item.statusLabel;
+          row.appendChild(checkCell);
           row.appendChild(nameCell);
+          row.appendChild(valueCell);
+          row.appendChild(pageCell);
+          row.appendChild(evidenceCell);
+          row.appendChild(targetCell);
           row.appendChild(statusCell);
           body.appendChild(row);
         });
         message.textContent = preview && preview.message ? preview.message : "";
-        const foundCount = preview && preview.parameters ? Object.keys(preview.parameters).length : 0;
-        applyBtn.disabled = foundCount === 0;
+        const selectable = rows.some(function (item) { return item.selectable; });
+        applyBtn.disabled = !selectable;
         applyBtn.hidden = false;
         wrap.hidden = false;
+      }
+
+      function readSelectedFactIds() {
+        const body = document.getElementById("project-document-preview-body");
+        if (!body || typeof body.querySelectorAll !== "function") return null;
+        const nodes = body.querySelectorAll("input.js-fact-apply");
+        const ids = [];
+        for (let i = 0; i < nodes.length; i++) {
+          if (nodes[i].checked && !nodes[i].disabled) ids.push(nodes[i].value);
+        }
+        return ids;
+      }
+
+      function applySelectedDocumentFacts(facts, selectedIds) {
+        const plan = planDocumentFactApply(facts, selectedIds);
+        if (plan.errors.length) {
+          const error = new Error(plan.errors[0]);
+          error.errors = plan.errors;
+          throw error;
+        }
+        const snapshot = collectProject();
+        const candidate = JSON.parse(JSON.stringify(snapshot));
+        candidate.fields = candidate.fields || {};
+        candidate.flags = candidate.flags || {};
+        Object.keys(plan.fields).forEach(function (id) {
+          if (!PROJECT_FIELD_IDS.has(id) || DOCUMENT_PRICE_FIELD_IDS[id] || id === "currency") return;
+          candidate.fields[id] = plan.fields[id];
+        });
+        if (plan.fields["walls-perimeter"] !== undefined) candidate.flags.wallsPerimeterManual = true;
+        if (plan.fields["roof-width"] !== undefined) candidate.flags.roofWidthManual = true;
+        if (plan.fields["roof-length"] !== undefined) candidate.flags.roofLengthManual = true;
+        if (plan.fields["floor-length"] !== undefined) candidate.flags.floorLengthManual = true;
+        if (plan.fields["floor-width"] !== undefined) candidate.flags.floorWidthManual = true;
+        if (plan.fields["plaster-length"] !== undefined) candidate.flags.plasterLengthManual = true;
+        if (plan.fields["plaster-height"] !== undefined) candidate.flags.plasterHeightManual = true;
+        if (plan.pile) {
+          const existing = Array.isArray(candidate.piles) && candidate.piles.length ? candidate.piles[0] : null;
+          const row = {
+            id: existing && existing.id ? existing.id : 1,
+            locked: true,
+            name: existing && typeof existing.name === "string" ? existing.name : "",
+            diameterMm: existing && existing.diameterMm ? existing.diameterMm : 300,
+            depthM: existing && existing.depthM != null ? existing.depthM : 2.5,
+            count: existing && existing.count != null ? existing.count : 10,
+          };
+          if (plan.pile.diameterMm != null) row.diameterMm = plan.pile.diameterMm;
+          if (plan.pile.depthM != null) row.depthM = plan.pile.depthM;
+          if (plan.pile.count != null) row.count = plan.pile.count;
+          const rest = Array.isArray(candidate.piles) ? candidate.piles.slice(1) : [];
+          candidate.piles = [row].concat(rest);
+        }
+        const validated = validateProjectV1(candidate);
+        return applyProject(validated);
       }
 
       function revokeDocumentViewerUrl() {
@@ -347,7 +423,7 @@
         throw new Error("need_server_copy");
       }
 
-      let documentImportState = null;
+      var documentImportState = null;
 
       async function readFileBytes(file) {
         if (file && typeof file.arrayBuffer === "function") {
@@ -501,10 +577,19 @@
       async function handleDocumentApply() {
         if (!documentImportState || !documentImportState.preview) return;
         const parameters = documentImportState.preview.parameters || {};
-        const foundCount = Object.keys(parameters).length;
+        const selectedIds = readSelectedFactIds();
+        const foundCount = selectedIds ? selectedIds.length : Object.keys(parameters).length;
         const localProjectBefore = window.localStorage.getItem(STORAGE_KEY);
+        if (selectedIds && selectedIds.length === 0) {
+          setDocumentImportStatus("Ни одна строка не выбрана. Проект не изменён.", false);
+          return;
+        }
         try {
-          applyDocumentImportParameters(parameters);
+          if (selectedIds) {
+            applySelectedDocumentFacts(documentImportState.preview.facts || [], selectedIds);
+          } else {
+            applyDocumentImportParameters(parameters);
+          }
           if (documentImportState.storedOnServer && documentImportState.projectId && documentImportState.objectId) {
             const ackTimeout = new AbortController();
             const timer = setTimeout(function () { ackTimeout.abort(); }, DOCUMENT_UPLOAD_TIMEOUT_MS);
