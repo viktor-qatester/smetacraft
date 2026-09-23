@@ -1,0 +1,3 @@
+interface:
+  display_name: "Документ в Markdown"
+  short_description: "Локальный AnyDoc: PDF/DOCX → Markdown перед анализом"
