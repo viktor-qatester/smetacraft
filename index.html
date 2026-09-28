@@ -31,6 +31,7 @@
 
       .app {
         width: min(1120px, 100%);
+        min-width: 0;
         margin: 0 auto;
         padding: 16px;
       }
@@ -82,8 +83,10 @@
 
       .layout {
         display: grid;
+        grid-template-columns: minmax(0, 1fr);
         gap: 16px;
         align-items: start;
+        min-width: 0;
         margin-top: 16px;
       }
 
@@ -99,6 +102,7 @@
       }
 
       .panel {
+        min-width: 0;
         background: var(--card);
         border: 1px solid var(--line);
         padding: 16px;
@@ -119,6 +123,7 @@
       }
 
       fieldset {
+        min-width: 0;
         margin: 0;
         padding: 12px 0 0;
         border: 0;
@@ -227,6 +232,7 @@
       }
 
       .bill-wrap {
+        max-width: 100%;
         overflow-x: auto;
       }
 
@@ -477,10 +483,11 @@
       }
 
       .regression-badge.diagnostics {
-        min-width: 320px;
-        max-width: 680px;
+        min-width: 0;
+        max-width: min(680px, calc(100vw - 24px));
         padding: 10px 20px;
-        white-space: nowrap;
+        white-space: normal;
+        overflow-wrap: anywhere;
         border-color: var(--muted);
         color: var(--ink);
       }
