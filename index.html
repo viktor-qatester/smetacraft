@@ -836,6 +836,40 @@
         display: none;
       }
 
+      .testing-notice {
+        margin: 12px 0;
+        padding: 12px;
+        border: 1px solid #b99b50;
+        background: #fff8e6;
+        border-radius: 4px;
+        overflow-wrap: anywhere;
+      }
+
+      .testing-notice p { margin: 6px 0 0; }
+
+      .feedback-link {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        margin-top: 8px;
+        padding: 8px 12px;
+        border: 1px solid currentColor;
+        border-radius: 4px;
+        color: var(--ink);
+        font-weight: 600;
+        text-decoration: underline;
+        overflow-wrap: anywhere;
+      }
+
+      .feedback-link:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+      .bill-testing-notice {
+        margin: 12px 0;
+        padding: 10px;
+        border: 1px solid #b99b50;
+        overflow-wrap: anywhere;
+      }
+
       @media print {
         body {
           background: #fff;
@@ -870,6 +904,12 @@
 
         .bill .bill-head {
           display: none;
+        }
+
+        .bill-testing-notice {
+          color: #111;
+          border-color: #111;
+          break-inside: avoid;
         }
 
         .print-letterhead {
@@ -932,6 +972,12 @@
     <div class="app">
       <header>
         <h1>Smetacraft</h1>
+        <div class="testing-notice" aria-label="О тестовой версии и обратной связи">
+          <strong>Тестовая версия SmetaCraft</strong>
+          <p>Приложение находится на этапе тестирования. Расчёты предварительные; возможны ошибки и неполные расчёты. Не используйте результаты для закупки материалов или строительных работ без независимой проверки специалистом.</p>
+          <p>Нашли ошибку или хотите предложить улучшение? Напишите автору. Для проверки расчёта укажите исходные размеры, ожидаемый результат и приложите скриншот.</p>
+          <a class="feedback-link" href="https://t.me/qa_warrior" target="_blank" rel="noopener noreferrer">Написать автору в Telegram · @qa_warrior</a>
+        </div>
         <p id="lead" class="lead">Плитный фундамент: бетон, арматура, опалубка, подушка, гидроизоляция. Цены в выбранной валюте — ориентир, правьте под поставщика.</p>
         <nav class="tabs" aria-label="Блоки проекта">
           <button type="button" class="tab" data-block="intake">Мой дом</button>
@@ -2395,6 +2441,7 @@
             <button type="button" class="link-btn js-goto-price">изменить цену ↗</button>
           </div>
           <p id="bill-scope" class="bill-scope" hidden></p>
+          <p class="bill-testing-notice"><strong>Тестовый расчёт.</strong> Требуется независимая проверка специалистом перед закупкой материалов или строительными работами.</p>
           <p id="bill-excluded" class="bill-excluded" hidden></p>
           <p id="bill-meta" class="bill-meta"></p>
           <p id="bill-empty" class="empty">Заполните размеры и цены слева.</p>
