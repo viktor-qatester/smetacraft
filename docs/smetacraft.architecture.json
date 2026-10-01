@@ -1,0 +1,245 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "SmetaCraft — runtime-карта модулей",
+    "output": "smetacraft.architecture.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/viktor-qatester/smetacraft",
+      "provider": "github",
+      "link_mode": "web",
+      "revision": "f7e60f67de6de94b475ed4408dc4bb4e5fd4373a"
+    },
+    "views": [
+      {
+        "id": "calc-path",
+        "label": "Расчёт ведомости",
+        "focus": ["user", "page", "boot", "controllers", "core", "bill"],
+        "note": "Форма → createCalculator → строки name/netLabel/k/orderLabel/cost."
+      },
+      {
+        "id": "persist-path",
+        "label": "JSON v1 и localStorage",
+        "focus": ["bill", "project"],
+        "note": "collectProject пишет format smetacraft-project в ключ smetacraft_project."
+      },
+      {
+        "id": "server-check",
+        "label": "Loopback project-check",
+        "focus": ["project", "server"],
+        "note": "Кнопка POST /api/project-check. Сервер не хранит проект и не считает смету."
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "user",
+      "type": "external",
+      "label": "Заказчик",
+      "sublabel": "браузер",
+      "pos": [40, 300],
+      "size": [120, 60]
+    },
+    {
+      "id": "page",
+      "type": "frontend",
+      "label": "index.html",
+      "sublabel": "разметка и стили",
+      "tag": "HTTP(S)",
+      "pos": [250, 300],
+      "size": [130, 60],
+      "sources": [
+        { "path": "index.html", "line": 2103, "end_line": 2131, "label": "script order" }
+      ]
+    },
+    {
+      "id": "boot",
+      "type": "frontend",
+      "label": "boot.js / render()",
+      "sublabel": "js/app/boot.js",
+      "tag": "последний script",
+      "pos": [470, 300],
+      "size": [130, 60],
+      "sources": [
+        { "path": "js/app/boot.js", "line": 1, "end_line": 40, "label": "bindEvents" },
+        { "path": "js/app/render.js", "line": 11, "end_line": 28, "label": "render()" }
+      ]
+    },
+    {
+      "id": "controllers",
+      "type": "frontend",
+      "label": "Контроллеры форм",
+      "sublabel": "js/ui + js/app",
+      "tag": "read*/validate*",
+      "pos": [690, 300],
+      "size": [140, 60],
+      "sources": [
+        { "path": "js/ui/slab.js", "line": 10, "end_line": 40, "label": "readForm" },
+        { "path": "js/app/foundations.js", "line": 23, "end_line": 40, "label": "createController" }
+      ]
+    },
+    {
+      "id": "core",
+      "type": "frontend",
+      "label": "Calculation Core",
+      "sublabel": "js/core/*.js",
+      "tag": "без HTTP",
+      "pos": [920, 300],
+      "size": [130, 60],
+      "sources": [
+        { "path": "js/core/slab.js", "line": 4, "end_line": 13, "label": "createCalculator" },
+        { "path": "js/app/foundations.js", "line": 4, "end_line": 21, "label": "wire core" }
+      ]
+    },
+    {
+      "id": "bill",
+      "type": "frontend",
+      "label": "Ведомость",
+      "sublabel": "bill.js + summary.js",
+      "tag": "name/k/cost",
+      "pos": [920, 480],
+      "size": [130, 60],
+      "sources": [
+        { "path": "js/app/bill.js", "line": 132, "end_line": 155, "label": "showBill" },
+        { "path": "js/app/summary.js", "line": 160, "end_line": 160, "label": "renderSummary" }
+      ]
+    },
+    {
+      "id": "project",
+      "type": "security",
+      "label": "JSON v1",
+      "sublabel": "project.js + localStorage",
+      "tag": "smetacraft_project",
+      "pos": [1120, 480],
+      "size": [150, 60],
+      "sources": [
+        { "path": "js/app/project.js", "line": 50, "end_line": 80, "label": "collectProject" },
+        { "path": "js/app/project.js", "line": 368, "end_line": 388, "label": "export/save" }
+      ]
+    },
+    {
+      "id": "server",
+      "type": "backend",
+      "label": "server.cjs",
+      "sublabel": "POST /api/project-check",
+      "tag": "127.0.0.1",
+      "pos": [1120, 130],
+      "size": [150, 60],
+      "sources": [
+        { "path": "server/server.cjs", "line": 57, "end_line": 80, "label": "validProject" },
+        { "path": "js/app/backend-check.js", "line": 16, "end_line": 45, "label": "fetch" }
+      ]
+    },
+    {
+      "id": "tests",
+      "type": "security",
+      "label": "Golden-тесты",
+      "sublabel": "tests/*.cjs",
+      "tag": "Node VM",
+      "pos": [920, 130],
+      "size": [130, 60],
+      "sources": [
+        { "path": "tests/golden.test.cjs", "line": 23, "end_line": 28, "label": "runScenario" }
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Браузерный runtime",
+      "wraps": ["page", "boot", "controllers", "core", "bill", "project"]
+    },
+    {
+      "kind": "security-group",
+      "label": "Контракт JSON v1",
+      "wraps": ["project", "server"]
+    }
+  ],
+  "connections": [
+    {
+      "id": "open-page",
+      "from": "user",
+      "to": "page",
+      "label": "HTTP(S)",
+      "variant": "emphasis"
+    },
+    {
+      "id": "load-scripts",
+      "from": "page",
+      "to": "boot",
+      "label": "script src"
+    },
+    {
+      "id": "bind-forms",
+      "from": "boot",
+      "to": "controllers",
+      "label": "bindEvents"
+    },
+    {
+      "id": "run-calc",
+      "from": "controllers",
+      "to": "core",
+      "label": "calculate*",
+      "variant": "emphasis"
+    },
+    {
+      "id": "show-rows",
+      "from": "core",
+      "to": "bill",
+      "label": "строки ведомости",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelDy": 24
+    },
+    {
+      "id": "collect-json",
+      "from": "bill",
+      "to": "project",
+      "label": "collectProject",
+      "labelDy": 54
+    },
+    {
+      "id": "loopback-check",
+      "from": "project",
+      "to": "server",
+      "label": "POST /api/project-check",
+      "variant": "dashed"
+    },
+    {
+      "id": "golden-core",
+      "from": "core",
+      "to": "tests",
+      "label": "runScenario",
+      "variant": "dashed",
+      "fromSide": "top",
+      "toSide": "bottom"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Слои Phase 5",
+      "items": [
+        "index.html держит разметку и порядок <script src>",
+        "js/ui и js/app читают формы; формулы остаются в js/core"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Расчёт",
+      "items": [
+        "createCalculator возвращает строки name/netLabel/k/orderLabel/cost",
+        "render() после ведомости вызывает saveToLocalStorage()"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Границы",
+      "items": [
+        "JSON v1: format smetacraft-project, version 1, ключ smetacraft_project",
+        "server.cjs принимает байты на loopback и не считает смету"
+      ]
+    }
+  ]
+}
