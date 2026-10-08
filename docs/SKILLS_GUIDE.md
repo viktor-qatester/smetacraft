@@ -11,7 +11,7 @@
 | `.agents/skills/*/SKILL.md` | Когда применять конкретный процесс и как проверить результат. |
 | `docs/regression-baseline.md` и тесты | Проверяемые расчётные и JSON-контракты. |
 
-На старте фазы вызывайте `$smetacraft-phase-orchestrator`. Для Phase 5 вместе с ним подходит `$smetacraft-frontend-modules`. Если меняются формулы, данные проекта или тестовый контракт, используйте соответственно `$smetacraft-formula-audit`, `$smetacraft-project-json`, `$smetacraft-regression-tests`. Перед приёмкой diff — `$smetacraft-domain-review`.
+На старте фазы вызывайте `$smetacraft-phase-orchestrator`. Для Phase 5 вместе с ним подходит `$smetacraft-frontend-modules`. Если меняются формулы, данные проекта или тестовый контракт, используйте соответственно `$smetacraft-formula-audit`, `$smetacraft-project-json`, `$smetacraft-regression-tests`. Перед приёмкой diff — `$smetacraft-domain-review`. Если нужно прочитать PDF, DOCX или таблицу — `$convert-documents-to-markdown`; это не импорт в JSON v1.
 
 После **принятой** фазы и до плана следующей вызывайте `$smetacraft-skill-maintenance`. Он проверяет, не устарели ли пути, контракты и условия применения. Мелкая правка кода сама по себе не требует переписывать скиллы.
 
