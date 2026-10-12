@@ -8,3 +8,8 @@ data/training/annotations/*
 .env
 *.env
 smetacraft.env
+deploy/*.local.env
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+backups/

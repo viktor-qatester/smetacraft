@@ -64,3 +64,20 @@
         }
         setActiveBlock("intake");
       }
+
+      const releaseEl = document.getElementById("app-release");
+      if (releaseEl && typeof fetch === "function") {
+        fetch("version.json", { cache: "no-store" })
+          .then(function (response) { return response.ok ? response.json() : null; })
+          .then(function (data) {
+            if (data && data.releaseId) releaseEl.textContent = String(data.releaseId);
+          })
+          .catch(function () {});
+        fetch("api/version", { cache: "no-store" })
+          .then(function (response) { return response.ok ? response.json() : null; })
+          .then(function (data) {
+            if (!data || data.ok !== true || !data.releaseId) return;
+            releaseEl.textContent = String(data.releaseId);
+          })
+          .catch(function () {});
+      }

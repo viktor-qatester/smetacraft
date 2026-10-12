@@ -1,0 +1,51 @@
+{
+  "pagesBaseline": {
+    "checkedAt": "2026-10-12T08:06:23Z",
+    "url": "https://viktor-qatester.github.io/smetacraft/",
+    "branch": "master",
+    "directory": "/",
+    "commit": "010a4ff5e31ee9313bc277a6a40c7192b10763f0",
+    "lastModified": "2026-10-10T06:56:05Z",
+    "matchedStaticFiles": 35,
+    "unpublishedLocalChanges": false,
+    "evidence": "Отдельной ветки gh-pages и каталога docs для сайта нет. Сравнены index.html и все js приложения: после приведения перевода строк к LF хеши git-blob совпали с коммитом 010a4ff в корне master. Last-Modified страницы 2026-10-10T06:56:05Z совпадает по минуте с коммитом 2026-10-10T06:55:22Z. Локальная копия была чистой."
+  },
+  "releases": [
+    {
+      "releaseId": "2026-10-12.1",
+      "recordedAt": "2026-10-12T08:29:41.012Z",
+      "checks": {
+        "result": "pass",
+        "command": "node --test tests\\allowed-origins.test.cjs tests\\annotation-harness.test.cjs tests\\backend.test.cjs tests\\document-import-ui.test.cjs tests\\file-import.test.cjs tests\\file-storage.test.cjs tests\\golden.test.cjs tests\\pdf-facts.test.cjs tests\\project-migration-ui.test.cjs tests\\project-migration.test.cjs tests\\project-model.test.cjs tests\\release.test.cjs tests\\security.test.cjs tests\\utils.test.cjs && node scripts/validate-skills.cjs",
+        "at": "2026-10-12T08:29:41.006Z"
+      },
+      "publications": {
+        "githubPages": "pending",
+        "aeza": "pending"
+      },
+      "deployedCommit": "",
+      "aezaReason": "",
+      "note": "Номер релиза виден в жёлтой плашке. GitHub Pages хранит проект в браузере. AEZA хранит проекты в SQLite и не заменяет их демонстрационными данными.",
+      "pagesUrl": "https://viktor-qatester.github.io/smetacraft/",
+      "aezaProject": "vic-smetacraft"
+    },
+    {
+      "releaseId": "2026-10-12.2",
+      "recordedAt": "2026-10-12T08:30:10.457Z",
+      "checks": {
+        "result": "pass",
+        "command": "node --test tests\\allowed-origins.test.cjs tests\\annotation-harness.test.cjs tests\\backend.test.cjs tests\\document-import-ui.test.cjs tests\\file-import.test.cjs tests\\file-storage.test.cjs tests\\golden.test.cjs tests\\pdf-facts.test.cjs tests\\project-migration-ui.test.cjs tests\\project-migration.test.cjs tests\\project-model.test.cjs tests\\release.test.cjs tests\\security.test.cjs tests\\utils.test.cjs && node scripts/validate-skills.cjs",
+        "at": "2026-10-12T08:30:10.449Z"
+      },
+      "publications": {
+        "githubPages": "pending",
+        "aeza": "pending"
+      },
+      "deployedCommit": "",
+      "aezaReason": "",
+      "note": "Номер релиза виден в жёлтой плашке. GitHub Pages хранит проект в браузере. AEZA хранит проекты в SQLite и не заменяет их демонстрационными данными.",
+      "pagesUrl": "https://viktor-qatester.github.io/smetacraft/",
+      "aezaProject": "vic-smetacraft"
+    }
+  ]
+}

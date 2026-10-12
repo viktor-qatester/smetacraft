@@ -339,7 +339,16 @@ test('records survive server restart and are readable with the same token', asyn
     assert.deepEqual(JSON.stringify(envelope.project), body);
     await new Promise(resolve => server.close(resolve));
   }
-  fs.rmSync(dbPath, { force: true });
+  for (let attempt = 0; attempt < 10; attempt += 1) {
+    try {
+      fs.rmSync(dbPath, { force: true });
+      break;
+    } catch (error) {
+      if (error.code !== 'EPERM' && error.code !== 'EBUSY') throw error;
+      if (attempt === 9) break;
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+  }
 });
 
 test('concurrent identical migrate requests create exactly one row', async () => {

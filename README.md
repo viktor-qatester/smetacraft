@@ -9,7 +9,9 @@ Smetacraft — автономный веб-конструктор ведомос
 Для локальной проверки серверного приёма проекта запустите `node server/db-migrate.cjs`, затем `node server/server.cjs` и откройте `http://127.0.0.1:8000/`. Публичный контур testers — VPS Fornex (`http://31.172.78.193/`), см. [docs/DEPLOY_FORNEX.md](docs/DEPLOY_FORNEX.md). GitHub Pages не является продом API и PDF/DOCX.
 
 Публичная статическая копия (без API): https://viktor-qatester.github.io/smetacraft/
-Testers PDF/DOCX: http://31.172.78.193/
+Testers PDF/DOCX на прежнем FORNEX: http://31.172.78.193/
+
+После правок приложения публикация — одна команда `node scripts/publish.cjs`. Она проверяет код, отправляет его в GitHub и обновляет AEZA. Задача считается опубликованной, когда номер релиза в жёлтой плашке совпадает на GitHub Pages и на AEZA. Подробно: [docs/RELEASE.md](docs/RELEASE.md).
 
 ## Анкета для заказчика
 

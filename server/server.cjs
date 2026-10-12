@@ -6,7 +6,7 @@ const {
   ROOT, DB_PATH, BLOB_ROOT, MAX_BODY, RECORD_VERSION, IDEMPOTENCY_KEY_PATTERN, PROJECT_ID_PATTERN,
 } = require('./config.cjs');
 const { validProject } = require('./project-validator.cjs');
-const { isStorageReady } = require('./db.cjs');
+const { isStorageReady, expectedSchemaVersion } = require('./db.cjs');
 const {
   createProjectRepository, ConflictError, StorageError,
 } = require('./project-repository.cjs');
@@ -227,17 +227,73 @@ function handleGetProject(req, res, projectId, repository, validLocalAuthority) 
   sendRawJson(res, 200, body);
 }
 
+function readReleaseFile() {
+  const filename = path.join(ROOT, 'version.json');
+  const parsed = JSON.parse(fs.readFileSync(filename, 'utf8'));
+  const releaseId = typeof parsed.releaseId === 'string' ? parsed.releaseId : '';
+  return {
+    releaseId,
+    branch: typeof parsed.branch === 'string' ? parsed.branch : '',
+    pagesDirectory: typeof parsed.pagesDirectory === 'string' ? parsed.pagesDirectory : '/',
+  };
+}
+
+function readCheckoutCommit() {
+  try {
+    const headPath = path.join(ROOT, '.git', 'HEAD');
+    const head = fs.readFileSync(headPath, 'utf8').trim();
+    if (/^[0-9a-f]{40}$/.test(head)) return head;
+    const match = /^ref: (refs\/[A-Za-z0-9._\/-]+)$/.exec(head);
+    if (!match || match[1].includes('..')) return '';
+    const refPath = path.resolve(ROOT, '.git', match[1]);
+    const gitDir = path.resolve(ROOT, '.git');
+    if (!refPath.startsWith(gitDir + path.sep)) return '';
+    const ref = fs.readFileSync(refPath, 'utf8').trim();
+    return /^[0-9a-f]{40}$/.test(ref) ? ref : '';
+  } catch {
+    return '';
+  }
+}
+
+function contentType(relative) {
+  if (relative.endsWith('.js')) return 'text/javascript; charset=utf-8';
+  if (relative.endsWith('.json')) return 'application/json; charset=utf-8';
+  return 'text/html; charset=utf-8';
+}
+
+function handleVersion(req, res) {
+  if (req.method !== 'GET' && req.method !== 'HEAD') return fail(res, 405, 'method_not_allowed');
+  let release;
+  try {
+    release = readReleaseFile();
+  } catch {
+    return fail(res, 503, 'release_unknown');
+  }
+  sendJson(res, 200, {
+    ok: true,
+    releaseId: release.releaseId,
+    branch: release.branch,
+    pagesDirectory: release.pagesDirectory,
+    commit: readCheckoutCommit(),
+    schemaVersion: expectedSchemaVersion(),
+  });
+}
+
 function handleStatic(req, res, pathname) {
   if (req.method !== 'GET' && req.method !== 'HEAD') return fail(res, 405, 'method_not_allowed');
   const relative = pathname === '/' ? 'index.html' : pathname.slice(1);
-  if (relative !== 'index.html' && !/^js\/(?:core|ui|app)\/[a-z0-9-]+\.js$/.test(relative)) {
+  const allowed = relative === 'index.html' || relative === 'version.json' ||
+    /^js\/(?:core|ui|app)\/[a-z0-9-]+\.js$/.test(relative);
+  if (!allowed || relative.includes('..') || path.isAbsolute(relative)) {
     return fail(res, 404, 'not_found');
   }
-  const filename = path.join(ROOT, relative);
+  const filename = path.resolve(ROOT, relative);
+  const rootPrefix = ROOT.endsWith(path.sep) ? ROOT : ROOT + path.sep;
+  if (filename !== ROOT && !filename.startsWith(rootPrefix)) return fail(res, 404, 'not_found');
   fs.readFile(filename, (error, body) => {
     if (error) return fail(res, 404, 'not_found');
     res.writeHead(200, {
-      'Content-Type': relative.endsWith('.js') ? 'text/javascript; charset=utf-8' : 'text/html; charset=utf-8',
+      'Content-Type': contentType(relative),
       'Cache-Control': 'no-store',
       'X-Content-Type-Options': 'nosniff',
     });
@@ -274,6 +330,7 @@ function createServer(options = {}) {
     } catch {
       return fail(res, 400, 'bad_url');
     }
+    if (pathname === '/api/version') return handleVersion(req, res);
     if (pathname === '/api/project-check') return handleCheck(req, res, validLocalAuthority);
     if (pathname === '/api/projects/migrate') {
       if (!repository) return fail(res, 503, 'storage_unavailable');

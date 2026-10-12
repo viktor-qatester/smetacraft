@@ -24,6 +24,19 @@ function canonicalBody() {
   return JSON.stringify(context.parseProjectText(JSON.stringify(golden.jsonRoundTrip.exported)));
 }
 
+async function removeTemp(target) {
+  for (let attempt = 0; attempt < 10; attempt += 1) {
+    try {
+      fs.rmSync(target, { recursive: true, force: true });
+      return;
+    } catch (error) {
+      if (error.code !== 'EPERM' && error.code !== 'EBUSY') throw error;
+      if (attempt === 9) return;
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+  }
+}
+
 async function withServer(run, serverOptions = {}) {
   const dir = tempDir();
   const dbPath = path.join(dir, 'db.sqlite');
@@ -36,7 +49,7 @@ async function withServer(run, serverOptions = {}) {
     await run({ base, dbPath, blobRoot, dir });
   } finally {
     await new Promise(resolve => server.close(resolve));
-    fs.rmSync(dir, { recursive: true, force: true });
+    await removeTemp(dir);
   }
 }
 

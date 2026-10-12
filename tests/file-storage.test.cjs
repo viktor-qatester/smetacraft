@@ -120,6 +120,15 @@ test('static handler does not serve blob directory', async () => {
     }
   } finally {
     await new Promise(resolve => server.close(resolve));
-    fs.rmSync(dir, { recursive: true, force: true });
+    for (let attempt = 0; attempt < 10; attempt += 1) {
+      try {
+        fs.rmSync(dir, { recursive: true, force: true });
+        break;
+      } catch (error) {
+        if (error.code !== 'EPERM' && error.code !== 'EBUSY') throw error;
+        if (attempt === 9) break;
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+    }
   }
 });
