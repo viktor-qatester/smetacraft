@@ -4,6 +4,43 @@
 set -eu
 set -o pipefail
 
+# APP_OWNER, APP_MODE, DB_OWNER и DB_MODE задаются до копирования.
+# rsync не должен переносить владельца и права каталога mktemp на APP.
+copy_code_tree() {
+  local src="$1"
+  local dest="$2"
+  rsync -a --no-owner --no-group --no-perms \
+    --exclude '/.env' \
+    --exclude '/data/' \
+    --exclude '/compose.vic.yaml' \
+    --exclude '/node_modules/' \
+    "$src"/ "$dest"/
+  chown --no-dereference "$APP_OWNER" "$dest"
+  chmod "$APP_MODE" "$dest"
+  while IFS= read -r -d '' path; do
+    chown --no-dereference "$APP_OWNER" "$path"
+    if [ ! -L "$path" ]; then
+      chmod u+rX "$path"
+    fi
+  done < <(find "$dest" -mindepth 1 \
+    \( -path "$dest/data" -o -path "$dest/data/*" \
+       -o -path "$dest/node_modules" -o -path "$dest/node_modules/*" \
+       -o -path "$dest/.env" -o -path "$dest/compose.vic.yaml" \) -prune \
+    -o -print0)
+}
+
+restore_sqlite_file() {
+  local live="$APP/data/smetacraft.sqlite"
+  cp -a "$DEST/smetacraft.sqlite" "$live"
+  chown "$DB_OWNER" "$live"
+  chmod "$DB_MODE" "$live"
+  rm -f "${live}-wal" "${live}-shm"
+}
+
+if [ "${AEZA_REMOTE_SOURCE_ONLY:-}" = "1" ]; then
+  return 0
+fi
+
 SHA="${1:-}"
 RELEASE_ID="${2:-}"
 APP="/srv/vic-workspace/apps/smetacraft"
@@ -33,6 +70,10 @@ test -f "$APP/.env"
 test -d "$APP/data"
 test -f "$APP/data/smetacraft.sqlite" || { echo "В data/ нет smetacraft.sqlite. Новая пустая база не создаётся." >&2; exit 1; }
 cd "$APP"
+APP_OWNER="$(stat -c '%u:%g' "$APP")"
+APP_MODE="$(stat -c '%a' "$APP")"
+DB_OWNER="$(stat -c '%u:%g' "$APP/data/smetacraft.sqlite")"
+DB_MODE="$(stat -c '%a' "$APP/data/smetacraft.sqlite")"
 
 mkdir -p "$BACKUP_ROOT"
 chmod 700 "$BACKUP_ROOT"
@@ -150,16 +191,10 @@ rollback() {
   docker compose -p "$PROJECT" -f "$APP/$COMPOSE_FILE" stop >/dev/null 2>&1
   stage="$(mktemp -d)"
   tar -C "$stage" -xf "$DEST/code.tar"
-  rsync -a \
-    --exclude '/.env' \
-    --exclude '/data/' \
-    --exclude '/compose.vic.yaml' \
-    --exclude '/node_modules/' \
-    "$stage"/ "$APP"/
+  copy_code_tree "$stage" "$APP"
   rm -rf "$stage"
   if [ "$RESTORE_DB" = "1" ]; then
-    cp -a "$DEST/smetacraft.sqlite" "$APP/data/smetacraft.sqlite"
-    rm -f "$APP/data/smetacraft.sqlite-wal" "$APP/data/smetacraft.sqlite-shm"
+    restore_sqlite_file
   fi
   docker compose -p "$PROJECT" -f "$APP/$COMPOSE_FILE" up -d --force-recreate
   echo "rolled-back" > "$DEST/RESULT.txt" || true
@@ -183,17 +218,15 @@ test -f "$STAGE/server/db-migrate.cjs"
 actual_release="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["releaseId"])' "$STAGE/version.json")"
 test "$actual_release" = "$RELEASE_ID" || fail "В архиве другой номер релиза: $actual_release"
 CHANGED=1
-rsync -a \
-  --exclude '/.env' \
-  --exclude '/data/' \
-  --exclude '/compose.vic.yaml' \
-  --exclude '/node_modules/' \
-  "$STAGE"/ "$APP"/
+copy_code_tree "$STAGE" "$APP"
 rm -rf "$STAGE"
 mv "$INCOMING" "$DEST/source.tar"
 
 mkdir -p "$APP/.git"
 printf '%s\n' "$SHA" > "$APP/.git/HEAD"
+chown -R "$APP_OWNER" "$APP/.git"
+chown "$APP_OWNER" "$APP"
+chmod "$APP_MODE" "$APP"
 test "$(tr -d '\n' < "$APP/.git/HEAD")" = "$SHA" || fail "Не удалось записать коммит релиза."
 test "$(python3 -c 'import json; print(json.load(open("version.json", encoding="utf-8"))["releaseId"])')" = "$RELEASE_ID" || fail "Номер релиза на диске не совпал."
 
@@ -224,8 +257,7 @@ if grep -q 'build:' "$APP/$COMPOSE_FILE"; then
 fi
 
 echo "Миграции базы. Демонстрационные данные не загружаются." >&2
-OWNER="$(stat -c '%u:%g' "$APP/data/smetacraft.sqlite")"
-docker run --rm --user "$OWNER" --entrypoint node \
+docker run --rm --user "$DB_OWNER" --entrypoint node \
   -e HOME=/tmp \
   -v "$APP:/release" -w /release \
   "$IMAGE" server/db-migrate.cjs || fail "Миграция базы не прошла. Код и SQLite возвращаются к копии."

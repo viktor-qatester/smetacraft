@@ -50,7 +50,10 @@ test('AEZA script stays inside vic-smetacraft and keeps the database', () => {
   assert.match(source, /compose\.vic\.yaml/);
   assert.match(source, /smetacraft\.sqlite/);
   assert.match(source, /src\.backup\(dst\)/);
-  assert.doesNotMatch(source, /install-fornex|ufw|iptables|xray|compose down|git push/);
+  assert.match(source, /restore_sqlite_file/);
+  assert.match(source, /chown "\$DB_OWNER"/);
+  assert.match(source, /chown "\$APP_OWNER"/);
+  assert.doesNotMatch(source, /chmod 777|install-fornex|ufw|iptables|xray|compose down|git push/);
 });
 
 test('version endpoint and version.json do not expose server settings', async () => {
