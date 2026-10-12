@@ -108,7 +108,7 @@ function testFiles(root) {
   return fs.readdirSync(path.join(root, 'tests'))
     .filter(name => name.endsWith('.test.cjs'))
     .sort()
-    .map(name => path.join('tests', name));
+    .map(name => `tests/${name}`);
 }
 
 module.exports = {

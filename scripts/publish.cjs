@@ -236,6 +236,11 @@ async function main() {
   let releaseId = readRelease(root).releaseId;
   if (used.has(releaseId)) releaseId = nextReleaseId(used);
   applyReleaseId(root, releaseId);
+  assertNoForbidden(changedPaths());
+  const preview = git(['diff', '-U0'], true);
+  if (hasSecretAssignment(`${preview.stdout}\n${preview.stderr}`)) {
+    throw new Error('В изменениях найден секрет. Commit не создан.');
+  }
   record(releaseId, {
     recordedAt: new Date().toISOString(),
     checks,
