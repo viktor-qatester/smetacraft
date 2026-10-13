@@ -51,11 +51,30 @@ function readRelease(root) {
   return parsed;
 }
 
+// Номер за день идёт выше максимума, а не в первый пропуск: запись из журнала
+// могла быть удалена, а номер уже был виден на GitHub Pages.
 function nextReleaseId(usedIds, now = new Date()) {
   const day = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-  let number = 1;
-  while (usedIds.has(`${day}.${number}`)) number += 1;
-  return `${day}.${number}`;
+  let max = 0;
+  for (const id of usedIds) {
+    if (!RELEASE_ID_PATTERN.test(id) || !id.startsWith(`${day}.`)) continue;
+    max = Math.max(max, Number(id.slice(day.length + 1)));
+  }
+  return `${day}.${max + 1}`;
+}
+
+function releaseIdsInText(text) {
+  return String(text || '').match(/\b\d{4}-\d{2}-\d{2}\.\d+\b/g) || [];
+}
+
+// Журнал, version.json и сообщения коммитов вида «release: …» и «… for …».
+function usedReleaseIds(root, commitMessages = []) {
+  const used = new Set(readLog(root).releases.map(item => item.releaseId));
+  used.add(readRelease(root).releaseId);
+  for (const message of commitMessages) {
+    for (const id of releaseIdsInText(message)) used.add(id);
+  }
+  return used;
 }
 
 function applyReleaseId(root, releaseId) {
@@ -118,6 +137,7 @@ module.exports = {
   hasSecretAssignment,
   readRelease,
   nextReleaseId,
+  usedReleaseIds,
   applyReleaseId,
   readLog,
   upsertRelease,

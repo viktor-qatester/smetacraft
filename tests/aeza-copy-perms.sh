@@ -51,7 +51,7 @@ chmod 644 "$APP/compose.vic.yaml"
 
 APP_OWNER="999:982"
 APP_MODE="700"
-DB_OWNER="999:982"
+RUN_USER="999:982"
 DB_MODE="640"
 
 snap() {
@@ -155,6 +155,28 @@ const row = db.prepare("SELECT v FROM restored").get();
 db.close();
 if (!row || row.v !== "from-backup") process.exit(1);
 ' "$APP/data/smetacraft.sqlite"
+
+# Root на хосте не должен оставлять базе служебные файлы WAL/SHM чужого владельца.
+printf 'wal\n' > "$APP/data/smetacraft.sqlite-wal"
+chown 0:0 "$APP/data/smetacraft.sqlite-wal"
+own_sqlite_sidecars
+test "$(stat -c '%u:%g' "$APP/data/smetacraft.sqlite-wal")" = "999:982"
+test "$(stat -c '%u:%g %a' "$APP/data/smetacraft.sqlite")" = "999:982 640"
+rm -f "$APP/data/smetacraft.sqlite-wal"
+
+# Откат удаляет только файлы, добавленные неудачным релизом.
+printf 'server-only\n' > "$APP/Dockerfile.vic"
+tar -C "$APP" -cf "$sandbox/old.tar" \
+  --exclude=./data --exclude=./.env --exclude=./node_modules --exclude=./release-marker.txt .
+tar -C "$STAGE" -cf "$sandbox/new.tar" .
+remove_release_only_files "$sandbox/old.tar" "$sandbox/new.tar" "$APP"
+test ! -e "$APP/release-marker.txt"
+test -f "$APP/server/db-migrate.cjs"
+test -f "$APP/Dockerfile.vic"
+test "$(snap "$APP/.env")" = "$env_before"
+test "$(snap "$APP/compose.vic.yaml")" = "$compose_before"
+test "$(snap "$APP/data/blobs/keep.bin")" = "$blob_before"
+test -f "$APP/data/smetacraft.sqlite"
 
 rsync -a "$STAGE"/ "$control"/
 control_stat="$(stat -c '%u:%g %a' "$control")"

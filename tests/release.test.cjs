@@ -10,6 +10,7 @@ const {
   hasSecretAssignment,
   readRelease,
   nextReleaseId,
+  usedReleaseIds,
 } = require('../scripts/release-lib.cjs');
 
 const root = path.join(__dirname, '..');
@@ -44,6 +45,37 @@ test('next release id does not reuse a number from the same day', () => {
   assert.equal(nextReleaseId(new Set(['2026-10-12.1', '2026-10-12.2']), now), '2026-10-12.3');
 });
 
+test('next release id goes above the maximum, not into a gap', () => {
+  const now = new Date('2026-10-12T12:00:00');
+  assert.equal(nextReleaseId(new Set(['2026-10-12.2']), now), '2026-10-12.3');
+  assert.equal(nextReleaseId(new Set(['2026-10-12.2', '2026-10-12.10', '2026-10-11.7']), now), '2026-10-12.11');
+  assert.equal(nextReleaseId(new Set(['2026-10-11.7']), now), '2026-10-12.1');
+});
+
+test('used release ids include version.json and commit history', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'smetacraft-release-ids-'));
+  try {
+    fs.mkdirSync(path.join(dir, 'docs', 'releases'), { recursive: true });
+    fs.writeFileSync(path.join(dir, 'version.json'), JSON.stringify({ releaseId: '2026-10-12.1' }));
+    fs.writeFileSync(path.join(dir, 'docs', 'releases', 'log.json'), JSON.stringify({ releases: [] }));
+    const used = usedReleaseIds(dir, [
+      'release: 2026-10-12.2',
+      'docs: record AEZA pending for 2026-10-12.2',
+      'docs: unrelated',
+    ]);
+    assert.deepEqual([...used].sort(), ['2026-10-12.1', '2026-10-12.2']);
+    assert.equal(nextReleaseId(used, new Date('2026-10-12T12:00:00')), '2026-10-12.3');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('release journal already holds 2026-10-12.2', () => {
+  const used = usedReleaseIds(root);
+  assert.equal(used.has('2026-10-12.2'), true);
+  assert.equal(nextReleaseId(used, new Date('2026-10-12T23:00:00')), '2026-10-12.3');
+});
+
 test('AEZA script stays inside vic-smetacraft and keeps the database', () => {
   const source = fs.readFileSync(path.join(root, 'scripts', 'aeza-remote.sh'), 'utf8');
   assert.match(source, /vic-smetacraft/);
@@ -51,8 +83,13 @@ test('AEZA script stays inside vic-smetacraft and keeps the database', () => {
   assert.match(source, /smetacraft\.sqlite/);
   assert.match(source, /src\.backup\(dst\)/);
   assert.match(source, /restore_sqlite_file/);
-  assert.match(source, /chown "\$DB_OWNER"/);
+  assert.match(source, /chown "\$RUN_USER" "\$live"/);
+  assert.match(source, /docker run --rm --user "\$RUN_USER"/);
+  assert.doesNotMatch(source, /DB_OWNER/);
   assert.match(source, /chown "\$APP_OWNER"/);
+  assert.match(source, /remove_release_only_files/);
+  assert.match(source, /docker tag "\$OLD_IMAGE_ID" "\$IMAGE"/);
+  assert.match(source, /up -d --force-recreate --no-build/);
   assert.doesNotMatch(source, /chmod 777|install-fornex|ufw|iptables|xray|compose down|git push/);
 });
 

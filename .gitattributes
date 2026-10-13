@@ -1,2 +1,3 @@
 scripts/aeza-remote.sh text eol=lf
 tests/aeza-copy-perms.sh text eol=lf
+tests/aeza-deploy-sandbox.sh text eol=lf

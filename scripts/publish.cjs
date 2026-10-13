@@ -9,6 +9,7 @@ const {
   readRelease,
   readLog,
   nextReleaseId,
+  usedReleaseIds,
   applyReleaseId,
   upsertRelease,
   testFiles,
@@ -232,9 +233,9 @@ async function main() {
   }
   assertNoForbidden(changedPaths());
   const checks = runChecks();
-  const used = new Set(readLog(root).releases.map(item => item.releaseId));
-  let releaseId = readRelease(root).releaseId;
-  if (used.has(releaseId)) releaseId = nextReleaseId(used);
+  git(['fetch', 'origin', 'master']);
+  const messages = git(['log', '--all', '--format=%s%n%b']).stdout.split('\n');
+  const releaseId = nextReleaseId(usedReleaseIds(root, messages));
   applyReleaseId(root, releaseId);
   assertNoForbidden(changedPaths());
   const preview = git(['diff', '-U0'], true);
