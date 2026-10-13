@@ -485,7 +485,9 @@ function sleep(ms) {
   if (versionJson.commit && versionJson.commit !== commit) throw new Error('commit mismatch');
   const slab = await request('GET', '/js/core/slab.js');
   if (slab.status !== 200 || !slab.body.includes('function calculateSlab')) throw new Error('slab.js');
-  const stamp = `release-check-${release}`;
+  // Коммит журнала публикуется с тем же номером релиза. Ключ только из номера
+  // вернул бы прошлую запись (200 без токена) вместо новой проверки записи.
+  const stamp = `release-check-${release}-${commit}`;
   const project = {
     format: 'smetacraft-project',
     version: 1,
@@ -495,7 +497,7 @@ function sleep(ms) {
     piles: [],
   };
   const raw = JSON.stringify(project);
-  const key = `release${stamp}`.replace(/[^A-Za-z0-9_-]/g, '').slice(0, 80);
+  const key = `release${stamp}`.replace(/[^A-Za-z0-9_-]/g, '').slice(0, 128);
   const saved = await request('POST', '/api/projects/migrate', {
     'Content-Type': 'application/json',
     'Content-Length': Buffer.byteLength(raw),

@@ -124,10 +124,11 @@ process.stdout.write(hash.digest("hex"));
 }
 
 run_remote() {
-  cp "$1" "$BK/incoming-$NEW_SHA.tar"
+  local sha="${2:-$NEW_SHA}"
+  cp "$1" "$BK/incoming-$sha.tar"
   set +e
   AEZA_APP_DIR="$APP" AEZA_PROJECT="$PROJECT" AEZA_BACKUP_ROOT="$BK" \
-    bash "$REMOTE" "$NEW_SHA" "$NEW_RELEASE" > "$SB/remote.log" 2>&1
+    bash "$REMOTE" "$sha" "$NEW_RELEASE" > "$SB/remote.log" 2>&1
   local code=$?
   set -e
   sed -e 's/^/    | /' "$SB/remote.log" | grep -v 'ExperimentalWarning\|trace-warnings'
@@ -268,4 +269,11 @@ read -r P4 T4 <<<"$ids"
 read_back "$P4" "$T4" after-release || die "чтение после релиза не прошло"
 test "$(stat -c '%u:%g' "$APP/data/smetacraft.sqlite")" = "$RUN_USER" || die "владелец базы после релиза"
 echo "релиз $NEW_RELEASE: образ $NEW_IMAGE, сохранение и повторное чтение работают"
+
+step "4. Тот же номер релиза, другой коммит, как у коммита журнала"
+JOURNAL_SHA="$(printf 'journal-%s' "$NEW_SHA" | sha1sum | awk '{print $1}')"
+run_remote "$NEW_TAR" "$JOURNAL_SHA" || die "повторная публикация того же номера не прошла"
+grep -q '^probe [0-9a-f]\{32\}$' "$SB/remote.log" || die "нет новой записи проверки"
+read_back "$P1" "$T1" original || die "исходный проект после повтора не читается"
+echo "повтор номера $NEW_RELEASE с коммитом $JOURNAL_SHA прошёл"
 echo "aeza-deploy-sandbox: ok"

@@ -90,6 +90,7 @@ test('AEZA script stays inside vic-smetacraft and keeps the database', () => {
   assert.match(source, /remove_release_only_files/);
   assert.match(source, /docker tag "\$OLD_IMAGE_ID" "\$IMAGE"/);
   assert.match(source, /up -d --force-recreate --no-build/);
+  assert.match(source, /const stamp = `release-check-\$\{release\}-\$\{commit\}`/);
   assert.doesNotMatch(source, /chmod 777|install-fornex|ufw|iptables|xray|compose down|git push/);
 });
 

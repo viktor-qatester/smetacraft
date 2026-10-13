@@ -64,6 +64,24 @@
       "note": "Номер релиза виден в жёлтой плашке. GitHub Pages хранит проект в браузере. AEZA хранит проекты в SQLite и не заменяет их демонстрационными данными.",
       "pagesUrl": "https://viktor-qatester.github.io/smetacraft/",
       "aezaProject": "vic-smetacraft"
+    },
+    {
+      "releaseId": "2026-10-13.2",
+      "recordedAt": "2026-10-13T05:10:03.968Z",
+      "checks": {
+        "result": "pass",
+        "command": "node --test tests/allowed-origins.test.cjs tests/annotation-harness.test.cjs tests/backend.test.cjs tests/document-import-ui.test.cjs tests/file-import.test.cjs tests/file-storage.test.cjs tests/golden.test.cjs tests/pdf-facts.test.cjs tests/project-migration-ui.test.cjs tests/project-migration.test.cjs tests/project-model.test.cjs tests/release.test.cjs tests/security.test.cjs tests/utils.test.cjs && node scripts/validate-skills.cjs",
+        "at": "2026-10-13T05:10:02.762Z"
+      },
+      "publications": {
+        "githubPages": "pending",
+        "aeza": "pending"
+      },
+      "deployedCommit": "",
+      "aezaReason": "",
+      "note": "Номер релиза виден в жёлтой плашке. GitHub Pages хранит проект в браузере. AEZA хранит проекты в SQLite и не заменяет их демонстрационными данными.",
+      "pagesUrl": "https://viktor-qatester.github.io/smetacraft/",
+      "aezaProject": "vic-smetacraft"
     }
   ]
 }
