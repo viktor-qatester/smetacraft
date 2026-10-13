@@ -74,10 +74,10 @@
         "at": "2026-10-13T05:10:02.762Z"
       },
       "publications": {
-        "githubPages": "pending",
-        "aeza": "pending"
+        "githubPages": "published",
+        "aeza": "published"
       },
-      "deployedCommit": "",
+      "deployedCommit": "ce79435961206890cc826d06fd65d9d03641df81",
       "aezaReason": "",
       "note": "Номер релиза виден в жёлтой плашке. GitHub Pages хранит проект в браузере. AEZA хранит проекты в SQLite и не заменяет их демонстрационными данными.",
       "pagesUrl": "https://viktor-qatester.github.io/smetacraft/",
