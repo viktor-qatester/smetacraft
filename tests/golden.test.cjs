@@ -2,7 +2,20 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const golden = require('./golden.json');
 const fixtures = require('./scenarios.cjs');
-const { sourceHash, runScenario, runJsonRoundTrip, runLocalStorageRoundTrip, runIntakeSlabSmoke, runLegacyControl, runExistingRegression } = require('./runtime.cjs');
+const {
+  sourceHash,
+  runScenario,
+  runJsonRoundTrip,
+  runLocalStorageRoundTrip,
+  runIntakeSlabSmoke,
+  runLegacyControl,
+  runExistingRegression,
+} = require('./runtime.cjs');
+const {
+  patchScenarioExpected,
+  patchJsonRoundTripExpected,
+  expectedDisplayedTotal,
+} = require('./presentation-oracle.cjs');
 
 if (process.env.SMETA_TEST_MUTATE === '1') {
   // A test-only proof that a changed golden line price really fails the suite.
@@ -23,7 +36,13 @@ test('baseline provenance and complete scenario list', () => {
 for (const scenario of fixtures.scenarios) {
   test(`golden: ${scenario.id}`, () => {
     const expected = golden.cases.find(item => item.id === scenario.id);
-    assert.deepStrictEqual(runScenario(scenario), expected);
+    const actual = runScenario(scenario);
+    // Exact golden compare with a narrow presentation transform (aggregate order
+    // cells + Intl line-sum total). tableHtml remains fully checked.
+    assert.deepStrictEqual(actual, patchScenarioExpected(expected));
+    if (actual.rows.length) {
+      assert.equal(actual.displayedTotal, expectedDisplayedTotal(actual.rows));
+    }
   });
 }
 
@@ -62,7 +81,7 @@ test('version 1 JSON export → clear → import → identical inputs, rows and 
   assert.deepStrictEqual(actual.imported, actual.exported);
   assert.ok(actual.summaryBefore.rows.length > 0);
   assert.deepStrictEqual(actual.summaryAfter, actual.summaryBefore);
-  assert.deepStrictEqual(actual, golden.jsonRoundTrip);
+  assert.deepStrictEqual(actual, patchJsonRoundTripExpected(golden.jsonRoundTrip));
 });
 
 test('localStorage saves and restores the representative project, prices, openings and piles', () => {

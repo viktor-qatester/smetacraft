@@ -31,12 +31,39 @@
         return CURRENCY_OPTIONS[code];
       }
 
+      // Presentation money: keep Intl half-up-to-2-decimals semantics for each
+      // visible line, then sum those displayed amounts in integer minor units.
       function formatMoneyValue(n) {
-        return n.toLocaleString("ru-BY", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        return Number(n).toLocaleString("ru-BY", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        });
+      }
+
+      function moneyToKop(n) {
+        const text = formatMoneyValue(n)
+          .replace(/\u00a0/g, "")
+          .replace(/\s/g, "")
+          .replace(",", ".");
+        const value = Number(text);
+        if (!Number.isFinite(value)) return 0;
+        return Math.round(value * 100);
       }
 
       function formatMoney(n) {
         return formatMoneyValue(n) + " " + getCurrency().symbol;
+      }
+
+      function formatMoneyFromKop(kop) {
+        return formatMoneyValue(Number(kop) / 100) + " " + getCurrency().symbol;
+      }
+
+      function sumMoneyKop(values) {
+        let kop = 0;
+        for (let i = 0; i < values.length; i++) {
+          kop += moneyToKop(values[i]);
+        }
+        return kop;
       }
 
       function syncCurrencyUi() {

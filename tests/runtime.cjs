@@ -117,7 +117,7 @@ function createApp() {
   context.pilesEnabledEl = get('strip-piles-enabled');
   const refs = [
     'billEmptyEl', 'billWrapEl', 'billPrintEl', 'billMetaEl', 'billBodyEl',
-    'billTotalEl', 'billScopeEl', 'billExcludedEl', 'billNextEl',
+    'billTotalEl', 'billRoundingNoteEl', 'billScopeEl', 'billExcludedEl', 'billNextEl',
     'printSubEl', 'printNodesEl', 'printDateEl',
     'errorEl', 'stripErrorEl', 'wallsErrorEl', 'plasterErrorEl',
     'roofErrorEl', 'floorErrorEl', 'summaryErrorEl',

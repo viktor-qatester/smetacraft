@@ -144,7 +144,14 @@
         updateBillScope(rows, options);
         billBodyEl.innerHTML =
           options && options.grouped ? groupedBillHtml(rows) : rows.map(rowHtml).join("");
-        billTotalEl.textContent = formatMoney(total);
+        // Presentation total follows visible line amounts (whole kopecks), not a
+        // separately rounded core sum. Exact row.cost / bill.total stay unchanged.
+        billTotalEl.textContent = formatMoneyFromKop(
+          sumMoneyKop(rows.map(function (item) { return item.cost; }))
+        );
+        if (billRoundingNoteEl) {
+          billRoundingNoteEl.hidden = false;
+        }
         setPrintHead(
           options && options.printTitle ? options.printTitle : BILL_PRINT_SUB,
           options && options.printNodes ? options.printNodes : ""
@@ -163,6 +170,9 @@
         billScopeEl.hidden = true;
         billExcludedEl.hidden = true;
         billNextEl.hidden = true;
+        if (billRoundingNoteEl) {
+          billRoundingNoteEl.hidden = true;
+        }
         setPrintHead(BILL_PRINT_SUB, "");
       }
 

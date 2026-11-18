@@ -162,6 +162,11 @@
           overflow: visible;
         }
 
+        .bill-wrap table {
+          width: 100%;
+          min-width: 0;
+        }
+
         .bill-wrap table,
         .bill-wrap tbody,
         .bill-wrap tfoot {
@@ -326,6 +331,30 @@
       .bill-wrap {
         max-width: 100%;
         overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-x: contain;
+      }
+
+      .bill-wrap:focus {
+        outline: 2px solid var(--ink);
+        outline-offset: 2px;
+      }
+
+      .bill-wrap:focus:not(:focus-visible) {
+        outline: none;
+      }
+
+      /* Desktop/tablet only: do not force min table width over mobile card layout. */
+      @media (min-width: 641px) {
+        .bill-wrap table {
+          width: 100%;
+        }
+      }
+
+      .bill-rounding-note {
+        margin: 8px 0 0;
+        font-size: 12px;
+        color: var(--muted);
       }
 
       table {
@@ -909,48 +938,88 @@
           display: none;
         }
 
+        .bill-wrap {
+          overflow: visible;
+        }
+
+        .bill-wrap table {
+          width: 100%;
+          min-width: 0;
+          font-size: 12px;
+        }
+
+        /* Compact print packing so a representative A4 bill + rounding note
+           stay on one page; screen layout is unchanged. */
+        .bill th,
+        .bill td {
+          padding: 3px 5px;
+        }
+
+        .bill-scope,
+        .bill-excluded,
+        .bill-meta {
+          margin: 0 0 4px;
+          font-size: 11px;
+        }
+
+        .bill-rounding-note {
+          margin: 4px 0 0;
+          padding: 0;
+          color: #333;
+          font-size: 10px;
+          line-height: 1.25;
+          break-inside: avoid;
+          page-break-inside: avoid;
+        }
+
         .bill-testing-notice {
+          margin: 6px 0;
+          padding: 6px 8px;
           color: #111;
           border-color: #111;
+          font-size: 11px;
+          line-height: 1.3;
           break-inside: avoid;
         }
 
         .print-letterhead {
           display: block;
-          margin: 0 0 16px;
-          padding: 0 0 12px;
+          margin: 0 0 8px;
+          padding: 0 0 6px;
           border-bottom: 2px solid #111;
         }
 
         .print-brand {
           margin: 0;
-          font-size: 22px;
+          font-size: 16px;
           font-weight: 700;
-          letter-spacing: 0.08em;
+          letter-spacing: 0.06em;
           text-transform: uppercase;
         }
 
         .print-sub {
-          margin: 2px 0 8px;
-          font-size: 12px;
-          letter-spacing: 0.06em;
+          margin: 2px 0 4px;
+          font-size: 10px;
+          letter-spacing: 0.05em;
           text-transform: uppercase;
           color: #333;
         }
 
         .print-date {
           margin: 0;
-          font-size: 13px;
+          font-size: 11px;
         }
 
         .print-nodes {
-          margin: 8px 0 0;
-          font-size: 12px;
+          margin: 4px 0 0;
+          font-size: 10px;
         }
 
         .cat-row td {
           background: #eee;
           color: #111;
+          padding-top: 4px;
+          padding-bottom: 4px;
         }
 
         .bill-meta {
@@ -959,10 +1028,13 @@
 
         tfoot td {
           background: #eee;
+          font-size: 13px;
+          padding-top: 5px;
+          padding-bottom: 5px;
         }
 
         @page {
-          margin: 16mm;
+          margin: 12mm;
         }
 
         .regression-badge {
@@ -1003,7 +1075,7 @@
             <h2>Анкета вашего дома</h2>
             <p class="intake-intro">
               Укажите размеры и отметьте части строительства. Анкета подставляет плитный фундамент и
-              несущие стены из газобетона 300 мм; ленточный фундамент — на отдельной вкладке «Лента».
+              несущие стены из газобетона 300 мм; ленточный фундамент — на отдельной вкладке «Ленточный».
               Справа появится стоимость только выбранных частей по строкам ведомости — не стоимость всего
               дома. Стартовые значения служат примером: замените их своими или начните с пустого проекта.
               Цены можно изменить в «Прайс-листе».
@@ -1032,7 +1104,7 @@
                     <input id="intake-wall-height" name="intake-wall-height" type="text" inputmode="decimal" value="3.0" autocomplete="off" />
                   </label>
                 </div>
-                <p class="note">Только плита и газобетон 300 мм; ленточный фундамент — вкладка «Лента». Периметр стен считается автоматически (плита 10×8 м → 36 м).</p>
+                <p class="note">Только плита и газобетон 300 мм; ленточный фундамент — вкладка «Ленточный». Периметр стен считается автоматически (плита 10×8 м → 36 м).</p>
               </fieldset>
 
               <fieldset>
@@ -2449,7 +2521,14 @@
           <p id="bill-excluded" class="bill-excluded" hidden></p>
           <p id="bill-meta" class="bill-meta"></p>
           <p id="bill-empty" class="empty">Заполните размеры и цены слева.</p>
-          <div id="bill-wrap" class="bill-wrap" hidden>
+          <div
+            id="bill-wrap"
+            class="bill-wrap"
+            hidden
+            tabindex="0"
+            role="region"
+            aria-label="Ведомость закупки. При узкой колонке прокрутите таблицу влево-вправо стрелками или Shift+колёсико."
+          >
             <table>
               <thead>
                 <tr>
@@ -2457,7 +2536,7 @@
                   <th class="num">Объём</th>
                   <th class="num">Коэф.</th>
                   <th class="num">К заказу</th>
-                  <th class="num">Стоимость</th>
+                  <th class="num">Стоимость, <span class="js-currency-heading">BYN (Br)</span></th>
                 </tr>
               </thead>
               <tbody id="bill-body"></tbody>
@@ -2469,6 +2548,12 @@
               </tfoot>
             </table>
           </div>
+          <p id="bill-rounding-note" class="bill-rounding-note" hidden>
+            Количество (объём, площадь, масса и др.) в графах «Объём» и «К заказу» округлено для
+            чтения; стоимость каждой строки посчитана по точному количеству до этого округления.
+            Итог совпадает с суммой видимых стоимостей строк. Прочерк «—» в «К заказу» у сводных
+            строк — агрегат без отдельной закупки; детализация на вкладке соответствующего раздела.
+          </p>
           <button type="button" class="btn-text" id="bill-next" hidden>Добавить части → Сводная смета</button>
           <button type="button" class="btn-print" id="bill-print" hidden>Распечатать смету / PDF</button>
           <p class="note">Стоимость ориентировочная, по ценам прайс-листа в <span class="js-currency-heading">BYN (Br)</span>. Это не полная стоимость дома и не замена проекту. Остатки хлыстов выбранной длины входят в заказ целиком.</p>

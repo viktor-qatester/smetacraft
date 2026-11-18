@@ -34,7 +34,8 @@
               " м³)",
             netLabel: formatQty(bill.vNet, 2) + " м³",
             k: 1,
-            orderLabel: formatMoneyValue(materialsCost),
+            // Aggregate: not a purchase qty; detail is on the walls tab.
+            orderLabel: "—",
             cost: materialsCost,
           },
           {
@@ -44,7 +45,7 @@
               ")",
             netLabel: formatQty(input.perimeter, 1) + " м перим.",
             k: 1,
-            orderLabel: formatMoneyValue(workCost),
+            orderLabel: "—",
             cost: workCost,
           },
         ];
@@ -64,7 +65,8 @@
               " м²)",
             netLabel: formatQty(bill.area, 2) + " м²",
             k: 1,
-            orderLabel: formatMoneyValue(bill.materialsCost),
+            // Aggregate: money belongs in «Стоимость», not «К заказу».
+            orderLabel: "—",
             cost: bill.materialsCost,
           },
           {
@@ -72,6 +74,7 @@
               "Штукатурка — работы (по маякам, " + formatQty(bill.area, 2) + " м²)",
             netLabel: formatQty(bill.area, 2) + " м²",
             k: 1,
+            // Keep physical work quantity; only bare money labels become «—».
             orderLabel: formatQty(bill.area, 2) + " м²",
             cost: bill.workCost,
           },
@@ -99,7 +102,8 @@
               ")",
             netLabel: formatQty(bill.area, 2) + " м²",
             k: 1,
-            orderLabel: formatMoneyValue(materialsCost),
+            // Aggregate: money stays in «Стоимость», not «К заказу».
+            orderLabel: "—",
             cost: materialsCost,
           },
           {
@@ -138,7 +142,7 @@
               " м²)",
             netLabel: formatQty(bill.area, 2) + " м²",
             k: 1,
-            orderLabel: formatMoneyValue(materialsCost),
+            orderLabel: "—",
             cost: materialsCost,
           },
           {
@@ -150,7 +154,7 @@
               " м²)",
             netLabel: formatQty(bill.area, 2) + " м²",
             k: 1,
-            orderLabel: formatMoneyValue(workCost),
+            orderLabel: "—",
             cost: workCost,
           },
         ];

@@ -35,6 +35,17 @@ test('formatMoney falls back to BYN for an unsupported currency', () => {
   assert.equal(context.formatMoney(10), '10,00 Br');
 });
 
+test('visible money total follows Intl line rounding into minor units', () => {
+  const { context } = createApp();
+  assert.equal(context.formatMoneyValue(1.005), '1,01');
+  assert.equal(context.moneyToKop(1.005), 101);
+  assert.equal(context.moneyToKop(1.015), 102);
+  assert.equal(context.moneyToKop(-1.005), -101);
+  assert.equal(context.moneyToKop(-2.675), -268);
+  assert.equal(context.sumMoneyKop([1.005, 2.675]), 101 + 268);
+  assert.equal(context.formatMoneyFromKop(369), '3,69 Br');
+});
+
 test('plaster work row uses the selected currency per square metre', () => {
   const { context, get } = createApp();
   get('currency').value = 'EUR';

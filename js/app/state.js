@@ -107,5 +107,6 @@
       const billWrapEl = document.getElementById("bill-wrap");
       const billBodyEl = document.getElementById("bill-body");
       const billTotalEl = document.getElementById("bill-total");
+      const billRoundingNoteEl = document.getElementById("bill-rounding-note");
 
       // ==========================================
